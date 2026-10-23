@@ -79,6 +79,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   if (new Set(questions.map((question) => question.id)).size !== questions.length) throw new Error('题目 id 不能重复')
   const complete = record.complete === true
   if (complete) {
+    if ([record.id, record.title, record.sourceName, record.license, record.sourceUrl].some((value) => typeof value === 'string' && (value.includes('replace-with-') || value.includes('填写') || value.includes('example.com')))) throw new Error('完整题库仍包含模板占位符，请先填写真实来源和题目')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
     if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
     if (!record.sectionQuestionCounts || typeof record.sectionQuestionCounts !== 'object' || Array.isArray(record.sectionQuestionCounts)) throw new Error('完整题库必须填写 sectionQuestionCounts')
@@ -90,7 +91,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     }
     const declaredTotal = Object.values(sectionQuestionCounts).reduce((sum: number, value) => sum + (typeof value === 'number' ? value : 0), 0)
     if (declaredTotal !== questions.length) throw new Error('sectionQuestionCounts 总数必须等于 questions 数量')
-    if (questions.some((question) => question.section === '聴解' && !question.audioUrl)) throw new Error('完整题库的每道聴解题都必须提供 audioUrl')
+    if (questions.some((question) => question.section === '聴解' && (!question.audioUrl || question.audioUrl.includes('example.com')))) throw new Error('完整题库的每道聴解题都必须提供真实 audioUrl')
   }
   return {
     schemaVersion: 1,
@@ -177,7 +178,7 @@ export const importedJLPTCompleteExample = JSON.stringify({
   title: '完整题库校验 fixture',
   sourceName: 'Nihongo Stack automated check',
   license: '内部测试资料，不是官方真题',
-  sourceUrl: 'https://example.com/fixture-source',
+  sourceUrl: 'https://fixture.invalid/source',
   complete: true,
   questionCount: 16,
   sectionQuestionCounts: { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 },

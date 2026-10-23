@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptYears } from '../src/jlpt'
-import { importedJLPTCompleteExample, importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
+import { importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
@@ -29,13 +29,14 @@ assert.equal(imported.complete, false)
 const complete = parseImportedJLPTPack(importedJLPTCompleteExample)
 assert.equal(complete.complete, true)
 assert.equal(complete.questionCount, complete.questions.length)
-assert.equal(complete.sourceUrl, 'https://example.com/fixture-source')
+assert.equal(complete.sourceUrl, 'https://fixture.invalid/source')
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 })
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
+assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteTemplate), /模板占位符/)
 const tooSmall = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 tooSmall.questions = (tooSmall.questions as unknown[]).filter((_, index) => index % 4 === 0)
 tooSmall.questionCount = 4
 tooSmall.sectionQuestionCounts = { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 }
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要 4 题/)
-assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://example.com/fixture-source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
+assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://fixture.invalid/source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (12 per level), complete-pack validation, official links for ${jlptLevels.join('/')}`)

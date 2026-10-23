@@ -49,13 +49,21 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       lastText.current = ''
       setSelection(null)
     }
+    function closeWithEscape(event: KeyboardEvent) {
+      if (event.key !== 'Escape') return
+      lastText.current = ''
+      window.getSelection()?.removeAllRanges()
+      setSelection(null)
+    }
     document.addEventListener('mousedown', closeOutside)
+    document.addEventListener('keydown', closeWithEscape)
     const poll = window.setInterval(readSelection, 350)
     return () => {
       document.removeEventListener('mouseup', readSelection)
       document.removeEventListener('keyup', readSelection)
       document.removeEventListener('selectionchange', readSelection)
       document.removeEventListener('mousedown', closeOutside)
+      document.removeEventListener('keydown', closeWithEscape)
       window.clearInterval(poll)
     }
   }, [])

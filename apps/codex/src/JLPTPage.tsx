@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks } from '@phosphor-icons/react'
 import { jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion } from './jlpt'
 import { db, setPreference } from './db'
+import { parseImportedJLPTPack } from './jlpt-import'
 
 type Notify = (message: string, kind?: 'success' | 'error') => void
 
@@ -10,16 +11,21 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [level, setLevel] = useState<JLPTLevel>('N5')
   const [year, setYear] = useState(2025)
   const [activeSetId, setActiveSetId] = useState(`jlpt-2025-n5`)
-  const activeSet = jlptSets.find((set) => set.id === activeSetId) ?? jlptSets[0]
-  const questions = useMemo(
-    () => activeSet.questionIds.map((id) => jlptQuestions.find((question) => question.id === id)).filter(Boolean) as JLPTQuestion[],
-    [activeSet],
-  )
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const preferences = useLiveQuery(() => db.preferences.toArray(), []) ?? []
   const completed = useMemo(() => new Set(preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).map((row) => row.key.slice('jlptCompleted:'.length))), [preferences])
+  const importedPacks = useMemo(() => preferences.flatMap((row) => {
+    if (!row.key.startsWith('jlptImportedPack:') || typeof row.value !== 'string') return []
+    try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
+  }), [preferences])
+  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}` })), [importedPacks])
+  const allSets = useMemo(() => [...jlptSets, ...importedSets], [importedSets])
+  const allQuestions = useMemo(() => [...jlptQuestions, ...importedPacks.flatMap((pack) => pack.questions)], [importedPacks])
+  const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
+  const questions = useMemo(() => activeSet.questionIds.map((id) => allQuestions.find((question) => question.id === id)).filter(Boolean) as JLPTQuestion[], [activeSet, allQuestions])
   const draftKey = `jlptDraft:${activeSet.id}`
+  const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     let cancelled = false
@@ -42,6 +48,21 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     setActiveSetId(`jlpt-${nextYear}-${nextLevel.toLowerCase()}`)
     setAnswers({})
     setSubmitted(false)
+  }
+  async function importPack(file?: File) {
+    if (!file) return
+    try {
+      const pack = parseImportedJLPTPack(await file.text())
+      await setPreference(`jlptImportedPack:${pack.id}`, JSON.stringify(pack))
+      setLevel(pack.level)
+      setYear(pack.year)
+      setActiveSetId(pack.id)
+      setAnswers({})
+      setSubmitted(false)
+      onNotify(`已导入 ${pack.title}，共 ${pack.questions.length} 题。`)
+    } catch (error) {
+      onNotify(error instanceof Error ? error.message : '题库导入失败，请检查 JSON。', 'error')
+    }
   }
   function submit() {
     if (questions.some((question) => answers[question.id] === undefined)) {
@@ -71,6 +92,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
         <span className="jlpt-progress-label"><strong>{completed.size}</strong> / 28 包已练</span>
+        <button className="outline-button compact" onClick={() => fileRef.current?.click()}>导入完整真题</button>
+        <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={(event) => { void importPack(event.target.files?.[0]); event.currentTarget.value = '' }} />
       </section>
       <section className="jlpt-controls" aria-label="选择 JLPT 练习范围">
         <div className="jlpt-levels">
@@ -94,6 +117,14 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </button>
         ))}
       </section>
+      {importedPacks.length > 0 && (
+        <section className="jlpt-imported-section" aria-label="已导入的完整真题">
+          <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
+          <div className="jlpt-imported-grid">
+            {importedSets.map((set) => <button key={set.id} className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false) }}><span>{set.year} · {set.level}</span><strong>{set.title}</strong><small>{set.questionIds.length} 道完整题目</small></button>)}
+          </div>
+        </section>
+      )}
       <div className="jlpt-workbench">
         <article className="jlpt-practice-panel">
           <div className="section-heading">
@@ -120,7 +151,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </article>
         <aside className="jlpt-side-note">
           <h2><Info size={18} /> 资料边界与使用方式</h2>
-          <p>安装包内是原创仿真题和逐题中文教学。官方历年试卷与音频通过公开入口访问，使用时请遵守来源页面的版权和使用条件。</p>
+          <p>安装包内是原创仿真题和逐题中文教学。已获授权的完整真题可用上方导入，题库只保存在本机备份中。</p>
           <ul>
             <li>先看日文原句，尝试自己读。</li>
             <li>再打开读音、释义和罗马音辅助。</li>

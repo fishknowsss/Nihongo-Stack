@@ -424,6 +424,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-intro-panel p { margin-top: 3px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
 .jlpt-progress-label { margin-left: auto; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
 .jlpt-progress-label strong { color: var(--ink); font-size: 1.25rem; }
+.jlpt-intro-panel .compact { margin-left: auto; white-space: nowrap; }
 .jlpt-controls { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
 .jlpt-levels { display: flex; gap: 4px; }
 .jlpt-level { min-width: 58px; min-height: 44px; padding: 8px 12px; border: 1px solid var(--control-line); border-radius: 6px; background: var(--surface); font-weight: 600; }
@@ -436,6 +437,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-set span { color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
 .jlpt-set strong { font-size: .8125rem; }
 .jlpt-set small { color: var(--muted); font-size: .75rem; }
+.jlpt-imported-section { display: grid; gap: 10px; }
+.jlpt-imported-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .jlpt-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
 .jlpt-practice-panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .jlpt-section-count { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
@@ -620,11 +623,13 @@ audio { display: block; width: 100%; min-height: 44px; }
   .selection-explainer { max-height: calc(100vh - 24px); overflow-y: auto; }
   .jlpt-intro-panel { align-items: start; flex-wrap: wrap; padding: 14px 16px; }
   .jlpt-progress-label { width: 100%; margin-left: 56px; }
+  .jlpt-intro-panel .compact { margin-left: 56px; }
   .jlpt-controls { align-items: stretch; flex-direction: column; gap: 12px; }
   .jlpt-levels { overflow-x: auto; }
   .jlpt-level { flex: 1; }
   .jlpt-controls label, .jlpt-controls select { width: 100%; }
   .jlpt-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jlpt-imported-grid { grid-template-columns: minmax(0, 1fr); }
   .jlpt-workbench { grid-template-columns: minmax(0, 1fr); }
   .jlpt-practice-panel { padding: 16px; }
   .jlpt-result .outline-button { margin-left: 0; }

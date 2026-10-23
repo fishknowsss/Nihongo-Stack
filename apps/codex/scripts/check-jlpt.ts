@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptYears } from '../src/jlpt'
+import { importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
@@ -16,4 +17,8 @@ for (const question of jlptQuestions) {
   assert.ok(question.explanation.length > 0)
   assert.ok(question.studySteps.length >= 2)
 }
+const imported = parseImportedJLPTPack(importedJLPTExample)
+assert.equal(imported.level, 'N5')
+assert.equal(imported.questions[0].source, 'licensed-import')
+assert.equal(imported.questions.length, 1)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions, official links for ${jlptLevels.join('/')}`)

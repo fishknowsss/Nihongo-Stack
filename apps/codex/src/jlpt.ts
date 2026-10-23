@@ -12,7 +12,7 @@ export type JLPTQuestion = {
   gloss?: string
   explanation: string
   studySteps: string[]
-  source: 'original-practice'
+  source: 'original-practice' | 'licensed-import'
 }
 
 export type JLPTSet = {
@@ -20,7 +20,7 @@ export type JLPTSet = {
   year: number
   level: JLPTLevel
   title: string
-  status: 'practice' | 'official-sample'
+  status: 'practice' | 'official-sample' | 'licensed-import'
   questionIds: string[]
   note: string
 }

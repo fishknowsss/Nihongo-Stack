@@ -1,0 +1,94 @@
+import type { JLPTLevel, JLPTQuestion, JLPTSection } from './jlpt'
+
+export type ImportedJLPTPack = {
+  schemaVersion: 1
+  id: string
+  year: number
+  session?: string
+  level: JLPTLevel
+  title: string
+  sourceName: string
+  license: string
+  questions: JLPTQuestion[]
+}
+
+const levels = new Set<JLPTLevel>(['N5', 'N4', 'N3', 'N2'])
+const sections = new Set<JLPTSection>(['文字・語彙', '文法', '読解', '聴解'])
+
+function text(value: unknown, label: string): string {
+  if (typeof value !== 'string' || !value.trim()) throw new Error(`${label}不能为空`)
+  return value.trim()
+}
+
+export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
+  if (raw.length > 20 * 1024 * 1024) throw new Error('题库文件超过 20 MB')
+  let data: unknown
+  try { data = JSON.parse(raw) } catch { throw new Error('题库必须是有效 JSON') }
+  if (!data || typeof data !== 'object') throw new Error('题库根对象无效')
+  const record = data as Record<string, unknown>
+  if (record.schemaVersion !== 1) throw new Error('题库 schemaVersion 必须为 1')
+  const level = text(record.level, 'level') as JLPTLevel
+  if (!levels.has(level)) throw new Error('level 只能是 N5、N4、N3 或 N2')
+  const year = record.year
+  const numericYear = typeof year === 'number' ? year : NaN
+  if (!Number.isInteger(numericYear) || numericYear < 2010 || numericYear > 2100) throw new Error('year 必须是有效年份')
+  if (!Array.isArray(record.questions) || record.questions.length === 0) throw new Error('questions 不能为空')
+  const questions: JLPTQuestion[] = record.questions.map((value, index) => {
+    if (!value || typeof value !== 'object') throw new Error(`第 ${index + 1} 题格式无效`)
+    const question = value as Record<string, unknown>
+    const section = text(question.section, `第 ${index + 1} 题 section`) as JLPTSection
+    if (!sections.has(section)) throw new Error(`第 ${index + 1} 题 section 无效`)
+    if (!Array.isArray(question.options) || question.options.length < 2 || question.options.some((option) => typeof option !== 'string' || !option.trim())) throw new Error(`第 ${index + 1} 题 options 无效`)
+    if (!Number.isInteger(question.answer) || Number(question.answer) < 0 || Number(question.answer) >= question.options.length) throw new Error(`第 ${index + 1} 题 answer 无效`)
+    const id = text(question.id, `第 ${index + 1} 题 id`)
+    return {
+      id: `${String(record.id ?? 'imported')}:${id}`,
+      level,
+      section,
+      prompt: text(question.prompt, `第 ${index + 1} 题 prompt`),
+      options: question.options.map((option) => String(option)),
+      answer: Number(question.answer),
+      reading: typeof question.reading === 'string' ? question.reading : undefined,
+      gloss: typeof question.gloss === 'string' ? question.gloss : undefined,
+      explanation: typeof question.explanation === 'string' && question.explanation.trim() ? question.explanation : '导入资料未提供解析，请结合原始答案和教材复盘。',
+      studySteps: Array.isArray(question.studySteps) && question.studySteps.length ? question.studySteps.map(String) : ['先独立完成，再对照原始答案。', '把不熟的词句加入选中笔记。'],
+      source: 'licensed-import',
+    }
+  })
+  if (new Set(questions.map((question) => question.id)).size !== questions.length) throw new Error('题目 id 不能重复')
+  return {
+    schemaVersion: 1,
+    id: text(record.id, 'id'),
+    year: numericYear,
+    session: typeof record.session === 'string' ? record.session : undefined,
+    level,
+    title: text(record.title, 'title'),
+    sourceName: text(record.sourceName, 'sourceName'),
+    license: text(record.license, 'license'),
+    questions,
+  }
+}
+
+export const importedJLPTExample = `{
+  "schemaVersion": 1,
+  "id": "jlpt-2025-07-n5",
+  "year": 2025,
+  "session": "07",
+  "level": "N5",
+  "title": "2025 年 7 月 N5 完整真题",
+  "sourceName": "填写授权来源",
+  "license": "填写个人使用或再分发许可",
+  "questions": [
+    {
+      "id": "vocab-001",
+      "section": "文字・語彙",
+      "prompt": "题干原文",
+      "options": ["选项 A", "选项 B", "选项 C", "选项 D"],
+      "answer": 0,
+      "reading": "读音",
+      "gloss": "中文释义",
+      "explanation": "逐题中文解析",
+      "studySteps": ["先看句子结构", "再核对词义"]
+    }
+  ]
+}`

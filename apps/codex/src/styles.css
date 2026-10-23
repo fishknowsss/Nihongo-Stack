@@ -410,6 +410,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .selection-label { color: var(--muted); font-size: .75rem; }
 .selection-explainer strong { font: 1.25rem/1.5 var(--jp-font); overflow-wrap: anywhere; }
 .selection-reading { color: var(--accent); font-size: 1rem; }
+.selection-romaji { color: var(--muted); font-size: .8125rem; letter-spacing: .02em; }
+.selection-kind { display: inline-flex; width: fit-content; padding: 2px 6px; border-radius: 4px; color: var(--accent); background: var(--accent-soft); font-size: .6875rem; }
 .selection-gloss { font-size: .9375rem; }
 .selection-explainer textarea { width: 100%; min-height: 70px; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: 6px; resize: vertical; background: var(--surface); color: var(--ink); font-size: .8125rem; }
 .selection-actions { display: flex; justify-content: space-between; gap: 8px; }

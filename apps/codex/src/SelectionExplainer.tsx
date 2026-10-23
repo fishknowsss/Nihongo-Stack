@@ -1,9 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { BookmarkSimple, FloppyDisk, X } from '@phosphor-icons/react'
 import { db, setPreference } from './db'
-import { lookupJapanese, type LexiconEntry } from './language'
+import { kanaToRomaji, lookupJapanese, type LexiconEntry } from './language'
 
 type SelectionState = { text: string; entry?: LexiconEntry; top: number; left: number }
+
+function kanaReading(text: string): string | undefined {
+  return /^[\u3040-\u30ffー\s、。！？・]+$/u.test(text) ? text : undefined
+}
 
 export default function SelectionExplainer({ onNotify }: { onNotify: (message: string, kind?: 'success' | 'error') => void }) {
   const [selection, setSelection] = useState<SelectionState | null>(null)
@@ -55,6 +59,8 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
 
   if (!selection) return null
   const currentSelection = selection
+  const reading = currentSelection.entry?.reading ?? kanaReading(currentSelection.text)
+  const romaji = reading ? kanaToRomaji(reading) : undefined
   async function save() {
     try {
       await setPreference(`annotationNote:${currentSelection.text}`, note.trim())
@@ -74,7 +80,9 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
         </div>
         <button className="icon-button" aria-label="关闭解释" onClick={() => { lastText.current = ''; window.getSelection()?.removeAllRanges(); setSelection(null) }}><X size={17} /></button>
       </div>
-      <div className="selection-reading" lang="ja">{selection.entry?.reading ?? '暂未收录读音'}</div>
+      <div className="selection-reading" lang="ja">{reading ?? '暂未收录读音'}</div>
+      {romaji && <div className="selection-romaji">{romaji}</div>}
+      {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : '词汇'}</span>}
       <p className="selection-gloss">{selection.entry?.gloss ?? '可先把这段加入笔记，稍后补充词义。'}</p>
       {selection.entry?.explanation && <p className="field-hint">{selection.entry.explanation}</p>}
       <textarea value={note} onChange={(event) => { setNote(event.target.value); setSaved(false) }} placeholder="写下你的理解、例句或易错点…" aria-label="选中内容笔记" />

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
-import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
+import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
@@ -213,7 +213,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <h2>从基础开始，逐层读懂</h2>
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
-        <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · {completeImportedCount} 套完整真题</span>
+        <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · <strong>{completeImportedCount}</strong> / {jlptFullExamSlotCount} 场完整真题已导入</span>
         <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <button className="text-button compact" onClick={() => downloadCompleteImportTemplate(downloadText)}>完整题库模板</button>
@@ -232,7 +232,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </select>
         </label>
       </section>
-      <p className="jlpt-blueprint"><strong>{level} 完整卷结构：</strong>{jlptExamBlueprint[level].sections.join(' · ')}；建议考试计时 {jlptExamBlueprint[level].minutes.join(' + ')} 分钟。导入题库时应覆盖对应科目。</p>
+      <p className="jlpt-blueprint"><strong>{level} 完整卷结构：</strong>{jlptExamBlueprint[level].sections.join(' · ')}；建议考试计时 {jlptExamBlueprint[level].minutes.join(' + ')} 分钟。近七年实际场次按年份为 {jlptYears.map((item) => `${item}（${jlptExamSessionsByYear[item].join('、')}）`).join('、')}；导入题库时应覆盖对应科目。</p>
       <section className="jlpt-level-guide" aria-label={`${level} 分级学习指南`}>
         <div><span className="jlpt-guide-kicker">{level} 学习指南</span><h2>{jlptLevelGuides[level].title}</h2><p><strong>日语重点：</strong>{jlptLevelGuides[level].japaneseFocus}</p><p><strong>中文策略：</strong>{jlptLevelGuides[level].chineseStrategy}</p></div>
         <ol>{jlptLevelGuides[level].steps.map((step) => <li key={step}>{step}</li>)}</ol>

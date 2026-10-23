@@ -436,7 +436,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-intro-icon { display: grid; place-items: center; width: 42px; height: 42px; flex-shrink: 0; border-radius: 8px; color: var(--accent); background: var(--accent-soft); }
 .jlpt-intro-panel h2 { font-size: 1rem; }
 .jlpt-intro-panel p { margin-top: 3px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
-.jlpt-progress-label { margin-left: auto; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
+.jlpt-progress-label { margin-left: auto; color: var(--muted); font-size: .8125rem; line-height: 1.5; }
 .jlpt-progress-label strong { color: var(--ink); font-size: 1.25rem; }
 .jlpt-intro-panel .compact { margin-left: auto; white-space: nowrap; }
 .jlpt-controls { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }

@@ -43,6 +43,18 @@ export type JLPTSet = {
 export const jlptYears = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 export const jlptLevels: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2']
 
+// 2020 had only the December administration because the July test was cancelled.
+export const jlptExamSessionsByYear: Record<number, string[]> = {
+  2019: ['07', '12'],
+  2020: ['12'],
+  2021: ['07', '12'],
+  2022: ['07', '12'],
+  2023: ['07', '12'],
+  2024: ['07', '12'],
+  2025: ['07', '12'],
+}
+export const jlptFullExamSlotCount = Object.values(jlptExamSessionsByYear).reduce((total, sessions) => total + sessions.length * jlptLevels.length, 0)
+
 export const jlptExamBlueprint: Record<JLPTLevel, { sections: string[]; minutes: number[] }> = {
   N5: { sections: ['文字・語彙', '文法・読解', '聴解'], minutes: [20, 40, 30] },
   N4: { sections: ['文字・語彙', '文法・読解', '聴解'], minutes: [25, 55, 35] },

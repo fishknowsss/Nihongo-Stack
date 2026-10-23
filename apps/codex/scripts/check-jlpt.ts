@@ -1,9 +1,11 @@
 import assert from 'node:assert/strict'
-import { jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
+import { jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
 import { importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
+assert.deepEqual(jlptExamSessionsByYear[2020], ['12'])
+assert.equal(jlptFullExamSlotCount, 52)
 assert.ok(jlptResourceRoutes.length >= 6)
 assert.equal(new Set(jlptResourceRoutes.map((route) => route.url)).size, jlptResourceRoutes.length)
 assert.ok(jlptResourceRoutes.every((route) => route.japaneseGoal.length > 0 && route.chineseMethod.length > 0 && route.url.startsWith('https://')))

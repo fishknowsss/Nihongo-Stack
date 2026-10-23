@@ -8,7 +8,7 @@ for (const level of jlptLevels) {
   const sets = jlptSets.filter((set) => set.level === level)
   assert.equal(sets.length, jlptYears.length)
   assert.ok(jlptQuestions.some((question) => question.level === level))
-  assert.equal(jlptOfficialPracticeLinks[level].length, 3)
+  assert.equal(jlptOfficialPracticeLinks[level].length, 6)
 }
 for (const question of jlptQuestions) {
   assert.ok(question.prompt.length > 0)

@@ -183,6 +183,61 @@ export const jlptSources = [
   { label: 'Bunko Commons · 开放日语材料', url: 'https://bunkocommons.org/', note: '按每份材料页面的 Creative Commons 许可使用。' },
 ]
 
+export type JLPTResourceRoute = {
+  label: string
+  url: string
+  level: string
+  japaneseGoal: string
+  chineseMethod: string
+}
+
+// Public entry points are linked in place. The app explains how to use each
+// source without copying material whose license belongs to the publisher.
+export const jlptResourceRoutes: JLPTResourceRoute[] = [
+  {
+    label: 'Irodori：Japanese for Life in Japan',
+    url: 'https://www.irodori.jpf.go.jp/en/',
+    level: '基础生活输入 · N5–N3 起步',
+    japaneseGoal: '生活の場面で「できること」を増やす。',
+    chineseMethod: '先完成每课 Can-do，再听音频跟读；它适合建立场景和句型，不直接替代 JLPT 题型训练。',
+  },
+  {
+    label: 'Erin’s Challenge! I Can Speak Japanese',
+    url: 'https://www.erin.jpf.go.jp/en/',
+    level: '场景会话 · N5–N3',
+    japaneseGoal: '場面を見て、聞いて、まねて使う。',
+    chineseMethod: '先看情境猜意思，再打开语法说明；把例句改成自己的学校、工作或生活场景。',
+  },
+  {
+    label: 'Tadoku 分级阅读',
+    url: 'https://tadoku.org/japanese/en/graded-readers-en/',
+    level: '大量阅读 · N5–N2',
+    japaneseGoal: '辞書を引きすぎず、やさしい本をたくさん読む。',
+    chineseMethod: '先选能读懂约八成的级别，只查影响主旨的词；读完用中文说出人物、行动和结果。',
+  },
+  {
+    label: 'JLPT 官方样题与练习册',
+    url: 'https://samplequestions.jlpt.jp/e/samples/sampleindex.html',
+    level: '题型与计时 · N5–N2',
+    japaneseGoal: '問題形式と時間配分に慣れる。',
+    chineseMethod: '先按真实时长完成，再按词汇、语法、阅读、听力分别复盘；不要把原始对错直接换算成正式成绩。',
+  },
+  {
+    label: 'Marugoto：Japanese Language and Culture',
+    url: 'https://marugoto.jpf.go.jp/en/',
+    level: '语言与文化 · N4–N2 延伸',
+    japaneseGoal: 'ことばと文化を一緒に学び、伝え合う。',
+    chineseMethod: '遇到表达差异时，先记录说话目的和关系，再理解为什么不能只按中文直译。',
+  },
+  {
+    label: 'Tatoeba 可署名例句库',
+    url: 'https://tatoeba.org/en/downloads',
+    level: '例句复现 · N5–N2',
+    japaneseGoal: '短い例文を声に出して、使い方を確かめる。',
+    chineseMethod: '用它核对词语搭配和助词；逐条查看许可，收藏时保留来源，不把孤立例句当成语法定论。',
+  },
+]
+
 export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string; url: string }>> = {
   N5: [
     { label: '2018 官方练习册 · 词汇', url: 'https://www.jlpt.jp/samples/sample2018/pdf/N5V.pdf' },

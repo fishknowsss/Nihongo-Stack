@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
-import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
+import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
@@ -254,6 +254,16 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </div>
         </section>
       )}
+      <section className="jlpt-resource-route" aria-labelledby="jlpt-resource-route-title">
+        <div className="section-heading"><div><h2 id="jlpt-resource-route-title">公开资料学习路线</h2><p className="field-hint">先用真实场景建立理解，再回到当前等级做题。</p></div><span className="field-hint">当前 {level}</span></div>
+        <ol className="jlpt-resource-list">
+          {jlptResourceRoutes.map((resource, index) => <li key={resource.url}>
+            <div className="jlpt-resource-meta"><span>{index + 1}</span><a href={resource.url} target="_blank" rel="noreferrer">{resource.label} <ArrowRight size={14} /></a><small>{resource.level}</small></div>
+            <p className="jlpt-resource-goal" lang="ja">{resource.japaneseGoal}</p>
+            <p>{resource.chineseMethod}</p>
+          </li>)}
+        </ol>
+      </section>
       <div className="jlpt-workbench">
         <article className="jlpt-practice-panel">
           <div className="section-heading">

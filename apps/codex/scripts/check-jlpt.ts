@@ -1,9 +1,12 @@
 import assert from 'node:assert/strict'
-import { jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptYears } from '../src/jlpt'
+import { jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
 import { importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
+assert.ok(jlptResourceRoutes.length >= 6)
+assert.equal(new Set(jlptResourceRoutes.map((route) => route.url)).size, jlptResourceRoutes.length)
+assert.ok(jlptResourceRoutes.every((route) => route.japaneseGoal.length > 0 && route.chineseMethod.length > 0 && route.url.startsWith('https://')))
 for (const level of jlptLevels) {
   const sets = jlptSets.filter((set) => set.level === level)
   assert.equal(sets.length, jlptYears.length)

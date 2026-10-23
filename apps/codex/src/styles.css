@@ -466,6 +466,15 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-imported-actions > a { color: var(--accent); font-size: .75rem; }
 .jlpt-remove-button { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 32px; padding: 4px 8px; border: 0; background: transparent; color: var(--muted); font-size: .75rem; }
 .jlpt-remove-button:hover { color: var(--error); background: var(--error-soft); }
+.jlpt-resource-route { display: grid; gap: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--panel); }
+.jlpt-resource-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 24px; margin: 0; padding: 0; list-style: none; }
+.jlpt-resource-list li { display: grid; gap: 5px; min-width: 0; padding: 13px 0; border-top: 1px solid var(--line); }
+.jlpt-resource-meta { display: grid; grid-template-columns: 24px minmax(0, 1fr); gap: 4px 8px; align-items: center; }
+.jlpt-resource-meta > span { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; color: var(--accent); background: var(--accent-soft); font-size: .72rem; font-variant-numeric: tabular-nums; }
+.jlpt-resource-meta > a { display: inline-flex; align-items: center; gap: 4px; min-width: 0; color: var(--accent); font-size: .875rem; font-weight: 600; }
+.jlpt-resource-meta > small { grid-column: 2; color: var(--muted); font-size: .72rem; }
+.jlpt-resource-list p { margin: 0 0 0 32px; color: var(--muted); font-size: .8rem; line-height: 1.7; }
+.jlpt-resource-list .jlpt-resource-goal { color: var(--ink); font-family: var(--jp-font); font-size: .9rem; }
 .jlpt-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
 .jlpt-practice-panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .jlpt-section-count { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
@@ -685,6 +694,8 @@ audio { display: block; width: 100%; min-height: 44px; }
   .jlpt-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .jlpt-level-guide { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .jlpt-imported-grid { grid-template-columns: minmax(0, 1fr); }
+  .jlpt-resource-route { padding: 14px 16px; }
+  .jlpt-resource-list { grid-template-columns: minmax(0, 1fr); }
   .jlpt-workbench { grid-template-columns: minmax(0, 1fr); }
   .jlpt-practice-panel { padding: 16px; }
   .jlpt-exam-timer { grid-template-columns: 1fr auto; }

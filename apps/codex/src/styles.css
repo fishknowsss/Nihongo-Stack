@@ -483,10 +483,10 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-question legend > span { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; border-radius: 50%; color: var(--accent); background: var(--accent-soft); font-size: .75rem; }
 .jlpt-question legend > b { margin-right: 8px; color: var(--muted); font-size: .75rem; font-weight: 500; }
 .jlpt-question legend > em { margin-right: 8px; color: var(--muted); font-size: .75rem; font-style: normal; }
-.jlpt-question-support { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-top: 10px; padding: 8px 10px; border: 1px solid var(--line); border-left-color: var(--accent); background: var(--accent-soft); color: var(--muted); font-size: .8125rem; }
+.jlpt-question-support { display: grid; justify-items: start; gap: 2px; margin-top: 10px; padding: 8px 10px; border: 1px solid var(--line); border-left-color: var(--accent); background: var(--accent-soft); color: var(--muted); font-size: .8125rem; }
 .jlpt-question-support > span { color: var(--accent); font-family: var(--jp-font); }
-.jlpt-question-support > small { color: var(--muted); font-size: .75rem; }
-.jlpt-question-support > strong { width: 100%; color: var(--ink); font-weight: 500; }
+.jlpt-question-support > small { color: var(--accent); font-size: .75rem; letter-spacing: .02em; }
+.jlpt-question-support > strong { color: var(--ink); font-weight: 500; }
 .jlpt-question-audio { display: block; width: 100%; min-height: 42px; margin-top: 12px; }
 .jlpt-options { display: grid; gap: 6px; margin-top: 12px; }
 .jlpt-options label { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: .875rem; cursor: pointer; }

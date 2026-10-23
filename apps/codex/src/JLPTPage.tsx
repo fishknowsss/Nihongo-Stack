@@ -333,7 +333,7 @@ function JLPTQuestionRow({ question, index, value, submitted, mode, support, onC
   return (
     <fieldset id={`jlpt-question-${question.id}`} className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
       <legend><span>{index + 1}</span><b>{question.section}</b>{question.questionNumber !== undefined && <em>原题第 {question.questionNumber} 题</em>}{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
-      {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support"><span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
+      {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support">{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}<span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       {!question.audioUrl && question.audioText && <button className="outline-button compact jlpt-speech-button" onClick={() => speakJapanese(question.audioText as string)}><SpeakerHigh size={16} /> 播放合成日语朗读</button>}
       <div className="jlpt-options">

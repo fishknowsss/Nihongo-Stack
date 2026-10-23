@@ -40,6 +40,9 @@ assert.equal(complete.questions.length, 67)
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 21, '文法': 15, '読解': 7, '聴解': 24 })
 assert.equal(complete.questions.every((question) => Number.isInteger(question.questionNumber)), true)
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
+const missingTeaching = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
+missingTeaching.questions = (missingTeaching.questions as Array<Record<string, unknown>>).map((question, index) => index === 0 ? { ...question, reading: '' } : question)
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(missingTeaching)), /平假名读音和中文释义/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteTemplate), /模板占位符/)
 const unfinishedQuestions = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 unfinishedQuestions.questions = (unfinishedQuestions.questions as Array<Record<string, unknown>>).map((question) => ({ ...question, prompt: '填写日文题干' }))

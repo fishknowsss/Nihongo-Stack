@@ -100,6 +100,8 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     if ([record.id, record.title, record.sourceName, record.license, record.sourceUrl].some((value) => typeof value === 'string' && (value.includes('replace-with-') || value.includes('填写') || value.includes('example.com')))) throw new Error('完整题库仍包含模板占位符，请先填写真实来源和题目')
     const questionPlaceholders = ['填写日文题干', '填写平假名读音', '填写中文释义', '填写逐题中文解析', '选项 A', '选项 B', '选项 C', '选项 D']
     if (questions.some((question) => questionPlaceholders.some((placeholder) => JSON.stringify(question).includes(placeholder)))) throw new Error('完整题库仍包含题目占位符，请先填写真实题目')
+    if (questions.some((question) => !question.reading?.trim() || !question.gloss?.trim())) throw new Error('完整题库每道题都必须提供平假名读音和中文释义')
+    if (questions.some((question) => question.explanation === '导入资料未提供解析，请结合原始答案和教材复盘。' || question.studySteps.length < 2)) throw new Error('完整题库每道题都必须提供逐题中文解析和至少两步学习步骤')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
     if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
     const minimum = minimumCompleteQuestionCount(level, numericYear, record.session.trim())
@@ -231,6 +233,8 @@ export const importedJLPTCompleteExample = JSON.stringify({
     prompt: `fixture ${id}`,
     options: ['A', 'B'],
     answer: 0,
+    reading: `fixture ${id} reading`,
+    gloss: 'fixture gloss',
     explanation: 'fixture explanation',
     studySteps: ['fixture step one', 'fixture step two'],
     ...(section === '聴解' ? { audioUrl: 'https://fixture.invalid/audio.mp3' } : {}),

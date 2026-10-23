@@ -14,6 +14,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [questionFilter, setQuestionFilter] = useState<JLPTSection | 'all'>('all')
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
+  const [importing, setImporting] = useState(false)
   const preferences = useLiveQuery(() => db.preferences.toArray(), []) ?? []
   const completed = useMemo(() => new Set(preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).map((row) => row.key.slice('jlptCompleted:'.length))), [preferences])
   const importedPacks = useMemo(() => preferences.flatMap((row) => {
@@ -54,6 +55,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   }
   async function importPack(file?: File) {
     if (!file) return
+    setImporting(true)
     try {
       const pack = parseImportedJLPTPack(await file.text())
       await setPreference(`jlptImportedPack:${pack.id}`, JSON.stringify(pack))
@@ -66,6 +68,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
       onNotify(`已导入 ${pack.title}，共 ${pack.questions.length} 题。`)
     } catch (error) {
       onNotify(error instanceof Error ? error.message : '题库导入失败，请检查 JSON。', 'error')
+    } finally {
+      setImporting(false)
     }
   }
   async function removePack(packId: string) {
@@ -107,7 +111,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
         <span className="jlpt-progress-label"><strong>{completed.size}</strong> / 28 包已练</span>
-        <button className="outline-button compact" onClick={() => fileRef.current?.click()}>导入完整真题</button>
+        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={(event) => { void importPack(event.target.files?.[0]); event.currentTarget.value = '' }} />
       </section>

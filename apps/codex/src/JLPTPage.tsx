@@ -173,6 +173,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     onNotify('练习结果已显示；请按题目下的步骤回看。')
   }
   const score = visibleQuestions.filter((question) => answers[question.id] === question.answer).length
+  const sectionScores = useMemo(() => [...new Set(questions.map((question) => question.section))].map((section) => {
+    const sectionQuestions = questions.filter((question) => question.section === section)
+    return { section, correct: sectionQuestions.filter((question) => answers[question.id] === question.answer).length, total: sectionQuestions.length }
+  }), [answers, questions])
   return (
     <div className="page-stack jlpt-page">
       <header className="page-intro">
@@ -251,6 +255,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
             <div className="jlpt-result" role="status">
               <CheckCircle size={20} />
               本组答对 {score} / {visibleQuestions.length}。建议把错题下的“学习步骤”读一遍，再切换辅助层重做。
+              {activeSet.complete && questionFilter === 'all' && <div className="jlpt-result-sections" aria-label="完整试卷分科得分">{sectionScores.map((item) => <span key={item.section}>{item.section} {item.correct} / {item.total}</span>)}</div>}
               <button className="outline-button" onClick={() => { setAnswers({}); setSubmitted(false) }}>重新作答</button>
             </div>
           ) : (

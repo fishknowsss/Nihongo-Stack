@@ -505,6 +505,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-format-details code { padding: 1px 4px; border-radius: 3px; background: var(--hover); color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
 .jlpt-submit { margin-top: 18px; }
 .jlpt-result { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--green); font-size: .875rem; }
+.jlpt-result-sections { display: flex; flex-wrap: wrap; gap: 5px 12px; width: 100%; color: var(--muted); font-size: .75rem; }
 .jlpt-result .outline-button { margin-left: auto; }
 .jlpt-side-note { display: grid; gap: 12px; padding: 18px; border: 1px solid var(--line); background: var(--panel); border-radius: var(--glass-radius); }
 .jlpt-side-note h2 { display: flex; align-items: center; gap: 8px; font-size: 1rem; }

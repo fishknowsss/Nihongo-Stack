@@ -9,6 +9,7 @@ export type ImportedJLPTPack = {
   title: string
   sourceName: string
   license: string
+  complete?: boolean
   questions: JLPTQuestion[]
 }
 
@@ -56,6 +57,12 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     }
   })
   if (new Set(questions.map((question) => question.id)).size !== questions.length) throw new Error('题目 id 不能重复')
+  const complete = record.complete === true
+  if (complete) {
+    for (const section of ['文字・語彙', '文法', '読解', '聴解'] as const) {
+      if (!questions.some((question) => question.section === section)) throw new Error(`完整题库缺少 ${section} 科目`)
+    }
+  }
   return {
     schemaVersion: 1,
     id: text(record.id, 'id'),
@@ -65,6 +72,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     title: text(record.title, 'title'),
     sourceName: text(record.sourceName, 'sourceName'),
     license: text(record.license, 'license'),
+    complete,
     questions,
   }
 }
@@ -75,9 +83,10 @@ export const importedJLPTExample = `{
   "year": 2025,
   "session": "07",
   "level": "N5",
-  "title": "2025 年 7 月 N5 完整真题",
+  "title": "2025 年 7 月 N5 导入模板",
   "sourceName": "填写授权来源",
   "license": "填写个人使用或再分发许可",
+  "complete": false,
   "questions": [
     {
       "id": "vocab-001",
@@ -92,3 +101,7 @@ export const importedJLPTExample = `{
     }
   ]
 }`
+
+export function downloadImportTemplate(download: (text: string, name: string) => void): void {
+  download(importedJLPTExample, 'nihongo-stack-jlpt-import-template.json')
+}

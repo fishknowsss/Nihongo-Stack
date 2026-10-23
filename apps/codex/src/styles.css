@@ -431,6 +431,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-level:hover, .jlpt-level.active { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
 .jlpt-controls label { display: grid; gap: 4px; color: var(--muted); font-size: .75rem; }
 .jlpt-controls select { min-width: 116px; }
+.jlpt-blueprint { color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.jlpt-blueprint strong { color: var(--ink); }
 .jlpt-year-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .jlpt-set { display: grid; gap: 4px; min-height: 88px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); text-align: left; }
 .jlpt-set:hover, .jlpt-set.active { border-color: var(--accent); background: var(--accent-soft); }

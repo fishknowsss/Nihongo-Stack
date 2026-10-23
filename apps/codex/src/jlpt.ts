@@ -23,11 +23,19 @@ export type JLPTSet = {
   status: 'practice' | 'official-sample' | 'licensed-import'
   questionIds: string[]
   note: string
+  complete?: boolean
 }
 
 // 近七年先建立稳定的学习索引。官方历年试卷不作为可再分发原文打包，页面提供公开官方入口；题目为按官方题型原创的逐步教学练习。
 export const jlptYears = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 export const jlptLevels: JLPTLevel[] = ['N5', 'N4', 'N3', 'N2']
+
+export const jlptExamBlueprint: Record<JLPTLevel, { sections: string[]; minutes: number[] }> = {
+  N5: { sections: ['文字・語彙', '文法・読解', '聴解'], minutes: [20, 40, 30] },
+  N4: { sections: ['文字・語彙', '文法・読解', '聴解'], minutes: [25, 55, 35] },
+  N3: { sections: ['文字・語彙', '文法・読解', '聴解'], minutes: [30, 70, 40] },
+  N2: { sections: ['言語知識・読解', '聴解'], minutes: [105, 50] },
+}
 
 export const jlptQuestions: JLPTQuestion[] = [
   {

@@ -18,6 +18,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [questionFilter, setQuestionFilter] = useState<JLPTSection | 'all'>('all')
   const [practiceMode, setPracticeMode] = useState<JLPTPracticeMode>('learn')
   const [support, setSupport] = useState<JLPTSupport>('reading')
+  const [examSecondsLeft, setExamSecondsLeft] = useState<number | null>(null)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [importing, setImporting] = useState(false)
@@ -67,6 +68,20 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     const value = preferences.find((row) => row.key === 'jlptSupport')?.value
     if (value === 'off' || value === 'reading' || value === 'full') setSupport(value)
   }, [preferences])
+  const timedExam = practiceMode === 'exam' && questionFilter === 'all' && activeSet.complete === true
+  useEffect(() => {
+    if (!timedExam || submitted) {
+      setExamSecondsLeft(null)
+      return
+    }
+    const duration = jlptExamBlueprint[activeSet.level].minutes.reduce((sum, minutes) => sum + minutes, 0) * 60
+    const startedAt = Date.now()
+    setExamSecondsLeft(duration)
+    const timer = window.setInterval(() => {
+      setExamSecondsLeft(Math.max(0, duration - Math.floor((Date.now() - startedAt) / 1000)))
+    }, 1000)
+    return () => window.clearInterval(timer)
+  }, [activeSet.complete, activeSet.id, activeSet.level, practiceMode, questionFilter, submitted])
 
   function chooseSet(nextLevel: JLPTLevel, nextYear: number) {
     setLevel(nextLevel)
@@ -223,6 +238,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>
             </div>
           </div>
+          {timedExam && examSecondsLeft !== null && <div className={`jlpt-exam-timer ${examSecondsLeft < 300 ? 'warning' : ''}`} role="timer" aria-label="完整试卷剩余时间"><span>完整试卷计时</span><strong>{formatCountdown(examSecondsLeft)}</strong><small>{examSecondsLeft === 0 ? '时间已到，请提交当前答案。' : '按官方建议时长计时；时间到后仍可提交并查看解析。'}</small></div>}
           <div className="jlpt-questions">
             {visibleQuestions.map((question, index) => (
               <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} mode={practiceMode} support={support} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
@@ -262,6 +278,12 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
       </div>
     </div>
   )
+}
+
+function formatCountdown(seconds: number): string {
+  const minutes = Math.floor(seconds / 60)
+  const remainder = seconds % 60
+  return `${minutes}:${String(remainder).padStart(2, '0')}`
 }
 
 function downloadText(text: string, name: string) {

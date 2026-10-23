@@ -4,15 +4,20 @@ import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, TrashSimple }
 import { jlptExamBlueprint, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
+import { kanaToRomaji } from './language'
 
 type Notify = (message: string, kind?: 'success' | 'error') => void
 type JLPTMistakeRecord = { id: string; answer: number; incorrectCount: number; lastSeenAt: string }
+type JLPTPracticeMode = 'learn' | 'exam'
+type JLPTSupport = 'off' | 'reading' | 'full'
 
 export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [level, setLevel] = useState<JLPTLevel>('N5')
   const [year, setYear] = useState(2025)
   const [activeSetId, setActiveSetId] = useState(`jlpt-2025-n5`)
   const [questionFilter, setQuestionFilter] = useState<JLPTSection | 'all'>('all')
+  const [practiceMode, setPracticeMode] = useState<JLPTPracticeMode>('learn')
+  const [support, setSupport] = useState<JLPTSupport>('reading')
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [submitted, setSubmitted] = useState(false)
   const [importing, setImporting] = useState(false)
@@ -58,6 +63,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     })
     return () => { cancelled = true }
   }, [draftKey])
+  useEffect(() => {
+    const value = preferences.find((row) => row.key === 'jlptSupport')?.value
+    if (value === 'off' || value === 'reading' || value === 'full') setSupport(value)
+  }, [preferences])
 
   function chooseSet(nextLevel: JLPTLevel, nextYear: number) {
     setLevel(nextLevel)
@@ -66,6 +75,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     setAnswers({})
     setSubmitted(false)
     setQuestionFilter('all')
+  }
+  function changeSupport(next: JLPTSupport) {
+    setSupport(next)
+    void setPreference('jlptSupport', next).catch(() => onNotify('JLPT 辅助层偏好未保存，本次仍可继续使用。', 'error'))
   }
   function retryQuestion(question: JLPTQuestion) {
     setQuestionFilter(question.section)
@@ -200,13 +213,15 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <p className="field-hint">{activeSet.note}</p>
             </div>
             <div className="jlpt-practice-tools">
+              <label><span className="sr-only">练习模式</span><select aria-label="练习模式" value={practiceMode} onChange={(event) => { setPracticeMode(event.target.value as JLPTPracticeMode); setSubmitted(false) }}><option value="learn">学习模式</option><option value="exam">考试模式</option></select></label>
+              <label><span className="sr-only">JLPT 辅助层</span><select aria-label="JLPT 辅助层" value={support} onChange={(event) => changeSupport(event.target.value as JLPTSupport)}><option value="off">关闭辅助</option><option value="reading">显示读音</option><option value="full">读音 + 罗马音 + 释义</option></select></label>
               <label><span className="sr-only">题型筛选</span><select aria-label="题型筛选" value={questionFilter} onChange={(event) => { setQuestionFilter(event.target.value as JLPTSection | 'all'); setSubmitted(false) }}><option value="all">整套试卷</option>{[...new Set(questions.map((question) => question.section))].map((section) => <option key={section} value={section}>{section}</option>)}</select></label>
               <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>
             </div>
           </div>
           <div className="jlpt-questions">
             {visibleQuestions.map((question, index) => (
-              <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
+              <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} mode={practiceMode} support={support} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
             ))}
           </div>
           {persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道 · 按错误次数</span></div>{persistedMistakes.map(({ question, answer, incorrectCount }) => <details key={question.id}><summary>{question.prompt}<small>错 {incorrectCount} 次 · {question.section}</small></summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p><button className="outline-button compact" onClick={() => retryQuestion(question)}>重新答这题</button></div></details>)}</section>}
@@ -256,10 +271,11 @@ function downloadText(text: string, name: string) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
 }
 
-function JLPTQuestionRow({ question, index, value, submitted, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; onChange: (value: number) => void }) {
+function JLPTQuestionRow({ question, index, value, submitted, mode, support, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; mode: JLPTPracticeMode; support: JLPTSupport; onChange: (value: number) => void }) {
   return (
     <fieldset id={`jlpt-question-${question.id}`} className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
       <legend><span>{index + 1}</span><b>{question.section}</b>{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
+      {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support"><span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       <div className="jlpt-options">
         {question.options.map((option, optionIndex) => (

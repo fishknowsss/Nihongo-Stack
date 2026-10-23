@@ -13,11 +13,13 @@ export default function LayeredJapanese({ segments, layer, className = '' }: { s
         const content: ReactNode = showFurigana && (entry?.reading || part.reading)
           ? <ruby>{part.text}<rt>{entry?.reading ?? part.reading}</rt></ruby>
           : part.text
-        if (!entry || (!showGloss && !showRomaji)) return <span key={`${part.text}-${partIndex}`}>{content}</span>
+        const hasRomaji = showRomaji && Boolean(part.reading || entry?.romaji)
+        const hasGloss = showGloss && Boolean(entry?.gloss)
+        if (!hasRomaji && !hasGloss) return <span key={`${part.text}-${partIndex}`}>{content}</span>
         return <span className="layer-token" key={`${part.text}-${partIndex}`}>
-          {showRomaji && <small className="layer-romaji">{part.reading ? kanaToRomaji(part.reading) : entry.romaji}</small>}
+          {hasRomaji && <small className="layer-romaji">{part.reading ? kanaToRomaji(part.reading) : entry?.romaji}</small>}
           {content}
-          {showGloss && entry.gloss && <small className="layer-gloss">{entry.gloss}</small>}
+          {hasGloss && <small className="layer-gloss">{entry?.gloss}</small>}
         </span>
       })}</span>
     })}

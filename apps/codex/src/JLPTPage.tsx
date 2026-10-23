@@ -24,6 +24,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [importing, setImporting] = useState(false)
   const preferences = useLiveQuery(() => db.preferences.toArray(), []) ?? []
   const completed = useMemo(() => new Set(preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).map((row) => row.key.slice('jlptCompleted:'.length))), [preferences])
+  const completedSections = useMemo(() => new Set(preferences.filter((row) => row.key.startsWith(`jlptSectionCompleted:${activeSetId}:`) && row.value === true).map((row) => row.key.slice(`jlptSectionCompleted:${activeSetId}:`.length))), [activeSetId, preferences])
   const importedPacks = useMemo(() => preferences.flatMap((row) => {
     if (!row.key.startsWith('jlptImportedPack:') || typeof row.value !== 'string') return []
     try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
@@ -236,6 +237,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <label><span className="sr-only">JLPT 辅助层</span><select aria-label="JLPT 辅助层" value={support} onChange={(event) => changeSupport(event.target.value as JLPTSupport)}><option value="off">关闭辅助</option><option value="reading">显示读音</option><option value="full">读音 + 罗马音 + 释义</option></select></label>
               <label><span className="sr-only">题型筛选</span><select aria-label="题型筛选" value={questionFilter} onChange={(event) => { setQuestionFilter(event.target.value as JLPTSection | 'all'); setSubmitted(false) }}><option value="all">整套试卷</option>{[...new Set(questions.map((question) => question.section))].map((section) => <option key={section} value={section}>{section}</option>)}</select></label>
               <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>
+              {activeSet.complete && <span className="jlpt-section-progress">已完成科目 {completedSections.size} / 4</span>}
             </div>
           </div>
           {timedExam && examSecondsLeft !== null && <div className={`jlpt-exam-timer ${examSecondsLeft < 300 ? 'warning' : ''}`} role="timer" aria-label="完整试卷剩余时间"><span>完整试卷计时</span><strong>{formatCountdown(examSecondsLeft)}</strong><small>{examSecondsLeft === 0 ? '时间已到，请提交当前答案。' : '按官方建议时长计时；时间到后仍可提交并查看解析。'}</small></div>}

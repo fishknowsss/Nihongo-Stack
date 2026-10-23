@@ -457,6 +457,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
 .jlpt-practice-panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .jlpt-section-count { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
+.jlpt-section-progress { color: var(--green); font-size: .75rem; white-space: nowrap; }
 .jlpt-practice-tools { display: flex; align-items: center; gap: 10px; }
 .jlpt-practice-tools select { min-height: 38px; font-size: .8125rem; }
 .jlpt-exam-timer { display: grid; grid-template-columns: auto auto 1fr; align-items: baseline; gap: 8px 12px; margin-top: 16px; padding: 10px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-size: .75rem; }

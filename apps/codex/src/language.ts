@@ -33,6 +33,9 @@ function katakanaToHiragana(value: string): string {
 function inferredEntry(surface: string): LexiconEntry | undefined {
   const normalized = surface.trim()
   if (!normalized) return undefined
+  if (/[\s、。！？，．,.!?]/u.test(normalized) && /[\u3040-\u30ff\u3400-\u9fff]/u.test(normalized)) {
+    return { surface: normalized, reading: '', romaji: '', gloss: '选中日文片段暂未收录；可先结合上下文并保存笔记', kind: 'phrase', explanation: '这是一个可收藏的上下文片段，本地词典暂未覆盖整段解析。' }
+  }
   if (isKatakana(normalized)) {
     const reading = katakanaToHiragana(normalized)
     return { surface: normalized, reading, romaji: kanaToRomaji(reading), gloss: '片假名词汇；请结合上下文确认具体释义', kind: 'katakana', explanation: '片假名常用于外来语、拟声词、品牌名或强调表达。' }
@@ -228,7 +231,12 @@ for (const entry of allEntries) {
 
 export function lookupJapanese(text: string): LexiconEntry | undefined {
   const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')
-  return bySurface.get(normalized) ?? allEntries.find((entry) => normalized.includes(entry.surface)) ?? inferredEntry(normalized)
+  if (bySurface.has(normalized)) return bySurface.get(normalized)
+  if (normalized.length <= 12 && !/[\s、。！？，．,.!?]/u.test(normalized)) {
+    const contained = [...allEntries].sort((a, b) => b.surface.length - a.surface.length).find((entry) => normalized.includes(entry.surface))
+    if (contained) return contained
+  }
+  return inferredEntry(normalized)
 }
 
 export function segmentText(text: string, suppliedReading?: string): Array<{ text: string; entry?: LexiconEntry; reading?: string }> {

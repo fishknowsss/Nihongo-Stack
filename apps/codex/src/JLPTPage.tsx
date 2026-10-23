@@ -78,19 +78,21 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     })
     window.setTimeout(() => document.getElementById(`jlpt-question-${question.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0)
   }
-  async function importPack(file?: File) {
-    if (!file) return
+  async function importPacks(files: File[]) {
+    if (!files.length) return
     setImporting(true)
     try {
-      const pack = parseImportedJLPTPack(await file.text())
-      await setPreference(`jlptImportedPack:${pack.id}`, JSON.stringify(pack))
+      const packs = await Promise.all(files.map(async (file) => parseImportedJLPTPack(await file.text())))
+      if (new Set(packs.map((pack) => pack.id)).size !== packs.length) throw new Error('本次选择的题库 id 不能重复')
+      await db.preferences.bulkPut(packs.map((pack) => ({ key: `jlptImportedPack:${pack.id}`, value: JSON.stringify(pack) })))
+      const pack = packs[0]
       setLevel(pack.level)
       setYear(pack.year)
       setActiveSetId(pack.id)
       setAnswers({})
       setSubmitted(false)
       setQuestionFilter('all')
-      onNotify(`已导入 ${pack.title}，共 ${pack.questions.length} 题。`)
+      onNotify(packs.length === 1 ? `已导入 ${pack.title}，共 ${pack.questions.length} 题。` : `已批量导入 ${packs.length} 套题库，首套为 ${pack.title}。`)
     } catch (error) {
       onNotify(error instanceof Error ? error.message : '题库导入失败，请检查 JSON。', 'error')
     } finally {
@@ -155,9 +157,9 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
         <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · {completeImportedCount} 套完整真题</span>
-        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON'}</button>
+        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
-        <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={(event) => { void importPack(event.target.files?.[0]); event.currentTarget.value = '' }} />
+        <input ref={fileRef} className="sr-only" type="file" multiple accept="application/json,.json" onChange={(event) => { void importPacks(Array.from(event.target.files ?? [])); event.currentTarget.value = '' }} />
       </section>
       <section className="jlpt-controls" aria-label="选择 JLPT 练习范围">
         <div className="jlpt-levels">

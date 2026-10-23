@@ -9,6 +9,7 @@ export type ImportedJLPTPack = {
   title: string
   sourceName: string
   license: string
+  sourceUrl?: string
   complete?: boolean
   /** The source-declared total. A complete pack must match the imported rows. */
   questionCount?: number
@@ -88,6 +89,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     title: text(record.title, 'title'),
     sourceName: text(record.sourceName, 'sourceName'),
     license: text(record.license, 'license'),
+    sourceUrl: typeof record.sourceUrl === 'string' && record.sourceUrl.trim() ? record.sourceUrl.trim() : undefined,
     complete,
     questionCount: typeof record.questionCount === 'number' ? record.questionCount : undefined,
     sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)
@@ -106,6 +108,7 @@ export const importedJLPTExample = `{
   "title": "2025 年 7 月 N5 导入模板",
   "sourceName": "填写授权来源",
   "license": "填写个人使用或再分发许可",
+  "sourceUrl": "https://example.com/original-source",
   "complete": false,
   "questionCount": 1,
   "sectionQuestionCounts": { "文字・語彙": 1 },
@@ -135,6 +138,7 @@ export const importedJLPTCompleteExample = JSON.stringify({
   title: '完整题库校验 fixture',
   sourceName: 'Nihongo Stack automated check',
   license: '内部测试资料，不是官方真题',
+  sourceUrl: 'https://example.com/fixture-source',
   complete: true,
   questionCount: 4,
   sectionQuestionCounts: { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 },

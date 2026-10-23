@@ -28,6 +28,7 @@ export type JLPTSet = {
   note: string
   complete?: boolean
   session?: string
+  sourceUrl?: string
   questionCount?: number
   sectionQuestionCounts?: Partial<Record<JLPTSection, number>>
 }

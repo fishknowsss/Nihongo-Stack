@@ -35,7 +35,7 @@
 
 ### 完整 JLPT 题库导入
 
-完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioUrl` 和 `sourceUrl`。
+完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 会显示在已导入题库卡片上。
 
 只有在确认整套试卷确实完整时才填写 `complete: true`，并同时提供：
 

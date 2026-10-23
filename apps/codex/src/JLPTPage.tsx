@@ -22,7 +22,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     if (!row.key.startsWith('jlptImportedPack:') || typeof row.value !== 'string') return []
     try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
   }), [preferences])
-  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, session: pack.session, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete, questionCount: pack.questionCount, sectionQuestionCounts: pack.sectionQuestionCounts })), [importedPacks])
+  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, session: pack.session, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete, sourceUrl: pack.sourceUrl, questionCount: pack.questionCount, sectionQuestionCounts: pack.sectionQuestionCounts })), [importedPacks])
   const allSets = useMemo(() => [...jlptSets.filter((set) => !importedSets.some((imported) => imported.id === set.id)), ...importedSets], [importedSets])
   const allQuestions = useMemo(() => [...jlptQuestions, ...importedPacks.flatMap((pack) => pack.questions)], [importedPacks])
   const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
@@ -186,7 +186,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
           <div className="jlpt-imported-grid">
-            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all') }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 四科已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>)}
+            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all') }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 四科已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div></div>)}
           </div>
         </section>
       )}

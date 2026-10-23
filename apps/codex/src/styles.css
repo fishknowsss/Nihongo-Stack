@@ -442,6 +442,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-imported-section { display: grid; gap: 10px; }
 .jlpt-imported-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .jlpt-imported-card { display: grid; gap: 4px; min-width: 0; }
+.jlpt-imported-actions { display: flex; align-items: center; gap: 10px; }
+.jlpt-imported-actions > a { color: var(--accent); font-size: .75rem; }
 .jlpt-remove-button { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 32px; padding: 4px 8px; border: 0; background: transparent; color: var(--muted); font-size: .75rem; }
 .jlpt-remove-button:hover { color: var(--error); background: var(--error-soft); }
 .jlpt-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }

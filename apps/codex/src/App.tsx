@@ -1806,7 +1806,7 @@ function ListeningExercise({
           <div className="transcript">
             <div className="guide-toolbar"><h3>音频文本</h3><div className="reading-tools"><StudyLayerControl value={studyLayer} onChange={changeStudyLayer} /><AnnotationControl value={annotation} onChange={setAnnotation} /></div></div>
             {annotation === 'font' && <AnnotationNote />}
-            <LayeredJapanese segments={[{ text: listening.transcript }]} layer={studyLayer} className={annotation === 'font' ? 'font-furigana' : ''} />
+            <LayeredJapanese segments={listening.transcriptSegments ?? [{ text: listening.transcript }]} layer={studyLayer} className={annotation === 'font' ? 'font-furigana' : ''} />
             <p>{listening.translation}</p>
           </div>
         )}

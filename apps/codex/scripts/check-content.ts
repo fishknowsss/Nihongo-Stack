@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
-import { readings as catalogReadings } from '../src/catalog'
+import { listeningSources as catalogListenings, readings as catalogReadings } from '../src/catalog'
 const root = resolve(import.meta.dirname, '../../..')
 const originalPath = resolve(root, 'shared/content/starter-pack.v1.json')
 const original = JSON.parse(readFileSync(originalPath, 'utf8'))
@@ -93,6 +93,12 @@ for (const pack of [original, expanded]) {
 for (const reading of catalogReadings) {
   for (const segment of reading.segments) {
     assert.ok(!/[一-龯]/u.test(segment.text) || typeof segment.reading === 'string', `runtime reading missing furigana: ${reading.id} · ${segment.text}`)
+  }
+}
+for (const listening of catalogListenings) {
+  assert.ok(listening.transcriptSegments?.length, `runtime transcript segments missing: ${listening.id}`)
+  for (const segment of listening.transcriptSegments ?? []) {
+    assert.ok(!/[一-龯]/u.test(segment.text) || typeof segment.reading === 'string', `runtime transcript reading missing: ${listening.id} · ${segment.text}`)
   }
 }
 checkQuestions(original.baselineQuestions)

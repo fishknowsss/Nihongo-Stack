@@ -102,7 +102,16 @@ export const lexicon: LexiconEntry[] = [
 
 const materialLexicon: LexiconEntry[] = readings.flatMap((reading) => reading.segments.flatMap((segment) => segment.reading ? [{ surface: segment.text.replace(/[。！？、，．,.!?]+$/u, ''), reading: segment.reading, romaji: kanaToRomaji(segment.reading), kind: 'kanji' as const }] : []))
 const allEntries = [...lexicon, ...materialLexicon]
-const bySurface = new Map(allEntries.map((entry) => [entry.surface, entry]))
+// Keep context readings from materials while retaining stable glosses and
+// explanations from the curated dictionary. A material-only entry must not
+// erase the Chinese help for a word already in the static lexicon.
+const bySurface = new Map<string, LexiconEntry>()
+for (const entry of allEntries) {
+  const current = bySurface.get(entry.surface)
+  bySurface.set(entry.surface, current
+    ? { ...current, ...entry, gloss: entry.gloss ?? current.gloss, explanation: entry.explanation ?? current.explanation }
+    : entry)
+}
 
 export function lookupJapanese(text: string): LexiconEntry | undefined {
   const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')

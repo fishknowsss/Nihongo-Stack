@@ -36,11 +36,19 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
     document.addEventListener('mouseup', readSelection)
     document.addEventListener('keyup', readSelection)
     document.addEventListener('selectionchange', readSelection)
+    function closeOutside(event: MouseEvent) {
+      const target = event.target
+      if (target instanceof Element && target.closest('.selection-explainer')) return
+      lastText.current = ''
+      setSelection(null)
+    }
+    document.addEventListener('mousedown', closeOutside)
     const poll = window.setInterval(readSelection, 350)
     return () => {
       document.removeEventListener('mouseup', readSelection)
       document.removeEventListener('keyup', readSelection)
       document.removeEventListener('selectionchange', readSelection)
+      document.removeEventListener('mousedown', closeOutside)
       window.clearInterval(poll)
     }
   }, [])

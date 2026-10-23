@@ -11,6 +11,7 @@
     "tauri:dev": "tauri dev",
     "tauri:build": "tauri build --bundles app && node scripts/stage-app.mjs",
     "test:content": "tsx scripts/check-content.ts",
+    "test:language": "tsx scripts/check-language.ts",
     "test:learning": "tsx scripts/check-learning.ts",
     "test:jlpt": "tsx scripts/check-jlpt.ts",
     "validate:jlpt": "tsx scripts/validate-jlpt-import.ts"

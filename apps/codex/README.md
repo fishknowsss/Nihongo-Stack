@@ -65,6 +65,7 @@ npm ci
 npm run test:db
 npm run test:learning
 npm run test:content
+npm run test:language
 npm run test:jlpt
 npm run build
 npm run tauri:build

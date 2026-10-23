@@ -329,6 +329,9 @@ audio { display: block; width: 100%; min-height: 44px; }
 .week-grid strong { font-size: 1.25rem; line-height: 1.5; font-weight: 600; }
 .week-grid .active-day { background: var(--accent-soft); }
 .interpret-note { color: var(--muted); font-size: .8125rem; max-width: 88ch; }
+.progress-jlpt { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
+.progress-jlpt-stats { display: flex; flex-wrap: wrap; gap: 8px 24px; color: var(--muted); font-size: .8125rem; }
+.progress-jlpt-stats strong { margin-right: 4px; color: var(--ink); font-size: 1.2rem; font-variant-numeric: tabular-nums; }
 .weekly-report { display: grid; gap: 16px; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .weekly-report > p { font-size: .9375rem; }
 .weekly-report > .field-hint { font-size: .8125rem; }

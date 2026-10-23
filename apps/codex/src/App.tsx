@@ -67,6 +67,7 @@ import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
+import { jlptSets } from './jlpt'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
 import { version as appVersion } from '../package.json'
@@ -108,6 +109,11 @@ function pref(
   fallback: Preference['value'],
 ) {
   return preferences.find((x) => x.key === key)?.value ?? fallback
+}
+function importedCompleteJLPTCount(preferences: Preference[]): number {
+  return preferences.filter((row) => row.key.startsWith('jlptImportedPack:') && typeof row.value === 'string').reduce((count, row) => {
+    try { return count + (JSON.parse(row.value as string).complete === true ? 1 : 0) } catch { return count }
+  }, 0)
 }
 function useClock() {
   const [now, setNow] = useState(Date.now())
@@ -2169,6 +2175,11 @@ function ProgressPage({
       events.some((x) => localDate(new Date(x.reviewedAt)) === d.date) ||
       attempts.some((x) => localDate(new Date(x.completedAt)) === d.date),
   ).length
+  const jlptCompletedCount = preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).length
+  const jlptImportedCompleteCount = importedCompleteJLPTCount(preferences)
+  const jlptMistakeCount = preferences.filter((row) => row.key.startsWith('jlptMistakes:') && typeof row.value === 'string').reduce((count, row) => {
+    try { return count + (Array.isArray(JSON.parse(row.value as string)) ? JSON.parse(row.value as string).length : 0) } catch { return count }
+  }, 0)
   return (
     <div className="page-stack">
       <PageIntro
@@ -2237,6 +2248,10 @@ function ProgressPage({
         次；合成语音、已做过的材料及辅助练习另存记录。累计复习反馈{' '}
         {events.length} 次。
       </p>
+      <section className="progress-jlpt" aria-labelledby="progress-jlpt-title">
+        <div className="section-heading"><div><h2 id="progress-jlpt-title">JLPT 学习进度</h2><p className="field-hint">原创教学包与本机授权题库分开统计。</p></div><span className="field-hint">{jlptSets.length} 个年份/等级索引</span></div>
+        <div className="progress-jlpt-stats"><span><strong>{jlptCompletedCount}</strong> / {jlptSets.length} 教学包已练</span><span><strong>{jlptImportedCompleteCount}</strong> 套完整题库</span><span><strong>{jlptMistakeCount}</strong> 道错题待复盘</span></div>
+      </section>
       <WeeklyReport {...{ preferences, attempts, events, now }} />
       <SelectionNotes preferences={preferences} onNotify={onNotify} />
       <MistakeReview attempts={attempts} openMaterial={openMaterial} />

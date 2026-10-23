@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks } from '@phosphor-icons/react'
+import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
@@ -20,7 +20,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
   }), [preferences])
   const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete })), [importedPacks])
-  const allSets = useMemo(() => [...jlptSets, ...importedSets], [importedSets])
+  const allSets = useMemo(() => [...jlptSets.filter((set) => !importedSets.some((imported) => imported.id === set.id)), ...importedSets], [importedSets])
   const allQuestions = useMemo(() => [...jlptQuestions, ...importedPacks.flatMap((pack) => pack.questions)], [importedPacks])
   const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
   const questions = useMemo(() => activeSet.questionIds.map((id) => allQuestions.find((question) => question.id === id)).filter(Boolean) as JLPTQuestion[], [activeSet, allQuestions])
@@ -63,6 +63,15 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     } catch (error) {
       onNotify(error instanceof Error ? error.message : '题库导入失败，请检查 JSON。', 'error')
     }
+  }
+  async function removePack(packId: string) {
+    await db.preferences.delete(`jlptImportedPack:${packId}`)
+    if (activeSetId === packId) {
+      setActiveSetId(`jlpt-${year}-${level.toLowerCase()}`)
+      setAnswers({})
+      setSubmitted(false)
+    }
+    onNotify('已移除本机导入题库。')
   }
   function submit() {
     if (questions.some((question) => answers[question.id] === undefined)) {
@@ -123,7 +132,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
           <div className="jlpt-imported-grid">
-            {importedSets.map((set) => <button key={set.id} className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false) }}><span>{set.year} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? '完整真题' : '导入题库'} · {set.questionIds.length} 题</small></button>)}
+            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false) }}><span>{set.year} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? '完整真题' : '导入题库'} · {set.questionIds.length} 题</small></button><button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>)}
           </div>
         </section>
       )}

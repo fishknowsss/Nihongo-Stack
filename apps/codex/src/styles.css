@@ -466,6 +466,10 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-explanation > p:first-child { color: var(--accent); }
 .jlpt-explanation ol { margin: 0; padding-left: 20px; }
 .jlpt-question-source { font-size: .8125rem; }
+.jlpt-mistakes { display: grid; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+.jlpt-mistakes details { border-bottom: 1px solid var(--line); }
+.jlpt-mistakes summary { padding: 10px 0; cursor: pointer; font-size: .875rem; }
+.jlpt-mistakes details > div { display: grid; gap: 6px; padding: 4px 12px 14px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
 .jlpt-submit { margin-top: 18px; }
 .jlpt-result { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--green); font-size: .875rem; }
 .jlpt-result .outline-button { margin-left: auto; }

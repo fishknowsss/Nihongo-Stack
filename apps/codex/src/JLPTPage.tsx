@@ -27,6 +27,17 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
   const questions = useMemo(() => activeSet.questionIds.map((id) => allQuestions.find((question) => question.id === id)).filter(Boolean) as JLPTQuestion[], [activeSet, allQuestions])
   const visibleQuestions = useMemo(() => questionFilter === 'all' ? questions : questions.filter((question) => question.section === questionFilter), [questionFilter, questions])
+  const persistedMistakes = useMemo(() => {
+    const row = preferences.find((item) => item.key === `jlptMistakes:${activeSet.id}`)
+    if (typeof row?.value !== 'string') return [] as Array<{ question: JLPTQuestion; answer: number }>
+    try {
+      const values = JSON.parse(row.value) as Array<{ id: string; answer: number }>
+      return values.flatMap((value) => {
+        const question = allQuestions.find((item) => item.id === value.id)
+        return question ? [{ question, answer: value.answer }] : []
+      })
+    } catch { return [] as Array<{ question: JLPTQuestion; answer: number }> }
+  }, [activeSet.id, allQuestions, preferences])
   const draftKey = `jlptDraft:${activeSet.id}`
   const fileRef = useRef<HTMLInputElement>(null)
 
@@ -89,11 +100,13 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     }
     setSubmitted(true)
     const attemptKey = questionFilter === 'all' ? activeSet.id : `${activeSet.id}:${questionFilter}`
+    const mistakes = visibleQuestions.filter((question) => answers[question.id] !== question.answer).map((question) => ({ id: question.id, answer: answers[question.id] }))
     void Promise.all([
       questionFilter === 'all' ? setPreference(`jlptCompleted:${activeSet.id}`, true) : setPreference(`jlptSectionCompleted:${attemptKey}`, true),
       setPreference(`jlptScore:${attemptKey}`, score),
       setPreference(`jlptLastAttempt:${attemptKey}`, new Date().toISOString()),
       setPreference(draftKey, JSON.stringify(answers)),
+      setPreference(`jlptMistakes:${activeSet.id}`, JSON.stringify(mistakes)),
     ]).catch(() => onNotify('JLPT 练习结果未写入本机，请重试。', 'error'))
     onNotify('练习结果已显示；请按题目下的步骤回看。')
   }
@@ -163,6 +176,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
             ))}
           </div>
+          {persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道</span></div>{persistedMistakes.map(({ question, answer }) => <details key={question.id}><summary>{question.prompt}</summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p></div></details>)}</section>}
           {submitted ? (
             <div className="jlpt-result" role="status">
               <CheckCircle size={20} />

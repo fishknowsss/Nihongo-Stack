@@ -139,6 +139,33 @@ export const importedJLPTExample = `{
   ]
 }`
 
+export const importedJLPTCompleteTemplate = JSON.stringify({
+  schemaVersion: 1,
+  id: 'replace-with-year-session-level',
+  year: 2025,
+  session: '07',
+  level: 'N5',
+  title: '填写年份与场次 · N5 完整题库',
+  sourceName: '填写授权来源',
+  license: '填写个人使用或再分发许可',
+  sourceUrl: 'https://example.com/original-source',
+  complete: true,
+  questionCount: 16,
+  sectionQuestionCounts: { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 },
+  questions: ['文字・語彙', '文法', '読解', '聴解'].flatMap((section) => Array.from({ length: 4 }, (_, index) => ({
+    id: `${section}-${String(index + 1).padStart(3, '0')}`,
+    section,
+    prompt: '填写日文题干',
+    options: ['选项 A', '选项 B', '选项 C', '选项 D'],
+    answer: 0,
+    reading: '填写平假名读音',
+    gloss: '填写中文释义',
+    explanation: '填写逐题中文解析',
+    studySteps: ['先看句子结构', '再核对词义与选项'],
+    ...(section === '聴解' ? { audioUrl: 'https://example.com/replace-with-audio.mp3' } : {}),
+  }))),
+}, null, 2)
+
 // A tiny fixture used by the importer checks. It proves the complete-pack
 // contract without shipping any copyrighted examination material.
 export const importedJLPTCompleteExample = JSON.stringify({
@@ -170,4 +197,8 @@ export const importedJLPTCompleteExample = JSON.stringify({
 
 export function downloadImportTemplate(download: (text: string, name: string) => void): void {
   download(importedJLPTExample, 'nihongo-stack-jlpt-import-template.json')
+}
+
+export function downloadCompleteImportTemplate(download: (text: string, name: string) => void): void {
+  download(importedJLPTCompleteTemplate, 'nihongo-stack-jlpt-complete-template.json')
 }

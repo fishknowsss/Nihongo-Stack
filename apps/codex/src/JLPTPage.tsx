@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
-import { downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
+import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
 
 type Notify = (message: string, kind?: 'success' | 'error') => void
@@ -202,6 +202,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · {completeImportedCount} 套完整真题</span>
         <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
+        <button className="text-button compact" onClick={() => downloadCompleteImportTemplate(downloadText)}>完整题库模板</button>
         <input ref={fileRef} className="sr-only" type="file" multiple accept="application/json,.json" onChange={(event) => { void importPacks(Array.from(event.target.files ?? [])); event.currentTarget.value = '' }} />
       </section>
       <section className="jlpt-controls" aria-label="选择 JLPT 练习范围">

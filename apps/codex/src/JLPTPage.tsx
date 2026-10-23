@@ -68,6 +68,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   useEffect(() => {
     const value = preferences.find((row) => row.key === 'jlptSupport')?.value
     if (value === 'off' || value === 'reading' || value === 'full') setSupport(value)
+    const mode = preferences.find((row) => row.key === 'jlptPracticeMode')?.value
+    if (mode === 'learn' || mode === 'exam') setPracticeMode(mode)
   }, [preferences])
   const timedExam = practiceMode === 'exam' && questionFilter === 'all' && activeSet.complete === true
   useEffect(() => {
@@ -248,7 +250,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <p className="field-hint">{activeSet.note}</p>
             </div>
             <div className="jlpt-practice-tools">
-              <label><span className="sr-only">练习模式</span><select aria-label="练习模式" value={practiceMode} onChange={(event) => { setPracticeMode(event.target.value as JLPTPracticeMode); setSubmitted(false) }}><option value="learn">学习模式</option><option value="exam">考试模式</option></select></label>
+              <label><span className="sr-only">练习模式</span><select aria-label="练习模式" value={practiceMode} onChange={(event) => { const next = event.target.value as JLPTPracticeMode; setPracticeMode(next); void setPreference('jlptPracticeMode', next).catch(() => onNotify('练习模式偏好未保存，本次仍可继续使用。', 'error')); setSubmitted(false) }}><option value="learn">学习模式</option><option value="exam">考试模式</option></select></label>
               <label><span className="sr-only">JLPT 辅助层</span><select aria-label="JLPT 辅助层" value={support} onChange={(event) => changeSupport(event.target.value as JLPTSupport)}><option value="off">关闭辅助</option><option value="reading">显示读音</option><option value="full">读音 + 罗马音 + 释义</option></select></label>
               <label><span className="sr-only">题型筛选</span><select aria-label="题型筛选" value={questionFilter} onChange={(event) => { setQuestionFilter(event.target.value as JLPTSection | 'all'); setSubmitted(false) }}><option value="all">整套试卷</option>{[...new Set(questions.map((question) => question.section))].map((section) => <option key={section} value={section}>{section}</option>)}</select></label>
               <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>

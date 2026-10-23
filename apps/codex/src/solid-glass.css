@@ -1,0 +1,26 @@
+/* Solid Glass material, adapted to a warm reading workbench.
+ * https://github.com/deeplethe/solid-glass — MIT (DeepLethe 2026)
+ * License: public/licenses/solid-glass.txt. Finish stays at the edges.
+ */
+:root {
+  --canvas: #f4f2ed;
+  --surface: #fffefa;
+  --panel: #eeebe4;
+  --shell: #eeebe4;
+  --hover: #e9e5dd;
+  --disabled: #e8e4dc;
+  --line: #d7d1c6;
+  --rim: rgb(255 255 255 / 90%);
+  --contact: rgb(65 50 32 / 9%);
+  --glass-radius: 10px;
+  --control-radius: 6px;
+  --surface-shadow: inset 0 1px 0 var(--rim), 0 2px 4px rgb(65 50 32 / 4%);
+}
+.topbar { box-shadow: inset 0 1px 0 var(--rim); }
+.sidebar { box-shadow: inset -1px 0 0 rgb(255 255 255 / 60%); }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .sidebar, .topbar { background: rgb(238 235 228 / 94%); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .sidebar, .topbar { background: var(--shell); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}

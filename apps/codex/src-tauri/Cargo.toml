@@ -1,0 +1,16 @@
+[package]
+name = "nihongo-stack-codex"
+version = "0.6.0"
+description = "Nihongo Stack personal learning workbench"
+authors = ["Nihongo Stack"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+qa = []

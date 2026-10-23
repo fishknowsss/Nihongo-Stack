@@ -1,0 +1,1871 @@
+{
+  "schemaVersion": 2,
+  "packId": "foundation-week.v2",
+  "revision": 1,
+  "createdAt": "2026-10-07",
+  "reviewStatus": "machine_reviewed_teacher_pending",
+  "sources": [
+    {
+      "id": "ns-original-v2",
+      "title": "Nihongo Stack 原创基础练习",
+      "sourceType": "original",
+      "redistributionStatus": "own_created",
+      "rightsNote": "项目原创文本与题目；未经专业教师审校。"
+    },
+    {
+      "id": "ns-speech-v2",
+      "title": "macOS Kyoko 合成语音",
+      "sourceType": "synthesized_audio",
+      "redistributionStatus": "personal_reference_only",
+      "rightsNote": "本机生成，仅用于私人练习；未核验公开再分发权限。"
+    }
+  ],
+  "units": [
+    {
+      "id": "v2-u01",
+      "order": 1,
+      "title": "介绍自己",
+      "goal": "读懂姓名、身份与居住地；听出说话人的身份。",
+      "prerequisiteIds": [],
+      "cardIds": [
+        "v2-u01-c01",
+        "v2-u01-c02",
+        "v2-u01-c03",
+        "v2-u01-c04",
+        "v2-u01-c05",
+        "v2-u01-c06"
+      ],
+      "readingId": "v2-u01-reading",
+      "listeningId": "v2-u01-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u02",
+      "order": 2,
+      "title": "一天的时间",
+      "goal": "读懂一天的安排，区分出发与开始的时间。",
+      "prerequisiteIds": [
+        "v2-u01"
+      ],
+      "cardIds": [
+        "v2-u02-c01",
+        "v2-u02-c02",
+        "v2-u02-c03",
+        "v2-u02-c04",
+        "v2-u02-c05",
+        "v2-u02-c06"
+      ],
+      "readingId": "v2-u02-reading",
+      "listeningId": "v2-u02-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u03",
+      "order": 3,
+      "title": "地点与交通",
+      "goal": "找出目的地、交通方式与所需时间。",
+      "prerequisiteIds": [
+        "v2-u02"
+      ],
+      "cardIds": [
+        "v2-u03-c01",
+        "v2-u03-c02",
+        "v2-u03-c03",
+        "v2-u03-c04",
+        "v2-u03-c05",
+        "v2-u03-c06"
+      ],
+      "readingId": "v2-u03-reading",
+      "listeningId": "v2-u03-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u04",
+      "order": 4,
+      "title": "购物与数量",
+      "goal": "从购物记录中提取数量、单价与合计。",
+      "prerequisiteIds": [
+        "v2-u03"
+      ],
+      "cardIds": [
+        "v2-u04-c01",
+        "v2-u04-c02",
+        "v2-u04-c03",
+        "v2-u04-c04",
+        "v2-u04-c05",
+        "v2-u04-c06"
+      ],
+      "readingId": "v2-u04-reading",
+      "listeningId": "v2-u04-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u05",
+      "order": 5,
+      "title": "邀约与安排",
+      "goal": "读懂邀约中的时间、地点和不能参加的理由。",
+      "prerequisiteIds": [
+        "v2-u04"
+      ],
+      "cardIds": [
+        "v2-u05-c01",
+        "v2-u05-c02",
+        "v2-u05-c03",
+        "v2-u05-c04",
+        "v2-u05-c05",
+        "v2-u05-c06"
+      ],
+      "readingId": "v2-u05-reading",
+      "listeningId": "v2-u05-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u06",
+      "order": 6,
+      "title": "天气与条件",
+      "goal": "根据天气判断计划，区分条件与已经发生的事。",
+      "prerequisiteIds": [
+        "v2-u05"
+      ],
+      "cardIds": [
+        "v2-u06-c01",
+        "v2-u06-c02",
+        "v2-u06-c03",
+        "v2-u06-c04",
+        "v2-u06-c05",
+        "v2-u06-c06"
+      ],
+      "readingId": "v2-u06-reading",
+      "listeningId": "v2-u06-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 32
+    },
+    {
+      "id": "v2-u07",
+      "order": 7,
+      "title": "综合复盘",
+      "goal": "整合时间、路线、购买和计划；用不同材料复核基础。",
+      "prerequisiteIds": [
+        "v2-u06"
+      ],
+      "cardIds": [
+        "v2-u07-c01",
+        "v2-u07-c02",
+        "v2-u07-c03",
+        "v2-u07-c04",
+        "v2-u07-c05",
+        "v2-u07-c06"
+      ],
+      "readingId": "v2-u07-reading",
+      "listeningId": "v2-u07-listening",
+      "reflection": "不用看原文，用中文说出关键信息；再用一个日语句子复述。",
+      "estimatedMinutes": 34
+    }
+  ],
+  "cards": [
+    {
+      "id": "v2-u01-c01",
+      "kind": "vocabulary",
+      "front": "私",
+      "reading": "わたし",
+      "back": "我",
+      "example": "私は林です。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u01-c02",
+      "kind": "vocabulary",
+      "front": "大学生",
+      "reading": "だいがくせい",
+      "back": "大学生",
+      "example": "私は大学生です。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u01-c03",
+      "kind": "vocabulary",
+      "front": "会社員",
+      "reading": "かいしゃいん",
+      "back": "公司职员",
+      "example": "田中さんは会社員です。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u01-c04",
+      "kind": "vocabulary",
+      "front": "住んでいます",
+      "reading": "すんでいます",
+      "back": "住在……",
+      "example": "京都に住んでいます。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u01-c05",
+      "kind": "grammar",
+      "front": "〜は〜です",
+      "reading": "",
+      "back": "……是……；は 标记话题",
+      "example": "私は大学生です。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u01-c06",
+      "kind": "grammar",
+      "front": "〜から来ました",
+      "reading": "〜からきました",
+      "back": "来自……",
+      "example": "中国から来ました。",
+      "unitId": "v2-u01",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c01",
+      "kind": "vocabulary",
+      "front": "起きます",
+      "reading": "おきます",
+      "back": "起床",
+      "example": "七時に起きます。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c02",
+      "kind": "vocabulary",
+      "front": "寝ます",
+      "reading": "ねます",
+      "back": "睡觉",
+      "example": "十一時に寝ます。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c03",
+      "kind": "vocabulary",
+      "front": "授業",
+      "reading": "じゅぎょう",
+      "back": "课；课程",
+      "example": "授業は九時からです。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c04",
+      "kind": "vocabulary",
+      "front": "図書館",
+      "reading": "としょかん",
+      "back": "图书馆",
+      "example": "図書館で勉強します。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c05",
+      "kind": "grammar",
+      "front": "〜時に",
+      "reading": "〜じに",
+      "back": "在……点；具体时间用 に",
+      "example": "八時に家を出ます。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u02-c06",
+      "kind": "grammar",
+      "front": "〜から〜まで",
+      "reading": "",
+      "back": "从……到……",
+      "example": "九時から十二時までです。",
+      "unitId": "v2-u02",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c01",
+      "kind": "vocabulary",
+      "front": "歩いて",
+      "reading": "あるいて",
+      "back": "步行；走着",
+      "example": "駅まで歩いて行きます。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c02",
+      "kind": "vocabulary",
+      "front": "隣",
+      "reading": "となり",
+      "back": "旁边",
+      "example": "公園の隣にあります。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c03",
+      "kind": "vocabulary",
+      "front": "病院",
+      "reading": "びょういん",
+      "back": "医院",
+      "example": "病院へ行きます。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c04",
+      "kind": "vocabulary",
+      "front": "かかります",
+      "reading": "",
+      "back": "需要；花费（时间等）",
+      "example": "二十分かかります。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c05",
+      "kind": "grammar",
+      "front": "交通手段＋で",
+      "reading": "",
+      "back": "乘坐……；交通方式用 で",
+      "example": "バスで美術館へ行きます。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u03-c06",
+      "kind": "grammar",
+      "front": "場所＋にあります",
+      "reading": "",
+      "back": "某物位于某地；无生命物用 あります",
+      "example": "美術館は公園の隣にあります。",
+      "unitId": "v2-u03",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c01",
+      "kind": "vocabulary",
+      "front": "三つ",
+      "reading": "みっつ",
+      "back": "三个",
+      "example": "りんごを三つ買います。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c02",
+      "kind": "vocabulary",
+      "front": "一本",
+      "reading": "いっぽん",
+      "back": "一根；一瓶（细长物的计数）",
+      "example": "牛乳を一本買います。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c03",
+      "kind": "vocabulary",
+      "front": "全部で",
+      "reading": "ぜんぶで",
+      "back": "合计；总共",
+      "example": "全部で五百円です。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c04",
+      "kind": "vocabulary",
+      "front": "いくら",
+      "reading": "",
+      "back": "多少钱",
+      "example": "全部でいくらですか。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c05",
+      "kind": "grammar",
+      "front": "〜を買いました",
+      "reading": "〜をかいました",
+      "back": "买了……；礼貌体过去式",
+      "example": "パンを買いました。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u04-c06",
+      "kind": "grammar",
+      "front": "〜ませんでした",
+      "reading": "",
+      "back": "过去没有做……",
+      "example": "パンは買いませんでした。",
+      "unitId": "v2-u04",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c01",
+      "kind": "vocabulary",
+      "front": "一緒に",
+      "reading": "いっしょに",
+      "back": "一起",
+      "example": "一緒に映画を見ませんか。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c02",
+      "kind": "vocabulary",
+      "front": "返事",
+      "reading": "へんじ",
+      "back": "回复",
+      "example": "友達に返事をしました。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c03",
+      "kind": "vocabulary",
+      "front": "午前中",
+      "reading": "ごぜんちゅう",
+      "back": "上午期间",
+      "example": "午前中は授業があります。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c04",
+      "kind": "vocabulary",
+      "front": "アルバイト",
+      "reading": "",
+      "back": "兼职；打工",
+      "example": "土曜日にアルバイトがあります。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c05",
+      "kind": "grammar",
+      "front": "〜ませんか",
+      "reading": "",
+      "back": "一起……好吗？（邀约）",
+      "example": "昼ご飯を食べませんか。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u05-c06",
+      "kind": "grammar",
+      "front": "理由＋から",
+      "reading": "",
+      "back": "因为……；这里用于说明原因",
+      "example": "授業がありますから、行けません。",
+      "unitId": "v2-u05",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c01",
+      "kind": "vocabulary",
+      "front": "天気予報",
+      "reading": "てんきよほう",
+      "back": "天气预报",
+      "example": "天気予報では雨です。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c02",
+      "kind": "vocabulary",
+      "front": "晴れ",
+      "reading": "はれ",
+      "back": "晴天",
+      "example": "明日は晴れです。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c03",
+      "kind": "vocabulary",
+      "front": "喫茶店",
+      "reading": "きっさてん",
+      "back": "咖啡店；茶饮店",
+      "example": "喫茶店で会います。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c04",
+      "kind": "vocabulary",
+      "front": "予定",
+      "reading": "よてい",
+      "back": "安排；计划",
+      "example": "公園へ行く予定です。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c05",
+      "kind": "grammar",
+      "front": "条件＋なら",
+      "reading": "",
+      "back": "如果是……；以此为前提",
+      "example": "雨なら、公園へ行きません。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u06-c06",
+      "kind": "grammar",
+      "front": "でも",
+      "reading": "",
+      "back": "但是；连接前后转折",
+      "example": "行く予定です。でも、雨です。",
+      "unitId": "v2-u06",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c01",
+      "kind": "vocabulary",
+      "front": "出かけました",
+      "reading": "でかけました",
+      "back": "出门了；外出了",
+      "example": "昨日、町へ出かけました。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c02",
+      "kind": "vocabulary",
+      "front": "一冊",
+      "reading": "いっさつ",
+      "back": "一本（书等的计数）",
+      "example": "本を一冊買いました。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c03",
+      "kind": "vocabulary",
+      "front": "来週",
+      "reading": "らいしゅう",
+      "back": "下周",
+      "example": "来週は図書館へ行きます。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c04",
+      "kind": "vocabulary",
+      "front": "そのあと",
+      "reading": "",
+      "back": "在那之后",
+      "example": "そのあと、昼ご飯を食べました。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c05",
+      "kind": "grammar",
+      "front": "動詞辞書形＋前に",
+      "reading": "どうしじしょけい＋まえに",
+      "back": "在做……之前",
+      "example": "帰る前に、本を買いました。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    },
+    {
+      "id": "v2-u07-c06",
+      "kind": "grammar",
+      "front": "動詞辞書形＋予定です",
+      "reading": "どうしじしょけい＋よていです",
+      "back": "计划做……",
+      "example": "来週、勉強する予定です。",
+      "unitId": "v2-u07",
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending"
+    }
+  ],
+  "readings": [
+    {
+      "id": "v2-u01-reading",
+      "title": "介绍自己",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u01",
+      "segments": [
+        {
+          "text": "はじめまして。"
+        },
+        {
+          "text": "私",
+          "reading": "わたし"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "林",
+          "reading": "リン"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "中国",
+          "reading": "ちゅうごく"
+        },
+        {
+          "text": "から来ました。今、"
+        },
+        {
+          "text": "京都",
+          "reading": "きょうと"
+        },
+        {
+          "text": "に住んでいます。"
+        },
+        {
+          "text": "大学生",
+          "reading": "だいがくせい"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "日本語",
+          "reading": "にほんご"
+        },
+        {
+          "text": "を"
+        },
+        {
+          "text": "勉強",
+          "reading": "べんきょう"
+        },
+        {
+          "text": "しています。どうぞよろしくお願いします。"
+        }
+      ],
+      "translation": "初次见面，我姓林，来自中国。现在住在京都，是大学生，正在学习日语。请多关照。",
+      "focus": [
+        "は 标记话题；です 表示判断。",
+        "に住んでいます 表示居住地。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u01-reading-q1",
+          "prompt": "林さんは今どこに住んでいますか。",
+          "options": [
+            "中国",
+            "京都",
+            "大阪"
+          ],
+          "answer": 1,
+          "explanation": "「今、京都に住んでいます」明确说明现在住在京都；中国是来源地。"
+        },
+        {
+          "id": "v2-u01-reading-q2",
+          "prompt": "林さんは何をしていますか。",
+          "options": [
+            "大学で勉強しています",
+            "会社で働いています",
+            "学校で教えています"
+          ],
+          "answer": 0,
+          "explanation": "「大学生です」表示大学生身份，不是公司职员或教师。"
+        },
+        {
+          "id": "v2-u01-reading-q3",
+          "prompt": "「日本語を勉強しています」の意味は？",
+          "options": [
+            "正在学习日语",
+            "昨天教了日语",
+            "不学习日语"
+          ],
+          "answer": 0,
+          "explanation": "「勉強しています」表示正在学习或持续进行的学习活动。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u02-reading",
+      "title": "一天的时间",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u02",
+      "segments": [
+        {
+          "text": "私",
+          "reading": "わたし"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "毎朝",
+          "reading": "まいあさ"
+        },
+        {
+          "text": "七時",
+          "reading": "しちじ"
+        },
+        {
+          "text": "に起きます。"
+        },
+        {
+          "text": "八時",
+          "reading": "はちじ"
+        },
+        {
+          "text": "に"
+        },
+        {
+          "text": "家",
+          "reading": "いえ"
+        },
+        {
+          "text": "を出ます。"
+        },
+        {
+          "text": "授業",
+          "reading": "じゅぎょう"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "九時",
+          "reading": "くじ"
+        },
+        {
+          "text": "から"
+        },
+        {
+          "text": "十二時",
+          "reading": "じゅうにじ"
+        },
+        {
+          "text": "までです。"
+        },
+        {
+          "text": "午後",
+          "reading": "ごご"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "図書館",
+          "reading": "としょかん"
+        },
+        {
+          "text": "で"
+        },
+        {
+          "text": "勉強",
+          "reading": "べんきょう"
+        },
+        {
+          "text": "します。夜"
+        },
+        {
+          "text": "十一時",
+          "reading": "じゅういちじ"
+        },
+        {
+          "text": "に寝ます。"
+        },
+        {
+          "text": "日曜日",
+          "reading": "にちようび"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "授業",
+          "reading": "じゅぎょう"
+        },
+        {
+          "text": "がありません。"
+        }
+      ],
+      "translation": "我每天早上七点起床，八点离家。课从九点到十二点。下午在图书馆学习，晚上十一点睡觉。星期日没有课。",
+      "focus": [
+        "に 标记具体时间。",
+        "から…まで 表示时间范围。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u02-reading-q1",
+          "prompt": "何時に家を出ますか。",
+          "options": [
+            "七時",
+            "八時",
+            "九時"
+          ],
+          "answer": 1,
+          "explanation": "「八時に家を出ます」是离家时间，七点是起床时间。"
+        },
+        {
+          "id": "v2-u02-reading-q2",
+          "prompt": "授業はいつ終わりますか。",
+          "options": [
+            "九時",
+            "十一時",
+            "十二時"
+          ],
+          "answer": 2,
+          "explanation": "「九時から十二時まで」的 まで 标记结束时间。"
+        },
+        {
+          "id": "v2-u02-reading-q3",
+          "prompt": "日曜日に授業がありますか。",
+          "options": [
+            "あります",
+            "ありません",
+            "午後だけあります"
+          ],
+          "answer": 1,
+          "explanation": "最后一句明确说「授業がありません」。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u03-reading",
+      "title": "地点与交通",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u03",
+      "segments": [
+        {
+          "text": "土曜日",
+          "reading": "どようび"
+        },
+        {
+          "text": "に"
+        },
+        {
+          "text": "友達",
+          "reading": "ともだち"
+        },
+        {
+          "text": "と"
+        },
+        {
+          "text": "美術館",
+          "reading": "びじゅつかん"
+        },
+        {
+          "text": "へ行きます。"
+        },
+        {
+          "text": "家",
+          "reading": "いえ"
+        },
+        {
+          "text": "から"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "まで"
+        },
+        {
+          "text": "歩",
+          "reading": "ある"
+        },
+        {
+          "text": "いて"
+        },
+        {
+          "text": "十分",
+          "reading": "じゅっぷん"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "から"
+        },
+        {
+          "text": "美術館",
+          "reading": "びじゅつかん"
+        },
+        {
+          "text": "までバスで"
+        },
+        {
+          "text": "二十分",
+          "reading": "にじゅっぷん"
+        },
+        {
+          "text": "かかります。"
+        },
+        {
+          "text": "美術館",
+          "reading": "びじゅつかん"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "公園",
+          "reading": "こうえん"
+        },
+        {
+          "text": "の"
+        },
+        {
+          "text": "隣",
+          "reading": "となり"
+        },
+        {
+          "text": "にあります。帰りは"
+        },
+        {
+          "text": "電車",
+          "reading": "でんしゃ"
+        },
+        {
+          "text": "に乗ります。"
+        }
+      ],
+      "translation": "星期六和朋友去美术馆。从家步行到车站需要十分钟。从车站坐公交到美术馆需要二十分钟。美术馆在公园旁边，回程坐电车。",
+      "focus": [
+        "へ / に 可表示移动目的地。",
+        "で 表示交通手段或动作地点，须结合动词。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u03-reading-q1",
+          "prompt": "駅までどうやって行きますか。",
+          "options": [
+            "バスで",
+            "歩いて",
+            "電車で"
+          ],
+          "answer": 1,
+          "explanation": "「家から駅まで歩いて十分」说明这段路是步行。"
+        },
+        {
+          "id": "v2-u03-reading-q2",
+          "prompt": "駅から美術館まで何分かかりますか。",
+          "options": [
+            "十分",
+            "十五分",
+            "二十分"
+          ],
+          "answer": 2,
+          "explanation": "从车站到美术馆是「バスで二十分」。"
+        },
+        {
+          "id": "v2-u03-reading-q3",
+          "prompt": "美術館はどこにありますか。",
+          "options": [
+            "公園の隣",
+            "駅の中",
+            "スーパーの前"
+          ],
+          "answer": 0,
+          "explanation": "「公園の隣にあります」直接给出位置。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u04-reading",
+      "title": "购物与数量",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u04",
+      "segments": [
+        {
+          "text": "日曜日",
+          "reading": "にちようび"
+        },
+        {
+          "text": "にスーパーへ行きました。りんごを三つと"
+        },
+        {
+          "text": "牛乳",
+          "reading": "ぎゅうにゅう"
+        },
+        {
+          "text": "を"
+        },
+        {
+          "text": "一本",
+          "reading": "いっぽん"
+        },
+        {
+          "text": "買",
+          "reading": "か"
+        },
+        {
+          "text": "いました。りんごは一つ"
+        },
+        {
+          "text": "百円",
+          "reading": "ひゃくえん"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "牛乳",
+          "reading": "ぎゅうにゅう"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "二百円",
+          "reading": "にひゃくえん"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "全部",
+          "reading": "ぜんぶ"
+        },
+        {
+          "text": "で"
+        },
+        {
+          "text": "五百円",
+          "reading": "ごひゃくえん"
+        },
+        {
+          "text": "でした。パンは"
+        },
+        {
+          "text": "買",
+          "reading": "か"
+        },
+        {
+          "text": "いませんでした。"
+        }
+      ],
+      "translation": "星期日去了超市，买了三个苹果和一瓶牛奶。苹果一个一百日元，牛奶二百日元，合计五百日元。没有买面包。",
+      "focus": [
+        "を 标记动作对象。",
+        "つ 是通用数量表达之一；金额需区分单价和合计。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u04-reading-q1",
+          "prompt": "りんごはいくつ買いましたか。",
+          "options": [
+            "一つ",
+            "二つ",
+            "三つ"
+          ],
+          "answer": 2,
+          "explanation": "「りんごを三つ」说明买了三个。"
+        },
+        {
+          "id": "v2-u04-reading-q2",
+          "prompt": "全部でいくらでしたか。",
+          "options": [
+            "三百円",
+            "五百円",
+            "六百円"
+          ],
+          "answer": 1,
+          "explanation": "三个苹果 3×100 加牛奶 200，共 500；原文也给出「五百円」。"
+        },
+        {
+          "id": "v2-u04-reading-q3",
+          "prompt": "何を買いませんでしたか。",
+          "options": [
+            "パン",
+            "牛乳",
+            "りんご"
+          ],
+          "answer": 0,
+          "explanation": "「パンは買いませんでした」表示没有买面包。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u05-reading",
+      "title": "邀约与安排",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u05",
+      "segments": [
+        {
+          "text": "友達",
+          "reading": "ともだち"
+        },
+        {
+          "text": "の"
+        },
+        {
+          "text": "佐藤",
+          "reading": "さとう"
+        },
+        {
+          "text": "さんからメールが来ました。「"
+        },
+        {
+          "text": "土曜日",
+          "reading": "どようび"
+        },
+        {
+          "text": "の"
+        },
+        {
+          "text": "午後",
+          "reading": "ごご"
+        },
+        {
+          "text": "、"
+        },
+        {
+          "text": "一緒",
+          "reading": "いっしょ"
+        },
+        {
+          "text": "に"
+        },
+        {
+          "text": "映画",
+          "reading": "えいが"
+        },
+        {
+          "text": "を見ませんか。二時に"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "の前で会いましょう。」"
+        },
+        {
+          "text": "私",
+          "reading": "わたし"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "土曜日",
+          "reading": "どようび"
+        },
+        {
+          "text": "にアルバイトがありますから、行けません。「"
+        },
+        {
+          "text": "日曜日",
+          "reading": "にちようび"
+        },
+        {
+          "text": "はどうですか」と"
+        },
+        {
+          "text": "返事",
+          "reading": "へんじ"
+        },
+        {
+          "text": "をしました。"
+        }
+      ],
+      "translation": "朋友佐藤发来邮件：“星期六下午一起看电影好吗？两点在车站前见吧。”我星期六要打工，不能去，便回复：“星期日怎么样？”",
+      "focus": [
+        "ませんか 用于邀约。",
+        "から 可引出原因；与时间起点用法区分。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u05-reading-q1",
+          "prompt": "佐藤さんは何をしたいですか。",
+          "options": [
+            "映画を見たい",
+            "買い物をしたい",
+            "勉強をしたい"
+          ],
+          "answer": 0,
+          "explanation": "邮件中的邀约是「映画を見ませんか」。"
+        },
+        {
+          "id": "v2-u05-reading-q2",
+          "prompt": "土曜日に行けない理由は？",
+          "options": [
+            "授業があるから",
+            "雨だから",
+            "アルバイトがあるから"
+          ],
+          "answer": 2,
+          "explanation": "「アルバイトがありますから、行けません」。"
+        },
+        {
+          "id": "v2-u05-reading-q3",
+          "prompt": "返事で提案した日は？",
+          "options": [
+            "金曜日",
+            "日曜日",
+            "月曜日"
+          ],
+          "answer": 1,
+          "explanation": "回复「日曜日はどうですか」是在提议星期日。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u06-reading",
+      "title": "天气与条件",
+      "level": "基础 · 原创试用",
+      "minutes": 8,
+      "unitId": "v2-u06",
+      "segments": [
+        {
+          "text": "明日",
+          "reading": "あした"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "友達",
+          "reading": "ともだち"
+        },
+        {
+          "text": "と"
+        },
+        {
+          "text": "公園",
+          "reading": "こうえん"
+        },
+        {
+          "text": "へ行く"
+        },
+        {
+          "text": "予定",
+          "reading": "よてい"
+        },
+        {
+          "text": "です。でも、"
+        },
+        {
+          "text": "天気予報",
+          "reading": "てんきよほう"
+        },
+        {
+          "text": "では"
+        },
+        {
+          "text": "雨",
+          "reading": "あめ"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "雨",
+          "reading": "あめ"
+        },
+        {
+          "text": "なら、"
+        },
+        {
+          "text": "公園",
+          "reading": "こうえん"
+        },
+        {
+          "text": "へ行きません。"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "の近くの"
+        },
+        {
+          "text": "喫茶店",
+          "reading": "きっさてん"
+        },
+        {
+          "text": "で会います。晴れなら、"
+        },
+        {
+          "text": "公園",
+          "reading": "こうえん"
+        },
+        {
+          "text": "でお"
+        },
+        {
+          "text": "弁当",
+          "reading": "べんとう"
+        },
+        {
+          "text": "を食べます。どちらの場合も、十時に"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "で会います。"
+        }
+      ],
+      "translation": "明天计划和朋友去公园，但天气预报说会下雨。如果下雨就不去公园，改在车站附近的咖啡店见面。如果晴天就在公园吃便当。无论哪种情况都十点在车站见。",
+      "focus": [
+        "なら 表示以某条件为前提。",
+        "でも 表示转折；计划不是已经完成的活动。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u06-reading-q1",
+          "prompt": "雨ならどこで会いますか。",
+          "options": [
+            "公園",
+            "駅の近くの喫茶店",
+            "美術館"
+          ],
+          "answer": 1,
+          "explanation": "下雨时的备选地点是「駅の近くの喫茶店」。"
+        },
+        {
+          "id": "v2-u06-reading-q2",
+          "prompt": "晴れなら何をしますか。",
+          "options": [
+            "映画を見ます",
+            "家で寝ます",
+            "公園でお弁当を食べます"
+          ],
+          "answer": 2,
+          "explanation": "「晴れなら、公園でお弁当を食べます」。"
+        },
+        {
+          "id": "v2-u06-reading-q3",
+          "prompt": "天気に関係なく同じなのは？",
+          "options": [
+            "待ち合わせの時間",
+            "食べる場所",
+            "行く公園"
+          ],
+          "answer": 0,
+          "explanation": "两种情况下都「十時に駅で会います」，时间不变。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u07-reading",
+      "title": "综合复盘",
+      "level": "基础 · 原创试用",
+      "minutes": 10,
+      "unitId": "v2-u07",
+      "segments": [
+        {
+          "text": "昨日",
+          "reading": "きのう"
+        },
+        {
+          "text": "、"
+        },
+        {
+          "text": "私",
+          "reading": "わたし"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "友達",
+          "reading": "ともだち"
+        },
+        {
+          "text": "と"
+        },
+        {
+          "text": "町",
+          "reading": "まち"
+        },
+        {
+          "text": "へ出かけました。"
+        },
+        {
+          "text": "九時",
+          "reading": "くじ"
+        },
+        {
+          "text": "半に"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "で会って、バスで"
+        },
+        {
+          "text": "美術館",
+          "reading": "びじゅつかん"
+        },
+        {
+          "text": "へ行きました。"
+        },
+        {
+          "text": "美術館",
+          "reading": "びじゅつかん"
+        },
+        {
+          "text": "で二"
+        },
+        {
+          "text": "時間",
+          "reading": "じかん"
+        },
+        {
+          "text": "過ごしました。そのあと、"
+        },
+        {
+          "text": "喫茶店",
+          "reading": "きっさてん"
+        },
+        {
+          "text": "で昼ご飯を食べました。帰る前に、"
+        },
+        {
+          "text": "本屋",
+          "reading": "ほんや"
+        },
+        {
+          "text": "で"
+        },
+        {
+          "text": "日本語",
+          "reading": "にほんご"
+        },
+        {
+          "text": "の本を"
+        },
+        {
+          "text": "一冊",
+          "reading": "いっさつ"
+        },
+        {
+          "text": "買",
+          "reading": "か"
+        },
+        {
+          "text": "いました。"
+        },
+        {
+          "text": "来週",
+          "reading": "らいしゅう"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "図書館",
+          "reading": "としょかん"
+        },
+        {
+          "text": "で"
+        },
+        {
+          "text": "一緒",
+          "reading": "いっしょ"
+        },
+        {
+          "text": "に"
+        },
+        {
+          "text": "勉強",
+          "reading": "べんきょう"
+        },
+        {
+          "text": "する"
+        },
+        {
+          "text": "予定",
+          "reading": "よてい"
+        },
+        {
+          "text": "です。"
+        }
+      ],
+      "translation": "昨天和朋友去了市区。九点半在车站见面，坐公交去美术馆，在那里待了两小时。之后在咖啡店吃午饭，回家前在书店买了一本日语书。下周计划一起在图书馆学习。",
+      "focus": [
+        "先按时间顺序整理信息，再区分已发生与未发生。",
+        "分别复核数量、地点与目的，不靠单个关键词猜测。"
+      ],
+      "sourceId": "ns-original-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u07-reading-q1",
+          "prompt": "何時に駅で会いましたか。",
+          "options": [
+            "九時",
+            "九時半",
+            "十時"
+          ],
+          "answer": 1,
+          "explanation": "「九時半に駅で会って」给出昨天的见面时间。"
+        },
+        {
+          "id": "v2-u07-reading-q2",
+          "prompt": "本屋へ行ったのはいつですか。",
+          "options": [
+            "美術館へ行く前",
+            "昼ご飯を食べる前",
+            "帰る前"
+          ],
+          "answer": 2,
+          "explanation": "「帰る前に、本屋で…」明确给出购买时机。"
+        },
+        {
+          "id": "v2-u07-reading-q3",
+          "prompt": "来週の予定は？",
+          "options": [
+            "図書館で勉強する",
+            "美術館へ行く",
+            "町で買い物をする"
+          ],
+          "answer": 0,
+          "explanation": "最后一句是未来安排；之前的出游都是昨天的事。"
+        }
+      ]
+    }
+  ],
+  "listenings": [
+    {
+      "id": "v2-u01-listening",
+      "title": "介绍自己 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u01",
+      "transcript": "はじめまして。私は田中です。大阪に住んでいます。会社員です。よろしくお願いします。",
+      "translation": "初次见面，我姓田中，住在大阪，是公司职员。请多关照。",
+      "audioFile": "v2-u01.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u01-listening-q1",
+          "prompt": "说话人住在哪里？",
+          "options": [
+            "京都",
+            "大阪",
+            "东京"
+          ],
+          "answer": 1,
+          "explanation": "「大阪に住んでいます」说明住在大阪。"
+        },
+        {
+          "id": "v2-u01-listening-q2",
+          "prompt": "说话人是什么身份？",
+          "options": [
+            "大学生",
+            "教师",
+            "公司职员"
+          ],
+          "answer": 2,
+          "explanation": "「会社員」指公司职员。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u02-listening",
+      "title": "一天的时间 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u02",
+      "transcript": "明日の授業は十時からです。私は九時半に家を出ます。授業のあと、図書館で勉強します。",
+      "translation": "明天的课十点开始。我九点半离家。下课后在图书馆学习。",
+      "audioFile": "v2-u02.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u02-listening-q1",
+          "prompt": "明天的课几点开始？",
+          "options": [
+            "九点",
+            "九点半",
+            "十点"
+          ],
+          "answer": 2,
+          "explanation": "「十時から」是开始时间。"
+        },
+        {
+          "id": "v2-u02-listening-q2",
+          "prompt": "下课后去哪里学习？",
+          "options": [
+            "图书馆",
+            "家里",
+            "车站"
+          ],
+          "answer": 0,
+          "explanation": "「授業のあと、図書館で勉強します」。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u03-listening",
+      "title": "地点与交通 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u03",
+      "transcript": "駅から病院までバスで十五分です。病院はスーパーの隣にあります。私は明日、バスで病院へ行きます。",
+      "translation": "从车站乘公交到医院需要十五分钟。医院在超市旁边。我明天乘公交去医院。",
+      "audioFile": "v2-u03.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u03-listening-q1",
+          "prompt": "从车站到医院需要多久？",
+          "options": [
+            "十分钟",
+            "十五分钟",
+            "二十分钟"
+          ],
+          "answer": 1,
+          "explanation": "「バスで十五分です」。"
+        },
+        {
+          "id": "v2-u03-listening-q2",
+          "prompt": "医院在什么旁边？",
+          "options": [
+            "公园",
+            "车站",
+            "超市"
+          ],
+          "answer": 2,
+          "explanation": "「スーパーの隣」是超市旁边。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u04-listening",
+      "title": "购物与数量 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u04",
+      "transcript": "このパンは一つ百五十円です。二つください。牛乳は買いません。パンだけで三百円ですね。",
+      "translation": "这个面包一个一百五十日元，请给我两个。不买牛奶。只买面包，合计三百日元。",
+      "audioFile": "v2-u04.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u04-listening-q1",
+          "prompt": "买几个面包？",
+          "options": [
+            "一个",
+            "两个",
+            "三个"
+          ],
+          "answer": 1,
+          "explanation": "「二つください」。"
+        },
+        {
+          "id": "v2-u04-listening-q2",
+          "prompt": "面包合计多少钱？",
+          "options": [
+            "一百五十日元",
+            "二百日元",
+            "三百日元"
+          ],
+          "answer": 2,
+          "explanation": "两个，每个一百五十日元，合计三百日元。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u05-listening",
+      "title": "邀约与安排 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u05",
+      "transcript": "日曜日に一緒に昼ご飯を食べませんか。十二時に駅の前で会いましょう。私は午前中、授業がありますから、十一時には行けません。",
+      "translation": "星期日一起吃午饭好吗？十二点在车站前见吧。我上午有课，所以十一点去不了。",
+      "audioFile": "v2-u05.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u05-listening-q1",
+          "prompt": "约定几点见面？",
+          "options": [
+            "十一点",
+            "十二点",
+            "两点"
+          ],
+          "answer": 1,
+          "explanation": "「十二時に駅の前で会いましょう」。"
+        },
+        {
+          "id": "v2-u05-listening-q2",
+          "prompt": "十一点去不了的原因是什么？",
+          "options": [
+            "上午有课",
+            "需要购物",
+            "当天要看电影"
+          ],
+          "answer": 0,
+          "explanation": "「午前中、授業がありますから」。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u06-listening",
+      "title": "天气与条件 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u06",
+      "transcript": "明日は雨の予報です。雨なら、図書館で勉強します。晴れなら、公園へ行きます。友達とは午後一時に会います。",
+      "translation": "预报说明天下雨。如果下雨就在图书馆学习；如果晴天就去公园。下午一点和朋友见面。",
+      "audioFile": "v2-u06.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u06-listening-q1",
+          "prompt": "下雨时做什么？",
+          "options": [
+            "去公园",
+            "在图书馆学习",
+            "看电影"
+          ],
+          "answer": 1,
+          "explanation": "「雨なら、図書館で勉強します」。"
+        },
+        {
+          "id": "v2-u06-listening-q2",
+          "prompt": "几点和朋友见面？",
+          "options": [
+            "上午十点",
+            "下午一点",
+            "下午三点"
+          ],
+          "answer": 1,
+          "explanation": "「午後一時に会います」。"
+        }
+      ]
+    },
+    {
+      "id": "v2-u07-listening",
+      "title": "综合复盘 · 听音练习",
+      "level": "基础 · 合成语音",
+      "minutes": 5,
+      "unitId": "v2-u07",
+      "transcript": "昨日、友達と買い物に行きました。十時に駅で会いました。本屋で本を二冊買いました。来週の日曜日は、一緒に映画を見る予定です。",
+      "translation": "昨天和朋友去购物，十点在车站见面，在书店买了两本书。下周星期日计划一起看电影。",
+      "audioFile": "v2-u07.mp3",
+      "audioKind": "synthetic",
+      "credit": "Nihongo Stack 原创文本；macOS Kyoko 合成语音，仅供本机私人练习。",
+      "sourceId": "ns-speech-v2",
+      "reviewStatus": "machine_reviewed_teacher_pending",
+      "questions": [
+        {
+          "id": "v2-u07-listening-q1",
+          "prompt": "昨天买了几本书？",
+          "options": [
+            "一本",
+            "两本",
+            "三本"
+          ],
+          "answer": 1,
+          "explanation": "「本を二冊買いました」。"
+        },
+        {
+          "id": "v2-u07-listening-q2",
+          "prompt": "下周日计划做什么？",
+          "options": [
+            "看电影",
+            "去美术馆",
+            "在图书馆学习"
+          ],
+          "answer": 0,
+          "explanation": "「来週の日曜日は…映画を見る予定です」。"
+        }
+      ]
+    }
+  ]
+}

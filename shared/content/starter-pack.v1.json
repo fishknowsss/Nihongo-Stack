@@ -1,0 +1,526 @@
+{
+  "schemaVersion": 1,
+  "id": "nihongo-stack-starter-2026-09-29",
+  "title": "Nihongo Stack 首日学习样本",
+  "cards": [
+    {
+      "id": "kana-01",
+      "kind": "kana",
+      "front": "ア",
+      "reading": "ア",
+      "back": "a｜片假名「あ」",
+      "example": "アメリカ",
+      "note": "先看字形，再读出声音。"
+    },
+    {
+      "id": "kana-02",
+      "kind": "kana",
+      "front": "シ",
+      "reading": "シ",
+      "back": "shi｜片假名「し」",
+      "example": "システム",
+      "note": "与 ツ 对比：シ 的短笔画更接近横向。"
+    },
+    {
+      "id": "kana-03",
+      "kind": "kana",
+      "front": "ツ",
+      "reading": "ツ",
+      "back": "tsu｜片假名「つ」",
+      "example": "ツアー",
+      "note": "与 シ 对比：ツ 的短笔画更接近竖向。"
+    },
+    {
+      "id": "kana-04",
+      "kind": "kana",
+      "front": "ソ",
+      "reading": "ソ",
+      "back": "so｜片假名「そ」",
+      "example": "ソース",
+      "note": "和 ン 容易混淆，可结合单词识别。"
+    },
+    {
+      "id": "kana-05",
+      "kind": "kana",
+      "front": "ン",
+      "reading": "ン",
+      "back": "n｜片假名「ん」",
+      "example": "パン",
+      "note": "和 ソ 容易混淆，可结合单词识别。"
+    },
+    {
+      "id": "vocab-01",
+      "kind": "vocabulary",
+      "front": "予定",
+      "reading": "よてい",
+      "back": "计划；安排",
+      "example": "明日は何か予定がありますか。"
+    },
+    {
+      "id": "vocab-02",
+      "kind": "vocabulary",
+      "front": "駅",
+      "reading": "えき",
+      "back": "车站",
+      "example": "駅まで歩いて行きます。"
+    },
+    {
+      "id": "vocab-03",
+      "kind": "vocabulary",
+      "front": "近く",
+      "reading": "ちかく",
+      "back": "附近；近处",
+      "example": "駅の近くに本屋があります。"
+    },
+    {
+      "id": "vocab-04",
+      "kind": "vocabulary",
+      "front": "本屋",
+      "reading": "ほんや",
+      "back": "书店",
+      "example": "本屋で本を買いました。"
+    },
+    {
+      "id": "vocab-05",
+      "kind": "vocabulary",
+      "front": "雨",
+      "reading": "あめ",
+      "back": "雨",
+      "example": "明日は雨が降るそうです。"
+    },
+    {
+      "id": "vocab-06",
+      "kind": "vocabulary",
+      "front": "友だち",
+      "reading": "ともだち",
+      "back": "朋友",
+      "example": "友だちと映画を見ます。"
+    },
+    {
+      "id": "vocab-07",
+      "kind": "vocabulary",
+      "front": "映画",
+      "reading": "えいが",
+      "back": "电影",
+      "example": "週末に映画を見ます。"
+    },
+    {
+      "id": "vocab-08",
+      "kind": "vocabulary",
+      "front": "時間",
+      "reading": "じかん",
+      "back": "时间",
+      "example": "時間を決めましょう。"
+    },
+    {
+      "id": "vocab-09",
+      "kind": "vocabulary",
+      "front": "一冊",
+      "reading": "いっさつ",
+      "back": "一册（书的量词）",
+      "example": "本を一冊買いました。"
+    },
+    {
+      "id": "vocab-10",
+      "kind": "vocabulary",
+      "front": "週末",
+      "reading": "しゅうまつ",
+      "back": "周末",
+      "example": "今週末は空いていますか。"
+    },
+    {
+      "id": "grammar-01",
+      "kind": "grammar",
+      "front": "〜に行く",
+      "back": "去某处；に 标记目的地",
+      "example": "本屋に行きます。",
+      "note": "先判断动作「行く」，再找目的地。"
+    },
+    {
+      "id": "grammar-02",
+      "kind": "grammar",
+      "front": "〜で",
+      "back": "在某处做某事；で 标记动作发生的地点",
+      "example": "家で本を読みます。",
+      "note": "与目的地的「に」区分。"
+    },
+    {
+      "id": "grammar-03",
+      "kind": "grammar",
+      "front": "〜ました",
+      "back": "礼貌体过去时",
+      "example": "昨日、本を買いました。"
+    },
+    {
+      "id": "grammar-04",
+      "kind": "grammar",
+      "front": "〜つもりです",
+      "back": "打算做某事",
+      "example": "明日、映画を見るつもりです。"
+    },
+    {
+      "id": "grammar-05",
+      "kind": "grammar",
+      "front": "〜そうです",
+      "back": "据说；此处表示听来的消息",
+      "example": "明日は雨が降るそうです。",
+      "note": "「そうです」还有样态用法；本例是传闻。"
+    }
+  ],
+  "readings": [
+    {
+      "id": "reading-01",
+      "title": "土曜日の本屋",
+      "level": "基础句子",
+      "minutes": 6,
+      "segments": [
+        {
+          "text": "今日",
+          "reading": "きょう"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "土曜日",
+          "reading": "どようび"
+        },
+        {
+          "text": "です。"
+        },
+        {
+          "text": "午前九時",
+          "reading": "ごぜんくじ"
+        },
+        {
+          "text": "に"
+        },
+        {
+          "text": "起きて",
+          "reading": "おきて"
+        },
+        {
+          "text": "、十時に"
+        },
+        {
+          "text": "駅",
+          "reading": "えき"
+        },
+        {
+          "text": "の"
+        },
+        {
+          "text": "近く",
+          "reading": "ちかく"
+        },
+        {
+          "text": "の"
+        },
+        {
+          "text": "本屋",
+          "reading": "ほんや"
+        },
+        {
+          "text": "へ行きました。"
+        },
+        {
+          "text": "本",
+          "reading": "ほん"
+        },
+        {
+          "text": "を"
+        },
+        {
+          "text": "一冊",
+          "reading": "いっさつ"
+        },
+        {
+          "text": "買いました。"
+        },
+        {
+          "text": "午後",
+          "reading": "ごご"
+        },
+        {
+          "text": "は家でその本を読みました。"
+        }
+      ],
+      "translation": "今天是星期六。我上午九点起床，十点去了车站附近的书店。我买了一本书。下午在家读了那本书。",
+      "focus": [
+        "へ／に：移动的目的地",
+        "で：动作发生的地点",
+        "一冊：书本的量词"
+      ],
+      "questions": [
+        {
+          "id": "r1q1",
+          "prompt": "十時にどこへ行きましたか。",
+          "options": [
+            "学校",
+            "駅の近くの本屋",
+            "映画館"
+          ],
+          "answer": 1,
+          "explanation": "文中说「十時に駅の近くの本屋へ行きました」。"
+        },
+        {
+          "id": "r1q2",
+          "prompt": "午後は何をしましたか。",
+          "options": [
+            "本を読みました",
+            "本を買いました",
+            "駅へ行きました"
+          ],
+          "answer": 0,
+          "explanation": "最后一句说下午在家读了那本书。"
+        }
+      ]
+    },
+    {
+      "id": "reading-02",
+      "title": "雨の日の予定",
+      "level": "基础到初级",
+      "minutes": 7,
+      "segments": [
+        {
+          "text": "明日",
+          "reading": "あした"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "雨",
+          "reading": "あめ"
+        },
+        {
+          "text": "が"
+        },
+        {
+          "text": "降る",
+          "reading": "ふる"
+        },
+        {
+          "text": "そうです。"
+        },
+        {
+          "text": "私",
+          "reading": "わたし"
+        },
+        {
+          "text": "は"
+        },
+        {
+          "text": "友だち",
+          "reading": "ともだち"
+        },
+        {
+          "text": "と"
+        },
+        {
+          "text": "公園",
+          "reading": "こうえん"
+        },
+        {
+          "text": "へ行く"
+        },
+        {
+          "text": "予定",
+          "reading": "よてい"
+        },
+        {
+          "text": "でした。"
+        },
+        {
+          "text": "でも、雨なら"
+        },
+        {
+          "text": "映画",
+          "reading": "えいが"
+        },
+        {
+          "text": "を見に行きます。"
+        },
+        {
+          "text": "友だちにメッセージを送って、"
+        },
+        {
+          "text": "時間",
+          "reading": "じかん"
+        },
+        {
+          "text": "を決めます。"
+        }
+      ],
+      "translation": "听说明天会下雨。我原本计划和朋友去公园。不过如果下雨，就去看电影。我会给朋友发消息，商量时间。",
+      "focus": [
+        "そうです：本句表示听来的消息",
+        "雨なら：如果下雨",
+        "見に行く：去做某事"
+      ],
+      "questions": [
+        {
+          "id": "r2q1",
+          "prompt": "もともとの予定は何ですか。",
+          "options": [
+            "映画を見る",
+            "公園へ行く",
+            "家で本を読む"
+          ],
+          "answer": 1,
+          "explanation": "「公園へ行く予定でした」说明原计划是去公园。"
+        },
+        {
+          "id": "r2q2",
+          "prompt": "雨なら、何をしますか。",
+          "options": [
+            "映画を見に行く",
+            "買い物に行く",
+            "予定を全部やめる"
+          ],
+          "answer": 0,
+          "explanation": "「雨なら映画を見に行きます」。"
+        }
+      ]
+    }
+  ],
+  "listenings": [
+    {
+      "id": "listening-01",
+      "title": "短句 01",
+      "level": "短句 · 首遍理解",
+      "transcript": "明日は何か予定ある？",
+      "translation": "明天有什么安排吗？",
+      "credit": "句子：Tatoeba CC BY 2.0 FR；录音：yomi CC BY-NC 4.0",
+      "sourceUrl": "https://tatoeba.org/en/sentences/show/1063562",
+      "questions": [
+        {
+          "id": "l1q1",
+          "prompt": "说话人在询问什么？",
+          "options": [
+            "明天的安排",
+            "今天的天气",
+            "上周的考试"
+          ],
+          "answer": 0,
+          "explanation": "「明日」是明天，「予定」是安排。"
+        }
+      ],
+      "audioFile": "58686.mp3"
+    },
+    {
+      "id": "listening-02",
+      "title": "短句 02",
+      "level": "短句 · 数字信息",
+      "transcript": "駅までは歩いて1時間です。",
+      "translation": "走到车站要一个小时。",
+      "credit": "句子：Tatoeba CC BY 2.0 FR；录音：Mizu CC BY-NC 4.0",
+      "sourceUrl": "https://tatoeba.org/en/sentences/show/2494554",
+      "questions": [
+        {
+          "id": "l2q1",
+          "prompt": "走到车站需要多久？",
+          "options": [
+            "十分钟",
+            "三十分钟",
+            "一个小时"
+          ],
+          "answer": 2,
+          "explanation": "音频中的「1時間」是一小时。"
+        }
+      ],
+      "audioFile": "140045.mp3"
+    },
+    {
+      "id": "listening-03",
+      "title": "短句 03",
+      "level": "短句 · 邀约",
+      "transcript": "今週末は暇？",
+      "translation": "这个周末有空吗？",
+      "credit": "句子：Tatoeba CC BY 2.0 FR；录音：yomi CC BY-NC 4.0",
+      "sourceUrl": "https://tatoeba.org/en/sentences/show/3024516",
+      "questions": [
+        {
+          "id": "l3q1",
+          "prompt": "说话人在问哪个时间？",
+          "options": [
+            "明天早上",
+            "这个周末",
+            "下个月"
+          ],
+          "answer": 1,
+          "explanation": "「今週末」是这个周末。"
+        }
+      ],
+      "audioFile": "179952.mp3"
+    }
+  ],
+  "baselineQuestions": [
+    {
+      "id": "b1",
+      "prompt": "片假名「シ」的读音是什么？",
+      "options": [
+        "shi",
+        "tsu",
+        "so"
+      ],
+      "answer": 0,
+      "explanation": "シ 读 shi。"
+    },
+    {
+      "id": "b2",
+      "prompt": "片假名「ツ」的读音是什么？",
+      "options": [
+        "n",
+        "tsu",
+        "shi"
+      ],
+      "answer": 1,
+      "explanation": "ツ 读 tsu。"
+    },
+    {
+      "id": "b3",
+      "prompt": "「駅」的读音是什么？",
+      "options": [
+        "えき",
+        "あめ",
+        "えいが"
+      ],
+      "answer": 0,
+      "explanation": "駅（えき）是车站。"
+    },
+    {
+      "id": "b4",
+      "prompt": "「家で本を読みます」中，で 表示什么？",
+      "options": [
+        "动作发生的地点",
+        "移动的目的地",
+        "过去时"
+      ],
+      "answer": 0,
+      "explanation": "这里「家で」表示在家读书。"
+    },
+    {
+      "id": "b5",
+      "prompt": "「本を買いました」发生在什么时候？",
+      "options": [
+        "过去",
+        "现在",
+        "将来"
+      ],
+      "answer": 0,
+      "explanation": "「ました」是礼貌体过去时。"
+    },
+    {
+      "id": "b6",
+      "prompt": "听音后，说话人在询问什么？",
+      "options": [
+        "明天的安排",
+        "今天的天气",
+        "昨天买的书"
+      ],
+      "answer": 0,
+      "explanation": "「明日」是明天，「予定」是安排。"
+    }
+  ]
+}

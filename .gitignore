@@ -1,0 +1,9 @@
+.DS_Store
+apps/*/node_modules/
+apps/*/dist/
+apps/*/src-tauri/target/
+apps/*/*.app/
+.impeccable/
+.playwright-cli/
+output/
+apps/codex/tsconfig.tsbuildinfo

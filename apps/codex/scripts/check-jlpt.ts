@@ -32,7 +32,9 @@ const complete = parseImportedJLPTPack(importedJLPTCompleteExample)
 assert.equal(complete.complete, true)
 assert.equal(complete.questionCount, complete.questions.length)
 assert.equal(complete.sourceUrl, 'https://fixture.invalid/source')
-assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 })
+assert.equal(complete.questions.length, 67)
+assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 21, '文法': 15, '読解': 7, '聴解': 24 })
+assert.equal(complete.questions.every((question) => Number.isInteger(question.questionNumber)), true)
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteTemplate), /模板占位符/)
 const unfinishedQuestions = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
@@ -40,8 +42,8 @@ unfinishedQuestions.questions = (unfinishedQuestions.questions as Array<Record<s
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(unfinishedQuestions)), /题目占位符/)
 const tooSmall = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 tooSmall.questions = (tooSmall.questions as unknown[]).filter((_, index) => index % 4 === 0)
-tooSmall.questionCount = 4
-tooSmall.sectionQuestionCounts = { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 }
-assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要 4 题/)
+tooSmall.questionCount = (tooSmall.questions as unknown[]).length
+tooSmall.sectionQuestionCounts = { '文字・語彙': 6, '文法': 4, '読解': 2, '聴解': 5 }
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://fixture.invalid/source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (12 per level), complete-pack validation, official links for ${jlptLevels.join('/')}`)

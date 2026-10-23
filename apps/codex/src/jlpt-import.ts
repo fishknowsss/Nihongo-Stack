@@ -18,6 +18,22 @@ export type ImportedJLPTPack = {
   questions: JLPTQuestion[]
 }
 
+/**
+ * JLPT publishes approximate item counts, and the actual count may vary slightly
+ * by session. These lower bounds reject teaching excerpts while leaving room for
+ * the session-to-session variation documented by the official site.
+ */
+export function minimumCompleteQuestionCount(level: JLPTLevel, year: number, session: string): number {
+  if (level === 'N2') return 100
+  if (level === 'N3') return 95
+  if (level === 'N4') {
+    const beforeShortenedFormat = year < 2020 || (year === 2020 && session === '07')
+    return beforeShortenedFormat ? 90 : 78
+  }
+  const beforeShortenedFormat = year < 2020 || (year === 2020 && session === '07')
+  return beforeShortenedFormat ? 80 : 60
+}
+
 const levels = new Set<JLPTLevel>(['N5', 'N4', 'N3', 'N2'])
 const sections = new Set<JLPTSection>(['文字・語彙', '文法', '読解', '聴解'])
 
@@ -63,6 +79,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
       id: `${String(record.id ?? 'imported')}:${id}`,
       level,
       section,
+      questionNumber: typeof question.questionNumber === 'number' ? question.questionNumber : undefined,
       prompt: text(question.prompt, `第 ${index + 1} 题 prompt`),
       options: question.options.map((option) => String(option)),
       answer: Number(question.answer),
@@ -84,16 +101,25 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     if (questions.some((question) => questionPlaceholders.some((placeholder) => JSON.stringify(question).includes(placeholder)))) throw new Error('完整题库仍包含题目占位符，请先填写真实题目')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
     if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
+    const minimum = minimumCompleteQuestionCount(level, numericYear, record.session.trim())
+    if (questions.length < minimum) throw new Error(`完整题库至少需要 ${minimum} 题；当前只有 ${questions.length} 题，请导入整场试卷而不是教学节选`)
+    if (questions.some((question) => !Number.isInteger(question.questionNumber) || Number(question.questionNumber) < 1)) throw new Error('完整题库每道题都必须填写正整数 questionNumber')
+    for (const section of sections) {
+      const numbers = questions.filter((question) => question.section === section).map((question) => question.questionNumber as number)
+      if (new Set(numbers).size !== numbers.length) throw new Error(`${section} 的 questionNumber 不能重复`)
+      const expected = Array.from({ length: numbers.length }, (_, index) => index + 1)
+      if (numbers.slice().sort((a, b) => a - b).some((number, index) => number !== expected[index])) throw new Error(`${section} 的 questionNumber 必须从 1 连续编号，不能缺题`)
+    }
     if (!record.sectionQuestionCounts || typeof record.sectionQuestionCounts !== 'object' || Array.isArray(record.sectionQuestionCounts)) throw new Error('完整题库必须填写 sectionQuestionCounts')
     const sectionQuestionCounts = record.sectionQuestionCounts as Record<string, unknown>
     for (const section of ['文字・語彙', '文法', '読解', '聴解'] as const) {
-      if (!Number.isInteger(sectionQuestionCounts[section]) || Number(sectionQuestionCounts[section]) < 4) throw new Error(`完整题库的 ${section} 至少需要 4 题；少于此数量应标记为教学节选`)
+      if (!Number.isInteger(sectionQuestionCounts[section]) || Number(sectionQuestionCounts[section]) < 1) throw new Error(`完整题库必须填写 ${section} 的实际题数`)
       const actual = questions.filter((question) => question.section === section).length
       if (actual !== Number(sectionQuestionCounts[section])) throw new Error(`${section} 题量不匹配：声明 ${sectionQuestionCounts[section]}，实际 ${actual}`)
     }
     const declaredTotal = Object.values(sectionQuestionCounts).reduce((sum: number, value) => sum + (typeof value === 'number' ? value : 0), 0)
     if (declaredTotal !== questions.length) throw new Error('sectionQuestionCounts 总数必须等于 questions 数量')
-    if (questions.some((question) => question.section === '聴解' && (!question.audioUrl || question.audioUrl.includes('example.com')))) throw new Error('完整题库的每道聴解题都必须提供真实 audioUrl')
+    if (questions.some((question) => question.section === '聴解' && (!question.audioUrl || !/^https?:\/\//.test(question.audioUrl) || question.audioUrl.includes('example.com')))) throw new Error('完整题库的每道聴解题都必须提供真实 http(s) audioUrl')
   }
   return {
     schemaVersion: 1,
@@ -153,11 +179,17 @@ export const importedJLPTCompleteTemplate = JSON.stringify({
   license: '填写个人使用或再分发许可',
   sourceUrl: 'https://example.com/original-source',
   complete: true,
-  questionCount: 16,
-  sectionQuestionCounts: { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 },
-  questions: ['文字・語彙', '文法', '読解', '聴解'].flatMap((section) => Array.from({ length: 4 }, (_, index) => ({
+  questionCount: 67,
+  sectionQuestionCounts: { '文字・語彙': 21, '文法': 15, '読解': 7, '聴解': 24 },
+  questions: ([
+    ['文字・語彙', 21],
+    ['文法', 15],
+    ['読解', 7],
+    ['聴解', 24],
+  ] as const).flatMap(([section, count]) => Array.from({ length: count }, (_, index) => ({
     id: `${section}-${String(index + 1).padStart(3, '0')}`,
     section,
+    questionNumber: index + 1,
     prompt: '填写日文题干',
     options: ['选项 A', '选项 B', '选项 C', '选项 D'],
     answer: 0,
@@ -182,19 +214,25 @@ export const importedJLPTCompleteExample = JSON.stringify({
   license: '内部测试资料，不是官方真题',
   sourceUrl: 'https://fixture.invalid/source',
   complete: true,
-  questionCount: 16,
-  sectionQuestionCounts: { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 },
+  questionCount: 67,
+  sectionQuestionCounts: { '文字・語彙': 21, '文法': 15, '読解': 7, '聴解': 24 },
   questions: [
-    ...(['文字・語彙', '文法', '読解', '聴解'] as const).flatMap((section) => Array.from({ length: 4 }, (_, index) => [`${section}-${index + 1}`, section] as const)),
-  ].map(([id, section]) => ({
+    ...([
+      ['文字・語彙', 21],
+      ['文法', 15],
+      ['読解', 7],
+      ['聴解', 24],
+    ] as const).flatMap(([section, count]) => Array.from({ length: count }, (_, index) => [`${section}-${index + 1}`, section, index + 1] as const)),
+  ].map(([id, section, questionNumber]) => ({
     id,
     section,
+    questionNumber,
     prompt: `fixture ${id}`,
     options: ['A', 'B'],
     answer: 0,
     explanation: 'fixture explanation',
     studySteps: ['fixture step one', 'fixture step two'],
-    ...(section === '聴解' ? { audioUrl: 'fixture://audio' } : {}),
+    ...(section === '聴解' ? { audioUrl: 'https://fixture.invalid/audio.mp3' } : {}),
   })),
 })
 

@@ -71,6 +71,15 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     const mode = preferences.find((row) => row.key === 'jlptPracticeMode')?.value
     if (mode === 'learn' || mode === 'exam') setPracticeMode(mode)
   }, [preferences])
+  useEffect(() => {
+    const saved = preferences.find((row) => row.key === 'jlptActiveSet')?.value
+    const savedSet = typeof saved === 'string' ? allSets.find((set) => set.id === saved) : undefined
+    if (savedSet && savedSet.id !== activeSetId) {
+      setActiveSetId(savedSet.id)
+      setLevel(savedSet.level)
+      setYear(savedSet.year)
+    }
+  }, [activeSetId, allSets, preferences])
   const timedExam = practiceMode === 'exam' && questionFilter === 'all' && activeSet.complete === true
   useEffect(() => {
     if (!timedExam || submitted) {
@@ -93,6 +102,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     setAnswers({})
     setSubmitted(false)
     setQuestionFilter('all')
+    void setPreference('jlptActiveSet', `jlpt-${nextYear}-${nextLevel.toLowerCase()}`).catch(() => onNotify('JLPT 当前题库位置未保存，本次仍可继续使用。', 'error'))
   }
   function changeSupport(next: JLPTSupport) {
     setSupport(next)
@@ -120,6 +130,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
       setLevel(pack.level)
       setYear(pack.year)
       setActiveSetId(pack.id)
+      await setPreference('jlptActiveSet', pack.id)
       setAnswers({})
       setSubmitted(false)
       setQuestionFilter('all')
@@ -144,6 +155,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     await db.preferences.bulkDelete(preferenceKeys)
     if (activeSetId === packId) {
       setActiveSetId(`jlpt-${year}-${level.toLowerCase()}`)
+      void setPreference('jlptActiveSet', `jlpt-${year}-${level.toLowerCase()}`)
       setAnswers({})
       setSubmitted(false)
       setQuestionFilter('all')
@@ -238,7 +250,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
           <div className="jlpt-imported-grid">
-            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all') }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 四科已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div></div>)}
+            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all'); void setPreference('jlptActiveSet', set.id) }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 分区已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div></div>)}
           </div>
         </section>
       )}
@@ -285,7 +297,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </ul>
           <details className="jlpt-format-details">
             <summary>完整真题 JSON 需要哪些字段？</summary>
-            <p>将 <code>complete</code> 设为 true 时，必须同时填写 <code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code>；四科题数必须与实际题目一致且每科至少 4 题，每道聴解题必须有 <code>audioUrl</code>。这会阻止把只有几道题的练习包误标成完整真题。</p>
+            <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。这会阻止把几道题的教学节选误标成完整真题。</p>
           </details>
           <div className="jlpt-source-list">
             <details className="jlpt-official-details">
@@ -320,7 +332,7 @@ function downloadText(text: string, name: string) {
 function JLPTQuestionRow({ question, index, value, submitted, mode, support, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; mode: JLPTPracticeMode; support: JLPTSupport; onChange: (value: number) => void }) {
   return (
     <fieldset id={`jlpt-question-${question.id}`} className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
-      <legend><span>{index + 1}</span><b>{question.section}</b>{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
+      <legend><span>{index + 1}</span><b>{question.section}</b>{question.questionNumber !== undefined && <em>原题第 {question.questionNumber} 题</em>}{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
       {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support"><span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       <div className="jlpt-options">

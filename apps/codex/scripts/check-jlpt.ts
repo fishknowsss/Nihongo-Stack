@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptYears } from '../src/jlpt'
+import { jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptYears } from '../src/jlpt'
 import { importedJLPTCompleteExample, importedJLPTExample, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
@@ -11,6 +11,8 @@ for (const level of jlptLevels) {
   assert.equal(levelQuestions.length, 12)
   for (const section of ['文字・語彙', '文法', '読解'] as const) assert.equal(levelQuestions.filter((question) => question.section === section).length, 4)
   assert.equal(jlptOfficialPracticeLinks[level].length, 6)
+  assert.ok(jlptLevelGuides[level].japaneseFocus.length > 0)
+  assert.equal(jlptLevelGuides[level].steps.length, 3)
 }
 for (const question of jlptQuestions) {
   assert.ok(question.prompt.length > 0)

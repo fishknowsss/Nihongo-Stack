@@ -435,6 +435,12 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-controls select { min-width: 116px; }
 .jlpt-blueprint { color: var(--muted); font-size: .8125rem; line-height: 1.7; }
 .jlpt-blueprint strong { color: var(--ink); }
+.jlpt-level-guide { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 18px 28px; padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--panel); }
+.jlpt-level-guide h2 { margin-top: 3px; font-size: 1.05rem; }
+.jlpt-level-guide p { margin-top: 5px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.jlpt-level-guide p strong { color: var(--ink); }
+.jlpt-guide-kicker { color: var(--accent); font-size: .75rem; font-weight: 650; }
+.jlpt-level-guide ol { display: grid; gap: 7px; align-content: center; margin: 0; padding-left: 20px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
 .jlpt-year-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
 .jlpt-set { display: grid; gap: 4px; min-height: 88px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); text-align: left; }
 .jlpt-set:hover, .jlpt-set.active { border-color: var(--accent); background: var(--accent-soft); }
@@ -658,6 +664,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .jlpt-level { flex: 1; }
   .jlpt-controls label, .jlpt-controls select { width: 100%; }
   .jlpt-year-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .jlpt-level-guide { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .jlpt-imported-grid { grid-template-columns: minmax(0, 1fr); }
   .jlpt-workbench { grid-template-columns: minmax(0, 1fr); }
   .jlpt-practice-panel { padding: 16px; }

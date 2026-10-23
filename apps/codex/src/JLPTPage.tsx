@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, TrashSimple } from '@phosphor-icons/react'
-import { jlptExamBlueprint, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
+import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
@@ -188,6 +188,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </label>
       </section>
       <p className="jlpt-blueprint"><strong>{level} 完整卷结构：</strong>{jlptExamBlueprint[level].sections.join(' · ')}；建议考试计时 {jlptExamBlueprint[level].minutes.join(' + ')} 分钟。导入题库时应覆盖对应科目。</p>
+      <section className="jlpt-level-guide" aria-label={`${level} 分级学习指南`}>
+        <div><span className="jlpt-guide-kicker">{level} 学习指南</span><h2>{jlptLevelGuides[level].title}</h2><p><strong>日语重点：</strong>{jlptLevelGuides[level].japaneseFocus}</p><p><strong>中文策略：</strong>{jlptLevelGuides[level].chineseStrategy}</p></div>
+        <ol>{jlptLevelGuides[level].steps.map((step) => <li key={step}>{step}</li>)}</ol>
+      </section>
       <section className="jlpt-year-grid" aria-label="近七年练习包">
         {jlptSets.filter((set) => set.level === level).map((set) => (
           <button key={set.id} className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => chooseSet(set.level, set.year)}>

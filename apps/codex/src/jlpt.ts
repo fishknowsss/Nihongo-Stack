@@ -46,6 +46,40 @@ export const jlptExamBlueprint: Record<JLPTLevel, { sections: string[]; minutes:
   N2: { sections: ['言語知識・読解', '聴解'], minutes: [105, 50] },
 }
 
+export type JLPTLevelGuide = {
+  title: string
+  japaneseFocus: string
+  chineseStrategy: string
+  steps: string[]
+}
+
+export const jlptLevelGuides: Record<JLPTLevel, JLPTLevelGuide> = {
+  N5: {
+    title: '先建立句子骨架',
+    japaneseFocus: '助词「は・が・を・に・で」、です／ます和时间地点表达。',
+    chineseStrategy: '中文常省略助词；做题时先找“谁、做什么、在哪里、什么时候”，再判断助词。',
+    steps: ['先读平假名和句尾，再看汉字。', '把助词前后的词组成短语。', '最后用中文复述整句，不只背选项。'],
+  },
+  N4: {
+    title: '把动作连成场景',
+    japaneseFocus: 'て形、过去式、原因「ので」、同时动作「ながら」和日常安排。',
+    chineseStrategy: '中文语序容易让时间、原因和动作混在一起；先按时间线拆句，再恢复自然中文。',
+    steps: ['圈出时间、条件和原因。', '确认动词形式表示完成、进行还是计划。', '用一条时间线检查选项是否与原文一致。'],
+  },
+  N3: {
+    title: '读懂句间关系',
+    japaneseFocus: '转折、追加、条件、部分否定和抽象名词搭配。',
+    chineseStrategy: '不要逐词翻译；先找「しかし・だけでなく・ほど・ように」等连接信号，再判断作者关系。',
+    steps: ['先标出连接词和句尾。', '区分事实、理由、建议和作者评价。', '把长句压缩成“前提→关系→结论”。'],
+  },
+  N2: {
+    title: '抓住论点和限制',
+    japaneseFocus: '正式词汇、抽象论证、让步转折、依据与结论的对应关系。',
+    chineseStrategy: '中文学习者容易被汉字表面意思带偏；必须结合搭配、语气和段落功能判断。',
+    steps: ['先找主张、依据和限制条件。', '再检查词语在句中的搭配与语气。', '最后用一句中文说明作者真正想强调什么。'],
+  },
+}
+
 export const jlptQuestions: JLPTQuestion[] = [
   {
     id: 'practice-n5-vocab-01', level: 'N5', section: '文字・語彙', prompt: '「毎日」の読み方はどれですか。', options: ['まいにち', 'まいげつ', 'まいとし', 'まいしゅう'], answer: 0, reading: 'まいにち', gloss: '每天', explanation: '毎日（まいにち）由「毎」和「日」组成，表示每天。', studySteps: ['先记「日」在日期里的读音 ひ／にち／じつ。', '这里是惯用词「まいにち」，先整体记忆，再回到句子。'], source: 'original-practice',

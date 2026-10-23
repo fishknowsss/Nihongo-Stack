@@ -84,10 +84,11 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
       return
     }
     setSubmitted(true)
+    const attemptKey = questionFilter === 'all' ? activeSet.id : `${activeSet.id}:${questionFilter}`
     void Promise.all([
-      setPreference(`jlptCompleted:${activeSet.id}`, true),
-      setPreference(`jlptScore:${activeSet.id}`, score),
-      setPreference(`jlptLastAttempt:${activeSet.id}`, new Date().toISOString()),
+      questionFilter === 'all' ? setPreference(`jlptCompleted:${activeSet.id}`, true) : setPreference(`jlptSectionCompleted:${attemptKey}`, true),
+      setPreference(`jlptScore:${attemptKey}`, score),
+      setPreference(`jlptLastAttempt:${attemptKey}`, new Date().toISOString()),
       setPreference(draftKey, JSON.stringify(answers)),
     ]).catch(() => onNotify('JLPT 练习结果未写入本机，请重试。', 'error'))
     onNotify('练习结果已显示；请按题目下的步骤回看。')

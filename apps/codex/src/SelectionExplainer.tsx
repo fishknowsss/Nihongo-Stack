@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { BookmarkSimple, FloppyDisk, X } from '@phosphor-icons/react'
+import { BookmarkSimple, FloppyDisk, SpeakerHigh, X } from '@phosphor-icons/react'
 import { db, setPreference } from './db'
 import { kanaToRomaji, lookupJapanese, type LexiconEntry } from './language'
 
@@ -77,6 +77,17 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
   const currentSelection = selection
   const reading = currentSelection.entry?.reading ?? kanaReading(currentSelection.text)
   const romaji = reading ? kanaToRomaji(reading) : undefined
+  function speak() {
+    if (!('speechSynthesis' in window)) {
+      onNotify('当前环境不支持日语朗读。', 'error')
+      return
+    }
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(currentSelection.text)
+    utterance.lang = 'ja-JP'
+    utterance.rate = 0.82
+    window.speechSynthesis.speak(utterance)
+  }
   async function save() {
     try {
       await setPreference(`annotationNote:${currentSelection.text}`, note.trim())
@@ -101,6 +112,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : '词汇'}</span>}
       <p className="selection-gloss">{selection.entry?.gloss ?? '可先把这段加入笔记，稍后补充词义。'}</p>
       {selection.entry?.explanation && <p className="field-hint">{selection.entry.explanation}</p>}
+      <button className="outline-button compact selection-speak" onClick={speak}><SpeakerHigh size={16} /> 日语朗读</button>
       <textarea value={note} onChange={(event) => { setNote(event.target.value); setSaved(false) }} placeholder="写下你的理解、例句或易错点…" aria-label="选中内容笔记" />
       <div className="selection-actions">
         <button className={`bookmark-button compact ${favorite ? 'selected' : ''}`} aria-pressed={favorite} onClick={() => { setFavorite((current) => !current); setSaved(false) }}><BookmarkSimple size={17} weight={favorite ? 'fill' : 'regular'} /> {favorite ? '已收藏' : '收藏'}</button>

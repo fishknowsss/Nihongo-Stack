@@ -53,6 +53,9 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
       gloss: typeof question.gloss === 'string' ? question.gloss : undefined,
       explanation: typeof question.explanation === 'string' && question.explanation.trim() ? question.explanation : '导入资料未提供解析，请结合原始答案和教材复盘。',
       studySteps: Array.isArray(question.studySteps) && question.studySteps.length ? question.studySteps.map(String) : ['先独立完成，再对照原始答案。', '把不熟的词句加入选中笔记。'],
+      itemType: typeof question.itemType === 'string' ? question.itemType : undefined,
+      audioUrl: typeof question.audioUrl === 'string' ? question.audioUrl : undefined,
+      sourceUrl: typeof question.sourceUrl === 'string' ? question.sourceUrl : undefined,
       source: 'licensed-import',
     }
   })

@@ -195,7 +195,8 @@ function downloadText(text: string, name: string) {
 function JLPTQuestionRow({ question, index, value, submitted, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; onChange: (value: number) => void }) {
   return (
     <fieldset className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
-      <legend><span>{index + 1}</span><b>{question.section}</b>{question.prompt}</legend>
+      <legend><span>{index + 1}</span><b>{question.section}</b>{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
+      {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       <div className="jlpt-options">
         {question.options.map((option, optionIndex) => (
           <label key={option} className={`${value === optionIndex ? 'chosen' : ''} ${submitted && optionIndex === question.answer ? 'correct' : ''} ${submitted && value === optionIndex && optionIndex !== question.answer ? 'incorrect' : ''}`}>
@@ -209,6 +210,7 @@ function JLPTQuestionRow({ question, index, value, submitted, onChange }: { ques
           <p><strong>{question.reading}</strong>{question.gloss ? ` · ${question.gloss}` : ''}</p>
           <p>{question.explanation}</p>
           <ol>{question.studySteps.map((step) => <li key={step}>{step}</li>)}</ol>
+          {question.sourceUrl && <a className="jlpt-question-source" href={question.sourceUrl} target="_blank" rel="noreferrer">查看原始来源</a>}
         </div>
       )}
     </fieldset>

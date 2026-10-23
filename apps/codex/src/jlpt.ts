@@ -12,6 +12,9 @@ export type JLPTQuestion = {
   gloss?: string
   explanation: string
   studySteps: string[]
+  itemType?: string
+  audioUrl?: string
+  sourceUrl?: string
   source: 'original-practice' | 'licensed-import'
 }
 

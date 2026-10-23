@@ -94,6 +94,13 @@ button { transition: background-color 140ms ease-out, border-color 140ms ease-ou
 .text-button { background: transparent; color: var(--accent); padding-inline: 10px; }
 .text-button:hover:not(:disabled) { background: var(--accent-soft); }
 .quiet-empty { display: grid; gap: 12px; justify-items: start; padding: 20px; background: var(--panel); border-radius: 8px; color: var(--muted); font-size: .9375rem; }
+.selection-notes { display: grid; gap: 14px; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
+.selection-notes-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.selection-notes-list li { display: flex; align-items: start; justify-content: space-between; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); }
+.selection-note-main { display: grid; gap: 5px; min-width: 0; }
+.selection-note-word { font-size: 1.05rem; }
+.selection-note-main p { color: var(--ink); font-size: .875rem; line-height: 1.7; overflow-wrap: anywhere; }
+.selection-note-main > span { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-size: .75rem; }
 .empty-state { display: grid; gap: 14px; justify-items: center; padding: 36px 24px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); text-align: center; }
 .empty-state > svg { color: var(--green); }
 .empty-state > p { max-width: 60ch; color: var(--muted); }

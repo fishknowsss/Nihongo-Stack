@@ -65,6 +65,7 @@ import StudyLayerControl from './StudyLayerControl'
 import LayeredJapanese from './LayeredJapanese'
 import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
+import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
@@ -429,6 +430,7 @@ function App() {
                 <ProgressPage
                   {...{ progress, attempts, events, preferences, now }}
                   openMaterial={openMaterial}
+                  onNotify={onNotify}
                   onStart={() => setView('today')}
                 />
               )}
@@ -2126,6 +2128,7 @@ function ProgressPage({
   preferences,
   now,
   openMaterial,
+  onNotify,
   onStart,
 }: {
   progress: CardProgress[]
@@ -2133,6 +2136,7 @@ function ProgressPage({
   events: ReviewEvent[]
   preferences: Preference[]
   now: number
+  onNotify: Notify
   openMaterial: TodayProps['openMaterial']
   onStart: () => void
 }) {
@@ -2234,6 +2238,7 @@ function ProgressPage({
         {events.length} 次。
       </p>
       <WeeklyReport {...{ preferences, attempts, events, now }} />
+      <SelectionNotes preferences={preferences} onNotify={onNotify} />
       <MistakeReview attempts={attempts} openMaterial={openMaterial} />
       <section className="history-panel">
         <div className="section-heading">

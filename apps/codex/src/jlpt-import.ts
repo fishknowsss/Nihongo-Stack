@@ -26,6 +26,18 @@ function text(value: unknown, label: string): string {
   return value.trim()
 }
 
+function sourceUrl(value: unknown, label: string): string | undefined {
+  if (value === undefined || value === null || value === '') return undefined
+  if (typeof value !== 'string' || !value.trim()) throw new Error(`${label}必须是 http(s) URL`)
+  try {
+    const parsed = new URL(value.trim())
+    if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') throw new Error()
+  } catch {
+    throw new Error(`${label}必须是 http(s) URL`)
+  }
+  return value.trim()
+}
+
 export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   if (raw.length > 20 * 1024 * 1024) throw new Error('题库文件超过 20 MB')
   let data: unknown
@@ -60,7 +72,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
       studySteps: Array.isArray(question.studySteps) && question.studySteps.length ? question.studySteps.map(String) : ['先独立完成，再对照原始答案。', '把不熟的词句加入选中笔记。'],
       itemType: typeof question.itemType === 'string' ? question.itemType : undefined,
       audioUrl: typeof question.audioUrl === 'string' ? question.audioUrl : undefined,
-      sourceUrl: typeof question.sourceUrl === 'string' ? question.sourceUrl : undefined,
+      sourceUrl: sourceUrl(question.sourceUrl, `第 ${index + 1} 题 sourceUrl`),
       source: 'licensed-import',
     }
   })
@@ -89,7 +101,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     title: text(record.title, 'title'),
     sourceName: text(record.sourceName, 'sourceName'),
     license: text(record.license, 'license'),
-    sourceUrl: typeof record.sourceUrl === 'string' && record.sourceUrl.trim() ? record.sourceUrl.trim() : undefined,
+    sourceUrl: sourceUrl(record.sourceUrl, 'sourceUrl'),
     complete,
     questionCount: typeof record.questionCount === 'number' ? record.questionCount : undefined,
     sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)

@@ -10,6 +10,8 @@ export type JLPTQuestion = {
   level: JLPTLevel
   section: JLPTSection
   prompt: string
+  /** Japanese text for local speech synthesis when no licensed recording is bundled. */
+  audioText?: string
   options: string[]
   answer: number
   reading?: string
@@ -167,7 +169,7 @@ export const jlptSets: JLPTSet[] = jlptYears.flatMap((year) => jlptLevels.map((l
     title: `${year} · ${level} 题型训练`,
     status: 'practice' as const,
     questionIds: questions.map((question) => question.id),
-    note: '原创分级教学包：词汇、语法、阅读各 4 题，逐题显示读音、中文义和解题步骤；听力使用官方入口或授权题库。',
+    note: '原创分级教学包：词汇、语法、阅读、听力各 4 题，逐题显示读音、中文义和解题步骤；听力为合成朗读练习，完整原卷可授权导入。',
   }
 }))
 

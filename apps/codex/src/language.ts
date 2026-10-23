@@ -11,8 +11,42 @@ export type LexiconEntry = {
   reading: string
   romaji: string
   gloss?: string
-  kind?: 'kanji' | 'katakana' | 'grammar' | 'hiragana'
+  kind?: 'kanji' | 'katakana' | 'grammar' | 'hiragana' | 'phrase'
   explanation?: string
+}
+
+function isKatakana(value: string): boolean {
+  return /^[\u30a0-\u30ffー・\s]+$/u.test(value)
+}
+
+function isHiragana(value: string): boolean {
+  return /^[\u3040-\u309fー・\s]+$/u.test(value)
+}
+
+function katakanaToHiragana(value: string): string {
+  return [...value].map((char) => {
+    const code = char.charCodeAt(0)
+    return code >= 0x30a1 && code <= 0x30f6 ? String.fromCharCode(code - 0x60) : char
+  }).join('')
+}
+
+function inferredEntry(surface: string): LexiconEntry | undefined {
+  const normalized = surface.trim()
+  if (!normalized) return undefined
+  if (isKatakana(normalized)) {
+    const reading = katakanaToHiragana(normalized)
+    return { surface: normalized, reading, romaji: kanaToRomaji(reading), gloss: '片假名词汇；请结合上下文确认具体释义', kind: 'katakana', explanation: '片假名常用于外来语、拟声词、品牌名或强调表达。' }
+  }
+  if (isHiragana(normalized)) {
+    return { surface: normalized, reading: normalized, romaji: kanaToRomaji(normalized), gloss: '平假名表达；请结合句型确认含义', kind: 'hiragana', explanation: '平假名可能是助词、活用词尾或完整词语，整句语境会决定含义。' }
+  }
+  if (/^[\u3400-\u9fff々ー]+$/u.test(normalized)) {
+    return { surface: normalized, reading: '', romaji: '', gloss: '汉字词暂未收录；可先结合上下文并保存笔记', kind: 'kanji', explanation: '当前本地词典没有可靠读音，应用不会猜测多音字读法。' }
+  }
+  if (/[\u3040-\u30ff\u3400-\u9fff]/u.test(normalized)) {
+    return { surface: normalized, reading: '', romaji: '', gloss: '选中日文片段暂未收录；可先结合上下文并保存笔记', kind: 'phrase', explanation: '这是一个可收藏的上下文片段，本地词典暂未覆盖整段解析。' }
+  }
+  return undefined
 }
 
 const kanaBase: Record<string, string> = {
@@ -146,10 +180,41 @@ export const lexicon: LexiconEntry[] = [
   { surface: '行きませんか', reading: 'いきませんか', romaji: 'ikimasen ka', gloss: '要不要一起去？', kind: 'grammar' },
   { surface: 'どうして', reading: 'どうして', romaji: 'dōshite', gloss: '为什么', kind: 'hiragana' },
   { surface: 'そして', reading: 'そして', romaji: 'soshite', gloss: '然后；而且', kind: 'hiragana' },
+  { surface: 'アプリ', reading: 'アプリ', romaji: 'apuri', gloss: '应用；应用程序', kind: 'katakana' },
+  { surface: 'インターネット', reading: 'インターネット', romaji: 'inta-netto', gloss: '互联网', kind: 'katakana' },
+  { surface: 'スマートフォン', reading: 'スマートフォン', romaji: 'suma-to fon', gloss: '智能手机', kind: 'katakana' },
+  { surface: 'パソコン', reading: 'パソコン', romaji: 'pasokon', gloss: '个人电脑', kind: 'katakana' },
+  { surface: 'データ', reading: 'データ', romaji: 'de-ta', gloss: '数据', kind: 'katakana' },
+  { surface: 'ファイル', reading: 'ファイル', romaji: 'fairu', gloss: '文件', kind: 'katakana' },
+  { surface: 'メニュー', reading: 'メニュー', romaji: 'menyu-', gloss: '菜单', kind: 'katakana' },
+  { surface: 'ボタン', reading: 'ボタン', romaji: 'botan', gloss: '按钮', kind: 'katakana' },
+  { surface: 'テスト', reading: 'テスト', romaji: 'tesuto', gloss: '测试；测验', kind: 'katakana' },
+  { surface: 'エラー', reading: 'エラー', romaji: 'era-', gloss: '错误', kind: 'katakana' },
+  { surface: 'オンライン', reading: 'オンライン', romaji: 'onrain', gloss: '在线', kind: 'katakana' },
+  { surface: 'オフライン', reading: 'オフライン', romaji: 'ofurain', gloss: '离线', kind: 'katakana' },
+  { surface: 'デザイン', reading: 'デザイン', romaji: 'dezain', gloss: '设计', kind: 'katakana' },
+  { surface: 'カメラ', reading: 'カメラ', romaji: 'kamera', gloss: '相机', kind: 'katakana' },
+  { surface: 'ビデオ', reading: 'ビデオ', romaji: 'bideo', gloss: '视频', kind: 'katakana' },
+  { surface: 'サービス', reading: 'サービス', romaji: 'sa-bisu', gloss: '服务', kind: 'katakana' },
+  { surface: 'スケジュール', reading: 'スケジュール', romaji: 'sukeju-ru', gloss: '日程；安排', kind: 'katakana' },
+  { surface: 'コース', reading: 'コース', romaji: 'ko-su', gloss: '课程；路线', kind: 'katakana' },
+  { surface: 'レベル', reading: 'レベル', romaji: 'reberu', gloss: '等级；水平', kind: 'katakana' },
+  { surface: 'システム', reading: 'システム', romaji: 'shisutemu', gloss: '系统', kind: 'katakana' },
+  { surface: 'ユーザー', reading: 'ユーザー', romaji: 'yu-za-', gloss: '用户', kind: 'katakana' },
+  { surface: 'アカウント', reading: 'アカウント', romaji: 'akaunto', gloss: '账户', kind: 'katakana' },
+  { surface: 'アクセス', reading: 'アクセス', romaji: 'akusesu', gloss: '访问；进入', kind: 'katakana' },
+  { surface: 'メモ', reading: 'メモ', romaji: 'memo', gloss: '备忘；笔记', kind: 'katakana' },
+  { surface: 'ノート', reading: 'ノート', romaji: 'no-to', gloss: '笔记本；笔记', kind: 'katakana' },
+  { surface: 'クリック', reading: 'クリック', romaji: 'kurikku', gloss: '点击', kind: 'katakana' },
+  { surface: 'タップ', reading: 'タップ', romaji: 'tappu', gloss: '轻触；点击', kind: 'katakana' },
+  { surface: 'リンク', reading: 'リンク', romaji: 'rinku', gloss: '链接', kind: 'katakana' },
+  { surface: 'コンテンツ', reading: 'コンテンツ', romaji: 'kontentsu', gloss: '内容；内容资源', kind: 'katakana' },
 ]
 
 const materialLexicon: LexiconEntry[] = readings.flatMap((reading) => reading.segments.flatMap((segment) => segment.reading ? [{ surface: segment.text.replace(/[。！？、，．,.!?]+$/u, ''), reading: segment.reading, romaji: kanaToRomaji(segment.reading), kind: 'kanji' as const }] : []))
-const allEntries = [...lexicon, ...materialLexicon]
+const allEntries = [...lexicon, ...materialLexicon].map((entry) => entry.kind === 'katakana'
+  ? { ...entry, reading: katakanaToHiragana(entry.reading), romaji: entry.romaji || kanaToRomaji(katakanaToHiragana(entry.reading)) }
+  : entry)
 // Keep context readings from materials while retaining stable glosses and
 // explanations from the curated dictionary. A material-only entry must not
 // erase the Chinese help for a word already in the static lexicon.
@@ -163,7 +228,7 @@ for (const entry of allEntries) {
 
 export function lookupJapanese(text: string): LexiconEntry | undefined {
   const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')
-  return bySurface.get(normalized) ?? allEntries.find((entry) => normalized.includes(entry.surface))
+  return bySurface.get(normalized) ?? allEntries.find((entry) => normalized.includes(entry.surface)) ?? inferredEntry(normalized)
 }
 
 export function segmentText(text: string, suppliedReading?: string): Array<{ text: string; entry?: LexiconEntry; reading?: string }> {
@@ -188,7 +253,7 @@ export function segmentText(text: string, suppliedReading?: string): Array<{ tex
       return index > 0 && index < nearest ? index : nearest
     }, rest.length)
     const chunk = rest.slice(0, nextIndex)
-    result.push({ text: chunk })
+    result.push({ text: chunk, entry: inferredEntry(chunk.replace(/[。！？、，．,.!?]+$/u, '')) })
     rest = rest.slice(nextIndex)
   }
   return result

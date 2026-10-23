@@ -8,8 +8,9 @@ for (const level of jlptLevels) {
   const sets = jlptSets.filter((set) => set.level === level)
   assert.equal(sets.length, jlptYears.length)
   const levelQuestions = jlptQuestions.filter((question) => question.level === level)
-  assert.equal(levelQuestions.length, 12)
-  for (const section of ['文字・語彙', '文法', '読解'] as const) assert.equal(levelQuestions.filter((question) => question.section === section).length, 4)
+  assert.equal(levelQuestions.length, 16)
+  for (const section of ['文字・語彙', '文法', '読解', '聴解'] as const) assert.equal(levelQuestions.filter((question) => question.section === section).length, 4)
+  assert.equal(levelQuestions.filter((question) => question.section === '聴解').every((question) => question.audioText), true)
   assert.equal(jlptOfficialPracticeLinks[level].length, 8)
   assert.equal(new Set(jlptOfficialPracticeLinks[level].map((link) => link.url)).size, 8)
   assert.ok(jlptOfficialPracticeLinks[level].every((link) => link.url.startsWith('https://')))
@@ -46,4 +47,4 @@ tooSmall.questionCount = (tooSmall.questions as unknown[]).length
 tooSmall.sectionQuestionCounts = { '文字・語彙': 6, '文法': 4, '読解': 2, '聴解': 5 }
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://fixture.invalid/source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
-console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (12 per level), complete-pack validation, official links for ${jlptLevels.join('/')}`)
+console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (16 per level, four sections), complete-pack validation, official links for ${jlptLevels.join('/')}`)

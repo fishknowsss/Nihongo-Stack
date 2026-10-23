@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
-import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, TrashSimple } from '@phosphor-icons/react'
+import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
@@ -335,6 +335,7 @@ function JLPTQuestionRow({ question, index, value, submitted, mode, support, onC
       <legend><span>{index + 1}</span><b>{question.section}</b>{question.questionNumber !== undefined && <em>原题第 {question.questionNumber} 题</em>}{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
       {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support"><span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
+      {!question.audioUrl && question.audioText && <button className="outline-button compact jlpt-speech-button" onClick={() => speakJapanese(question.audioText as string)}><SpeakerHigh size={16} /> 播放合成日语朗读</button>}
       <div className="jlpt-options">
         {question.options.map((option, optionIndex) => (
           <label key={option} className={`${value === optionIndex ? 'chosen' : ''} ${submitted && optionIndex === question.answer ? 'correct' : ''} ${submitted && value === optionIndex && optionIndex !== question.answer ? 'incorrect' : ''}`}>
@@ -353,4 +354,13 @@ function JLPTQuestionRow({ question, index, value, submitted, mode, support, onC
       )}
     </fieldset>
   )
+}
+
+function speakJapanese(text: string): void {
+  if (!('speechSynthesis' in window)) return
+  window.speechSynthesis.cancel()
+  const utterance = new SpeechSynthesisUtterance(text)
+  utterance.lang = 'ja-JP'
+  utterance.rate = 0.78
+  window.speechSynthesis.speak(utterance)
 }

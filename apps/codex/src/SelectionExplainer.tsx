@@ -32,7 +32,10 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       if (lastText.current === text) return
       lastText.current = text
       window.speechSynthesis?.cancel()
-      const next = { text, entry: lookupJapanese(text), top: Math.min(window.innerHeight - 320, rect.bottom + 10), left: Math.min(window.innerWidth - 360, Math.max(12, rect.left)) }
+      const popupWidth = Math.min(348, Math.max(0, window.innerWidth - 24))
+      const maxLeft = Math.max(12, window.innerWidth - popupWidth - 12)
+      const maxTop = Math.max(12, window.innerHeight - 320 - 12)
+      const next = { text, entry: lookupJapanese(text), top: Math.max(12, Math.min(maxTop, rect.bottom + 10)), left: Math.max(12, Math.min(maxLeft, rect.left)) }
       setSelection(next)
       setSaved(false)
       const sequence = ++loadSequence.current
@@ -78,7 +81,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
 
   if (!selection) return null
   const currentSelection = selection
-  const reading = currentSelection.entry?.reading ?? kanaReading(currentSelection.text)
+  const reading = currentSelection.entry?.reading || kanaReading(currentSelection.text)
   const romaji = reading ? kanaToRomaji(reading) : undefined
   function speak() {
     if (!('speechSynthesis' in window)) {
@@ -112,7 +115,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       </div>
       <div className="selection-reading" lang="ja">{reading ?? '暂未收录读音'}</div>
       {romaji && <div className="selection-romaji">{romaji}</div>}
-      {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : '词汇'}</span>}
+      {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : selection.entry.kind === 'phrase' ? '词句片段' : '词汇'}</span>}
       <p className="selection-gloss">{selection.entry?.gloss ?? '可先把这段加入笔记，稍后补充词义。'}</p>
       {selection.entry?.explanation && <p className="field-hint">{selection.entry.explanation}</p>}
       <button className="outline-button compact selection-speak" onClick={speak}><SpeakerHigh size={16} /> 日语朗读</button>

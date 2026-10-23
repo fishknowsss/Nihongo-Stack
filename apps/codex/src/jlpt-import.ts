@@ -81,6 +81,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
       section,
       questionNumber: typeof question.questionNumber === 'number' ? question.questionNumber : undefined,
       prompt: text(question.prompt, `第 ${index + 1} 题 prompt`),
+      audioText: typeof question.audioText === 'string' && question.audioText.trim() ? question.audioText.trim() : undefined,
       options: question.options.map((option) => String(option)),
       answer: Number(question.answer),
       reading: typeof question.reading === 'string' ? question.reading : undefined,

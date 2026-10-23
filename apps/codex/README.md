@@ -33,6 +33,8 @@
 - 新增七段音频是 **macOS Kyoko 合成语音**，用于私人基础练习，不计入真人首遍听力表现。
 - 原创内容已做结构、题文对应和基础语言检查，**未经过专业日语教师审校**。七单元为连续试用材料，不是正式教材、N2 课程或分数测评。
 
+应用内“公开资料”入口还包括 Japan Foundation 的 Erin 场景教材、Tatoeba 例句库和 Bunko Commons。Erin 通过链接使用，遵守其个人学习/教育使用条款；Tatoeba 文本使用时保留 CC BY 2.0 FR 署名，音频逐条核对；Bunko Commons 按材料页面的许可使用。
+
 ### 完整 JLPT 题库导入
 
 完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 会显示在已导入题库卡片上。

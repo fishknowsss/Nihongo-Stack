@@ -252,7 +252,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <summary>打开 {level} 官方公开练习册</summary>
               {jlptOfficialPracticeLinks[level].map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowRight size={14} /></a>)}
             </details>
-            {jlptSources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowRight size={14} /></a>)}
+            {jlptSources.map((source) => <div className="jlpt-source-item" key={source.url}><a href={source.url} target="_blank" rel="noreferrer">{source.label} <ArrowRight size={14} /></a>{source.note && <small>{source.note}</small>}</div>)}
           </div>
         </aside>
       </div>

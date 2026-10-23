@@ -136,6 +136,9 @@ export const jlptSources = [
   { label: 'JLPT 官方题型与题目构成', url: 'https://www.jlpt.jp/e/guideline/testsections.html' },
   { label: 'JLPT 官方样题与练习册', url: 'https://samplequestions.jlpt.jp/e/samples/sampleindex.html' },
   { label: 'JLPT 官方教师说明材料', url: 'https://www.jlpt.jp/e/reference/forteachers.html' },
+  { label: 'Japan Foundation · Erin 场景教材', url: 'https://www.erin.jpf.go.jp/en/', note: '个人学习或教育使用；应用只提供入口，不复制站内内容。' },
+  { label: 'Tatoeba · 可署名例句库', url: 'https://tatoeba.org/en/downloads', note: '文本默认 CC BY 2.0 FR；音频必须逐条核对许可。' },
+  { label: 'Bunko Commons · 开放日语材料', url: 'https://bunkocommons.org/', note: '按每份材料页面的 Creative Commons 许可使用。' },
 ]
 
 export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string; url: string }>> = {

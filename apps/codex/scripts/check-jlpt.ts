@@ -7,7 +7,9 @@ assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
 for (const level of jlptLevels) {
   const sets = jlptSets.filter((set) => set.level === level)
   assert.equal(sets.length, jlptYears.length)
-  assert.ok(jlptQuestions.some((question) => question.level === level))
+  const levelQuestions = jlptQuestions.filter((question) => question.level === level)
+  assert.equal(levelQuestions.length, 12)
+  for (const section of ['文字・語彙', '文法', '読解'] as const) assert.equal(levelQuestions.filter((question) => question.section === section).length, 4)
   assert.equal(jlptOfficialPracticeLinks[level].length, 6)
 }
 for (const question of jlptQuestions) {
@@ -29,4 +31,4 @@ assert.equal(complete.sourceUrl, 'https://example.com/fixture-source')
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 })
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://example.com/fixture-source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
-console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions, complete-pack validation, official links for ${jlptLevels.join('/')}`)
+console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (12 per level), complete-pack validation, official links for ${jlptLevels.join('/')}`)

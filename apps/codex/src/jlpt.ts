@@ -1,3 +1,5 @@
+import { additionalJLPTQuestions } from './jlpt-practice'
+
 export type JLPTLevel = 'N5' | 'N4' | 'N3' | 'N2'
 export type JLPTSection = '文字・語彙' | '文法' | '読解' | '聴解'
 
@@ -117,6 +119,7 @@ export const jlptQuestions: JLPTQuestion[] = [
   {
     id: 'practice-n2-reading-02', level: 'N2', section: '読解', prompt: '「新しい制度は作業を簡単にする一方、最初は覚えることが多い。導入前に短い研修を行う。」为什么安排培训？', options: ['让制度更复杂', '帮助使用者适应新制度', '取消新制度', '减少工作时间'], answer: 1, reading: 'どうにゅうまえに みじかい けんしゅうを おこなう', gloss: '在引入前进行简短培训', explanation: '「一方」呈现新制度的优点和初期负担；培训是为了降低“需要记的内容多”带来的适应成本。', studySteps: ['先找对比结构「一方」。', '把措施和它要解决的问题对应起来，而不是只看制度的优点。'], source: 'original-practice',
   },
+  ...additionalJLPTQuestions,
 ]
 
 export const jlptSets: JLPTSet[] = jlptYears.flatMap((year) => jlptLevels.map((level) => {
@@ -128,7 +131,7 @@ export const jlptSets: JLPTSet[] = jlptYears.flatMap((year) => jlptLevels.map((l
     title: `${year} · ${level} 题型训练`,
     status: 'practice' as const,
     questionIds: questions.map((question) => question.id),
-    note: '原创仿真练习：按官方题型拆解，逐题显示读音、中文义和解题步骤。',
+    note: '原创分级教学包：词汇、语法、阅读各 4 题，逐题显示读音、中文义和解题步骤；听力使用官方入口或授权题库。',
   }
 }))
 

@@ -90,7 +90,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <button key={set.id} className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => chooseSet(set.level, set.year)}>
             <span>{set.year}</span>
             <strong>{set.level} · 题型训练</strong>
-            <small>{completed.has(set.id) ? '已练' : '3 题教学包'}</small>
+            <small>{completed.has(set.id) ? '已练' : `${set.questionIds.length} 题教学包`}</small>
           </button>
         ))}
       </section>

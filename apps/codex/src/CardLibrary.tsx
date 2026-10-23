@@ -180,7 +180,7 @@ export default function CardLibrary({
                     {annotation === 'font' && <AnnotationNote />}
                     {card.reading && <p lang="ja">{card.reading}</p>}
                     <h2>{card.back}</h2>
-                    <LayeredJapanese segments={[{ text: card.example, reading: card.reading }]} layer={studyLayer} className={annotation === 'font' ? 'font-furigana' : ''} />
+                    <LayeredJapanese segments={[{ text: card.example }]} layer={studyLayer} className={annotation === 'font' ? 'font-furigana' : ''} />
                     {card.note && <p className="field-hint">{card.note}</p>}
                   </div>
                 </details>

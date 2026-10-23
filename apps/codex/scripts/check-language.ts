@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
 import { kanaToRomaji, lookupJapanese, segmentText } from '../src/language'
+import { cards } from '../src/catalog'
 
 assert.equal(kanaToRomaji('がっこう'), 'gakkou')
 assert.equal(kanaToRomaji('きょうと'), 'kyouto')
@@ -10,6 +11,8 @@ assert.equal(lookupJapanese('行きます')?.gloss, '去')
 assert.equal(lookupJapanese('週末')?.reading, 'しゅうまつ')
 assert.equal(lookupJapanese('三つ')?.romaji, 'mittsu')
 assert.equal(lookupJapanese('午前中')?.gloss, '上午；上午期间')
+const missingCardReadings = cards.flatMap((card) => segmentText(card.example).filter((part) => /[一-龯]/u.test(part.text) && !part.entry).map((part) => `${card.id}:${part.text}`))
+assert.deepEqual(missingCardReadings, [], `card examples missing readings: ${missingCardReadings.join(', ')}`)
 assert.ok(segmentText('毎日、電車').some((part) => part.entry?.surface === '毎日'))
 const supplied = segmentText('にスーパーへ行きました。', 'にすーぱーへいきました。')
 assert.equal(supplied.length, 1)

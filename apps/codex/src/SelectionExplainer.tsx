@@ -31,6 +31,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       const rect = current.getRangeAt(0).getBoundingClientRect()
       if (lastText.current === text) return
       lastText.current = text
+      window.speechSynthesis?.cancel()
       const next = { text, entry: lookupJapanese(text), top: Math.min(window.innerHeight - 320, rect.bottom + 10), left: Math.min(window.innerWidth - 360, Math.max(12, rect.left)) }
       setSelection(next)
       setSaved(false)
@@ -72,6 +73,8 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
   useEffect(() => {
     if (selection) closeButton.current?.focus()
   }, [selection])
+
+  useEffect(() => () => window.speechSynthesis?.cancel(), [])
 
   if (!selection) return null
   const currentSelection = selection

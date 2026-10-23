@@ -1,4 +1,4 @@
-import type { JLPTLevel, JLPTQuestion, JLPTSection } from './jlpt'
+import { jlptExamSessionsByYear, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 
 export type ImportedJLPTPack = {
   schemaVersion: 1
@@ -103,8 +103,10 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     if (questions.some((question) => !question.reading?.trim() || !question.gloss?.trim())) throw new Error('完整题库每道题都必须提供平假名读音和中文释义')
     if (questions.some((question) => question.explanation === '导入资料未提供解析，请结合原始答案和教材复盘。' || question.studySteps.length < 2)) throw new Error('完整题库每道题都必须提供逐题中文解析和至少两步学习步骤')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
+    const session = record.session.trim()
+    if (!/^\d{2}$/.test(session) || !jlptExamSessionsByYear[numericYear]?.includes(session)) throw new Error(`${numericYear} 年没有 ${session} 场 JLPT 完整考试位置；近七年只接受当年实际场次`)
     if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
-    const minimum = minimumCompleteQuestionCount(level, numericYear, record.session.trim())
+    const minimum = minimumCompleteQuestionCount(level, numericYear, session)
     if (questions.length < minimum) throw new Error(`完整题库至少需要 ${minimum} 题；当前只有 ${questions.length} 题，请导入整场试卷而不是教学节选`)
     if (questions.some((question) => !Number.isInteger(question.questionNumber) || Number(question.questionNumber) < 1)) throw new Error('完整题库每道题都必须填写正整数 questionNumber')
     for (const section of sections) {

@@ -307,7 +307,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </ul>
           <details className="jlpt-format-details">
             <summary>完整真题 JSON 需要哪些字段？</summary>
-            <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；每题还要有平假名、中文释义、逐题解析和至少两步学习步骤。题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。这会阻止把几道题的教学节选误标成完整真题。</p>
+            <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；每题还要有平假名、中文释义、逐题解析和至少两步学习步骤。题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。2020 年只接受 12 月场。这会阻止把几道题的教学节选误标成完整真题。</p>
           </details>
           <div className="jlpt-source-list">
             <details className="jlpt-official-details">

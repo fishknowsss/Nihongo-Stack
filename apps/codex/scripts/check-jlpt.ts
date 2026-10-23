@@ -54,5 +54,6 @@ tooSmall.questions = (tooSmall.questions as unknown[]).filter((_, index) => inde
 tooSmall.questionCount = (tooSmall.questions as unknown[]).length
 tooSmall.sectionQuestionCounts = { '文字・語彙': 6, '文法': 4, '読解': 2, '聴解': 5 }
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要/)
+assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('"year":2025', '"year":2020')), /没有 07 场/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://fixture.invalid/source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (16 per level, four sections), complete-pack validation, official links for ${jlptLevels.join('/')}`)

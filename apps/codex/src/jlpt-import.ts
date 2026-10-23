@@ -80,6 +80,8 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   const complete = record.complete === true
   if (complete) {
     if ([record.id, record.title, record.sourceName, record.license, record.sourceUrl].some((value) => typeof value === 'string' && (value.includes('replace-with-') || value.includes('填写') || value.includes('example.com')))) throw new Error('完整题库仍包含模板占位符，请先填写真实来源和题目')
+    const questionPlaceholders = ['填写日文题干', '填写平假名读音', '填写中文释义', '填写逐题中文解析', '选项 A', '选项 B', '选项 C', '选项 D']
+    if (questions.some((question) => questionPlaceholders.some((placeholder) => JSON.stringify(question).includes(placeholder)))) throw new Error('完整题库仍包含题目占位符，请先填写真实题目')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
     if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
     if (!record.sectionQuestionCounts || typeof record.sectionQuestionCounts !== 'object' || Array.isArray(record.sectionQuestionCounts)) throw new Error('完整题库必须填写 sectionQuestionCounts')

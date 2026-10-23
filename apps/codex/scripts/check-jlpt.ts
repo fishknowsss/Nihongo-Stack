@@ -33,6 +33,9 @@ assert.equal(complete.sourceUrl, 'https://fixture.invalid/source')
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 })
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteTemplate), /模板占位符/)
+const unfinishedQuestions = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
+unfinishedQuestions.questions = (unfinishedQuestions.questions as Array<Record<string, unknown>>).map((question) => ({ ...question, prompt: '填写日文题干' }))
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(unfinishedQuestions)), /题目占位符/)
 const tooSmall = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 tooSmall.questions = (tooSmall.questions as unknown[]).filter((_, index) => index % 4 === 0)
 tooSmall.questionCount = 4

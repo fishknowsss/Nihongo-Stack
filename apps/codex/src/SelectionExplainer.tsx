@@ -16,6 +16,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
   const [favorite, setFavorite] = useState(false)
   const lastText = useRef('')
   const loadSequence = useRef(0)
+  const closeButton = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     function readSelection() {
@@ -68,6 +69,10 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
     }
   }, [])
 
+  useEffect(() => {
+    if (selection) closeButton.current?.focus()
+  }, [selection])
+
   if (!selection) return null
   const currentSelection = selection
   const reading = currentSelection.entry?.reading ?? kanaReading(currentSelection.text)
@@ -89,7 +94,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
           <span className="selection-label">选中解释</span>
           <strong lang="ja">{selection.text}</strong>
         </div>
-        <button className="icon-button" aria-label="关闭解释" onClick={() => { lastText.current = ''; window.getSelection()?.removeAllRanges(); setSelection(null) }}><X size={17} /></button>
+        <button ref={closeButton} className="icon-button" aria-label="关闭解释" onClick={() => { lastText.current = ''; window.getSelection()?.removeAllRanges(); setSelection(null) }}><X size={17} /></button>
       </div>
       <div className="selection-reading" lang="ja">{reading ?? '暂未收录读音'}</div>
       {romaji && <div className="selection-romaji">{romaji}</div>}

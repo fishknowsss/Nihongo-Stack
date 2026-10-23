@@ -10,7 +10,7 @@ for (const level of jlptLevels) {
   const levelQuestions = jlptQuestions.filter((question) => question.level === level)
   assert.equal(levelQuestions.length, 12)
   for (const section of ['文字・語彙', '文法', '読解'] as const) assert.equal(levelQuestions.filter((question) => question.section === section).length, 4)
-  assert.equal(jlptOfficialPracticeLinks[level].length, 6)
+  assert.equal(jlptOfficialPracticeLinks[level].length, 8)
   assert.ok(jlptLevelGuides[level].japaneseFocus.length > 0)
   assert.equal(jlptLevelGuides[level].steps.length, 3)
 }

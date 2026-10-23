@@ -186,6 +186,8 @@ export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string;
     { label: '2012 官方样题 · 词汇', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N5V.pdf' },
     { label: '2012 官方样题 · 语法·阅读', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N5G.pdf' },
     { label: '2012 官方样题 · 听力', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N5L.pdf' },
+    { label: '2009 官方样题 · 题目 PDF', url: 'https://www.jlpt.jp/e/samples/pdf/N5-mondai.pdf' },
+    { label: '2009 官方样题 · 听力 MP3', url: 'https://www.jlpt.jp/e/samples/mp3/N5Sample.mp3' },
   ],
   N4: [
     { label: '2018 官方练习册 · 词汇', url: 'https://www.jlpt.jp/samples/sample2018/pdf/N4V.pdf' },
@@ -194,6 +196,8 @@ export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string;
     { label: '2012 官方样题 · 词汇', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N4V.pdf' },
     { label: '2012 官方样题 · 语法·阅读', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N4G.pdf' },
     { label: '2012 官方样题 · 听力', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N4L.pdf' },
+    { label: '2009 官方样题 · 题目 PDF', url: 'https://www.jlpt.jp/e/samples/pdf/N4-mondai.pdf' },
+    { label: '2009 官方样题 · 听力 MP3', url: 'https://www.jlpt.jp/e/samples/mp3/N4Sample.mp3' },
   ],
   N3: [
     { label: '2018 官方练习册 · 词汇', url: 'https://www.jlpt.jp/samples/sample2018/pdf/N3V.pdf' },
@@ -202,6 +206,8 @@ export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string;
     { label: '2012 官方样题 · 词汇', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N3V.pdf' },
     { label: '2012 官方样题 · 语法·阅读', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N3G.pdf' },
     { label: '2012 官方样题 · 听力', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N3L.pdf' },
+    { label: '2009 官方样题 · 题目 PDF', url: 'https://www.jlpt.jp/e/samples/pdf/N3-mondai.pdf' },
+    { label: '2009 官方样题 · 听力 MP3', url: 'https://www.jlpt.jp/e/samples/mp3/N3Sample.mp3' },
   ],
   N2: [
     { label: '2018 官方练习册 · 词汇', url: 'https://www.jlpt.jp/samples/sample2018/pdf/N2V.pdf' },
@@ -210,5 +216,7 @@ export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string;
     { label: '2012 官方样题 · 词汇', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N2V.pdf' },
     { label: '2012 官方样题 · 语法·阅读', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N2G.pdf' },
     { label: '2012 官方样题 · 听力', url: 'https://www.jlpt.jp/samples/sample2012/pdf/N2L.pdf' },
+    { label: '2009 官方样题 · 题目 PDF', url: 'https://www.jlpt.jp/e/samples/pdf/N2-mondai.pdf' },
+    { label: '2009 官方样题 · 听力 MP3', url: 'https://www.jlpt.jp/e/samples/mp3/N2Sample.mp3' },
   ],
 }

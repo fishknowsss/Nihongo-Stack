@@ -10,6 +10,10 @@ export type ImportedJLPTPack = {
   sourceName: string
   license: string
   complete?: boolean
+  /** The source-declared total. A complete pack must match the imported rows. */
+  questionCount?: number
+  /** The source-declared count for each learning section. */
+  sectionQuestionCounts?: Partial<Record<JLPTSection, number>>
   questions: JLPTQuestion[]
 }
 
@@ -62,9 +66,18 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   if (new Set(questions.map((question) => question.id)).size !== questions.length) throw new Error('题目 id 不能重复')
   const complete = record.complete === true
   if (complete) {
+    if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
+    if (!Number.isInteger(record.questionCount) || Number(record.questionCount) !== questions.length) throw new Error('完整题库的 questionCount 必须等于 questions 数量')
+    if (!record.sectionQuestionCounts || typeof record.sectionQuestionCounts !== 'object' || Array.isArray(record.sectionQuestionCounts)) throw new Error('完整题库必须填写 sectionQuestionCounts')
+    const sectionQuestionCounts = record.sectionQuestionCounts as Record<string, unknown>
     for (const section of ['文字・語彙', '文法', '読解', '聴解'] as const) {
-      if (!questions.some((question) => question.section === section)) throw new Error(`完整题库缺少 ${section} 科目`)
+      if (!Number.isInteger(sectionQuestionCounts[section]) || Number(sectionQuestionCounts[section]) < 1) throw new Error(`完整题库必须填写 ${section} 的题量`)
+      const actual = questions.filter((question) => question.section === section).length
+      if (actual !== Number(sectionQuestionCounts[section])) throw new Error(`${section} 题量不匹配：声明 ${sectionQuestionCounts[section]}，实际 ${actual}`)
     }
+    const declaredTotal = Object.values(sectionQuestionCounts).reduce((sum: number, value) => sum + (typeof value === 'number' ? value : 0), 0)
+    if (declaredTotal !== questions.length) throw new Error('sectionQuestionCounts 总数必须等于 questions 数量')
+    if (questions.some((question) => question.section === '聴解' && !question.audioUrl)) throw new Error('完整题库的每道聴解题都必须提供 audioUrl')
   }
   return {
     schemaVersion: 1,
@@ -76,6 +89,10 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     sourceName: text(record.sourceName, 'sourceName'),
     license: text(record.license, 'license'),
     complete,
+    questionCount: typeof record.questionCount === 'number' ? record.questionCount : undefined,
+    sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)
+      ? Object.fromEntries(Object.entries(record.sectionQuestionCounts as Record<string, unknown>).filter(([key, value]) => sections.has(key as JLPTSection) && Number.isInteger(value)).map(([key, value]) => [key, Number(value)])) as Partial<Record<JLPTSection, number>>
+      : undefined,
     questions,
   }
 }
@@ -90,6 +107,8 @@ export const importedJLPTExample = `{
   "sourceName": "填写授权来源",
   "license": "填写个人使用或再分发许可",
   "complete": false,
+  "questionCount": 1,
+  "sectionQuestionCounts": { "文字・語彙": 1 },
   "questions": [
     {
       "id": "vocab-001",
@@ -104,6 +123,37 @@ export const importedJLPTExample = `{
     }
   ]
 }`
+
+// A tiny fixture used by the importer checks. It proves the complete-pack
+// contract without shipping any copyrighted examination material.
+export const importedJLPTCompleteExample = JSON.stringify({
+  schemaVersion: 1,
+  id: 'fixture-complete-2025-07-n5',
+  year: 2025,
+  session: '07',
+  level: 'N5',
+  title: '完整题库校验 fixture',
+  sourceName: 'Nihongo Stack automated check',
+  license: '内部测试资料，不是官方真题',
+  complete: true,
+  questionCount: 4,
+  sectionQuestionCounts: { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 },
+  questions: [
+    ['vocab', '文字・語彙'],
+    ['grammar', '文法'],
+    ['reading', '読解'],
+    ['listening', '聴解'],
+  ].map(([id, section]) => ({
+    id,
+    section,
+    prompt: `fixture ${id}`,
+    options: ['A', 'B'],
+    answer: 0,
+    explanation: 'fixture explanation',
+    studySteps: ['fixture step one', 'fixture step two'],
+    ...(section === '聴解' ? { audioUrl: 'fixture://audio' } : {}),
+  })),
+})
 
 export function downloadImportTemplate(download: (text: string, name: string) => void): void {
   download(importedJLPTExample, 'nihongo-stack-jlpt-import-template.json')

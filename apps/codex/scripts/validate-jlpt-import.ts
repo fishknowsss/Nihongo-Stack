@@ -10,7 +10,8 @@ if (!file) {
 try {
   const pack = parseImportedJLPTPack(fs.readFileSync(file, 'utf8'))
   const sections = [...new Set(pack.questions.map((question) => question.section))].join('、')
-  console.log(`JLPT import valid: ${pack.title} · ${pack.level} · ${pack.questions.length} questions · sections ${sections}`)
+  const status = pack.complete ? `complete exam · session ${pack.session} · ${pack.questionCount} questions verified` : `${pack.questions.length} questions · teaching excerpt`
+  console.log(`JLPT import valid: ${pack.title} · ${pack.level} · ${status} · sections ${sections}`)
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error))
   process.exit(1)

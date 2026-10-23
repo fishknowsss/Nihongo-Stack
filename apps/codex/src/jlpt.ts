@@ -27,6 +27,9 @@ export type JLPTSet = {
   questionIds: string[]
   note: string
   complete?: boolean
+  session?: string
+  questionCount?: number
+  sectionQuestionCounts?: Partial<Record<JLPTSection, number>>
 }
 
 // 近七年先建立稳定的学习索引。官方历年试卷不作为可再分发原文打包，页面提供公开官方入口；题目为按官方题型原创的逐步教学练习。

@@ -6,6 +6,7 @@ import { db, setPreference } from './db'
 import { downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 
 type Notify = (message: string, kind?: 'success' | 'error') => void
+type JLPTMistakeRecord = { id: string; answer: number; incorrectCount: number; lastSeenAt: string }
 
 export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const [level, setLevel] = useState<JLPTLevel>('N5')
@@ -21,7 +22,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     if (!row.key.startsWith('jlptImportedPack:') || typeof row.value !== 'string') return []
     try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
   }), [preferences])
-  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete })), [importedPacks])
+  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, session: pack.session, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete, questionCount: pack.questionCount, sectionQuestionCounts: pack.sectionQuestionCounts })), [importedPacks])
   const allSets = useMemo(() => [...jlptSets.filter((set) => !importedSets.some((imported) => imported.id === set.id)), ...importedSets], [importedSets])
   const allQuestions = useMemo(() => [...jlptQuestions, ...importedPacks.flatMap((pack) => pack.questions)], [importedPacks])
   const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
@@ -29,17 +30,19 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const visibleQuestions = useMemo(() => questionFilter === 'all' ? questions : questions.filter((question) => question.section === questionFilter), [questionFilter, questions])
   const persistedMistakes = useMemo(() => {
     const row = preferences.find((item) => item.key === `jlptMistakes:${activeSet.id}`)
-    if (typeof row?.value !== 'string') return [] as Array<{ question: JLPTQuestion; answer: number }>
+    if (typeof row?.value !== 'string') return [] as Array<{ question: JLPTQuestion; answer: number; incorrectCount: number; lastSeenAt: string }>
     try {
-      const values = JSON.parse(row.value) as Array<{ id: string; answer: number }>
+      const values = JSON.parse(row.value) as Array<Partial<JLPTMistakeRecord> & { id?: string }>
       return values.flatMap((value) => {
         const question = allQuestions.find((item) => item.id === value.id)
-        return question ? [{ question, answer: value.answer }] : []
-      })
-    } catch { return [] as Array<{ question: JLPTQuestion; answer: number }> }
+        return question && typeof value.answer === 'number' ? [{ question, answer: value.answer, incorrectCount: typeof value.incorrectCount === 'number' && value.incorrectCount > 0 ? value.incorrectCount : 1, lastSeenAt: typeof value.lastSeenAt === 'string' ? value.lastSeenAt : '' }] : []
+      }).sort((a, b) => b.incorrectCount - a.incorrectCount || b.lastSeenAt.localeCompare(a.lastSeenAt))
+    } catch { return [] as Array<{ question: JLPTQuestion; answer: number; incorrectCount: number; lastSeenAt: string }> }
   }, [activeSet.id, allQuestions, preferences])
   const draftKey = `jlptDraft:${activeSet.id}`
   const fileRef = useRef<HTMLInputElement>(null)
+  const builtInCompletedCount = jlptSets.filter((set) => completed.has(set.id)).length
+  const completeImportedCount = importedSets.filter((set) => set.complete).length
 
   useEffect(() => {
     let cancelled = false
@@ -63,6 +66,17 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     setAnswers({})
     setSubmitted(false)
     setQuestionFilter('all')
+  }
+  function retryQuestion(question: JLPTQuestion) {
+    setQuestionFilter(question.section)
+    setSubmitted(false)
+    setAnswers((current) => {
+      const next = { ...current }
+      delete next[question.id]
+      void setPreference(`jlptDraft:${activeSet.id}`, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error'))
+      return next
+    })
+    window.setTimeout(() => document.getElementById(`jlpt-question-${question.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 0)
   }
   async function importPack(file?: File) {
     if (!file) return
@@ -100,7 +114,24 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     }
     setSubmitted(true)
     const attemptKey = questionFilter === 'all' ? activeSet.id : `${activeSet.id}:${questionFilter}`
-    const mistakes = visibleQuestions.filter((question) => answers[question.id] !== question.answer).map((question) => ({ id: question.id, answer: answers[question.id] }))
+    const previousMistakes = (() => {
+      const raw = preferences.find((item) => item.key === `jlptMistakes:${activeSet.id}`)
+      if (typeof raw?.value !== 'string') return [] as JLPTMistakeRecord[]
+      try {
+        const parsed = JSON.parse(raw.value) as Array<Partial<JLPTMistakeRecord>>
+        return parsed.filter((item): item is JLPTMistakeRecord => typeof item.id === 'string' && typeof item.answer === 'number').map((item) => ({ id: item.id, answer: item.answer, incorrectCount: typeof item.incorrectCount === 'number' && item.incorrectCount > 0 ? item.incorrectCount : 1, lastSeenAt: typeof item.lastSeenAt === 'string' ? item.lastSeenAt : '' }))
+      } catch { return [] as JLPTMistakeRecord[] }
+    })()
+    const mistakesById = new Map(previousMistakes.map((mistake) => [mistake.id, mistake]))
+    const attemptedAt = new Date().toISOString()
+    for (const question of visibleQuestions) {
+      if (answers[question.id] === question.answer) mistakesById.delete(question.id)
+      else {
+        const previous = mistakesById.get(question.id)
+        mistakesById.set(question.id, { id: question.id, answer: answers[question.id], incorrectCount: (previous?.incorrectCount ?? 0) + 1, lastSeenAt: attemptedAt })
+      }
+    }
+    const mistakes = [...mistakesById.values()].sort((a, b) => b.incorrectCount - a.incorrectCount || b.lastSeenAt.localeCompare(a.lastSeenAt))
     void Promise.all([
       questionFilter === 'all' ? setPreference(`jlptCompleted:${activeSet.id}`, true) : setPreference(`jlptSectionCompleted:${attemptKey}`, true),
       setPreference(`jlptScore:${attemptKey}`, score),
@@ -115,7 +146,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     <div className="page-stack jlpt-page">
       <header className="page-intro">
         <h1>JLPT 题型训练</h1>
-        <p>按 N5–N2、年份和题型建立近七年的学习路线。先做一小组，再逐题看读音、中文义和解题步骤。</p>
+        <p>按 N5–N2、年份和题型建立近七年的学习路线。内置内容是逐题教学包；有授权的完整历年试卷可导入本机，按场次、科目和音频原样练习。</p>
       </header>
       <section className="jlpt-intro-panel">
         <div className="jlpt-intro-icon"><GraduationCap size={24} /></div>
@@ -123,8 +154,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <h2>从基础开始，逐层读懂</h2>
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
-        <span className="jlpt-progress-label"><strong>{completed.size}</strong> / 28 包已练</span>
-        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题'}</button>
+        <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · {completeImportedCount} 套完整真题</span>
+        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={(event) => { void importPack(event.target.files?.[0]); event.currentTarget.value = '' }} />
       </section>
@@ -147,7 +178,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <button key={set.id} className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => chooseSet(set.level, set.year)}>
             <span>{set.year}</span>
             <strong>{set.level} · 题型训练</strong>
-            <small>{completed.has(set.id) ? '已练' : `${set.questionIds.length} 题教学包`}</small>
+            <small>{completed.has(set.id) ? '教学包已练' : `${set.questionIds.length} 题原创教学包`}</small>
           </button>
         ))}
       </section>
@@ -155,7 +186,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
           <div className="jlpt-imported-grid">
-            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all') }}><span>{set.year} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? '完整真题' : '导入题库'} · {set.questionIds.length} 题</small></button><button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>)}
+            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all') }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 四科已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>)}
           </div>
         </section>
       )}
@@ -176,7 +207,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
             ))}
           </div>
-          {persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道</span></div>{persistedMistakes.map(({ question, answer }) => <details key={question.id}><summary>{question.prompt}</summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p></div></details>)}</section>}
+          {persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道 · 按错误次数</span></div>{persistedMistakes.map(({ question, answer, incorrectCount }) => <details key={question.id}><summary>{question.prompt}<small>错 {incorrectCount} 次 · {question.section}</small></summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p><button className="outline-button compact" onClick={() => retryQuestion(question)}>重新答这题</button></div></details>)}</section>}
           {submitted ? (
             <div className="jlpt-result" role="status">
               <CheckCircle size={20} />
@@ -189,12 +220,16 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </article>
         <aside className="jlpt-side-note">
           <h2><Info size={18} /> 资料边界与使用方式</h2>
-          <p>安装包内是原创仿真题和逐题中文教学。已获授权的完整真题可用上方导入，题库只保存在本机备份中。</p>
+          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷只接受你有权使用的 JSON 导入，并只保存在本机备份中。</p>
           <ul>
             <li>先看日文原句，尝试自己读。</li>
             <li>再打开读音、释义和罗马音辅助。</li>
             <li>错题记录到“收藏/笔记”，第二天先重做。</li>
           </ul>
+          <details className="jlpt-format-details">
+            <summary>完整真题 JSON 需要哪些字段？</summary>
+            <p>将 <code>complete</code> 设为 true 时，必须同时填写 <code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code>；四科题数必须与实际题目一致，每道聴解题必须有 <code>audioUrl</code>。这会阻止把只有几道题的练习包误标成完整真题。</p>
+          </details>
           <div className="jlpt-source-list">
             <details className="jlpt-official-details">
               <summary>打开 {level} 官方公开练习册</summary>
@@ -221,7 +256,7 @@ function downloadText(text: string, name: string) {
 
 function JLPTQuestionRow({ question, index, value, submitted, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; onChange: (value: number) => void }) {
   return (
-    <fieldset className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
+    <fieldset id={`jlpt-question-${question.id}`} className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
       <legend><span>{index + 1}</span><b>{question.section}</b>{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       <div className="jlpt-options">

@@ -469,7 +469,12 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-mistakes { display: grid; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
 .jlpt-mistakes details { border-bottom: 1px solid var(--line); }
 .jlpt-mistakes summary { padding: 10px 0; cursor: pointer; font-size: .875rem; }
+.jlpt-mistakes summary small { display: block; margin-top: 3px; color: var(--muted); font-size: .75rem; font-weight: 400; }
 .jlpt-mistakes details > div { display: grid; gap: 6px; padding: 4px 12px 14px; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.jlpt-format-details { padding-top: 10px; border-top: 1px solid var(--line); }
+.jlpt-format-details summary { cursor: pointer; color: var(--accent); font-size: .8125rem; }
+.jlpt-format-details p { margin-top: 8px; color: var(--muted); font-size: .75rem; line-height: 1.7; }
+.jlpt-format-details code { padding: 1px 4px; border-radius: 3px; background: var(--hover); color: var(--ink); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; }
 .jlpt-submit { margin-top: 18px; }
 .jlpt-result { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--green); font-size: .875rem; }
 .jlpt-result .outline-button { margin-left: auto; }

@@ -15,6 +15,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
   const [saved, setSaved] = useState(false)
   const [favorite, setFavorite] = useState(false)
   const lastText = useRef('')
+  const loadSequence = useRef(0)
 
   useEffect(() => {
     function readSelection() {
@@ -32,7 +33,9 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       const next = { text, entry: lookupJapanese(text), top: Math.min(window.innerHeight - 320, rect.bottom + 10), left: Math.min(window.innerWidth - 360, Math.max(12, rect.left)) }
       setSelection(next)
       setSaved(false)
+      const sequence = ++loadSequence.current
       void Promise.all([db.preferences.get(`annotationNote:${text}`), db.preferences.get(`annotationFavorite:${text}`)]).then(([noteRow, favoriteRow]) => {
+        if (sequence !== loadSequence.current) return
         setNote(typeof noteRow?.value === 'string' ? noteRow.value : '')
         setFavorite(favoriteRow?.value === true)
       })

@@ -464,6 +464,15 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-set span { color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
 .jlpt-set strong { font-size: .8125rem; }
 .jlpt-set small { color: var(--muted); font-size: .75rem; }
+.jlpt-slot-details { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.jlpt-slot-details > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; cursor: pointer; color: var(--accent); font-size: .8125rem; }
+.jlpt-slot-details > summary small { color: var(--muted); font-size: .75rem; }
+.jlpt-slot-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; padding: 4px 0 16px; }
+.jlpt-slot-group { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 8px; align-items: start; }
+.jlpt-slot-group > strong { color: var(--ink); font-size: .8125rem; }
+.jlpt-slot-group > div { display: flex; flex-wrap: wrap; gap: 5px; }
+.jlpt-slot-group span { padding: 3px 6px; border: 1px solid var(--line); border-radius: 4px; color: var(--muted); font-size: .6875rem; }
+.jlpt-slot-group span.ready { border-color: var(--green); color: var(--green); background: var(--soft-green); }
 .jlpt-imported-section { display: grid; gap: 10px; }
 .jlpt-imported-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .jlpt-imported-card { display: grid; gap: 4px; min-width: 0; }
@@ -701,6 +710,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .jlpt-imported-grid { grid-template-columns: minmax(0, 1fr); }
   .jlpt-resource-route { padding: 14px 16px; }
   .jlpt-resource-list { grid-template-columns: minmax(0, 1fr); }
+  .jlpt-slot-groups { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .jlpt-workbench { grid-template-columns: minmax(0, 1fr); }
   .jlpt-practice-panel { padding: 16px; }
   .jlpt-exam-timer { grid-template-columns: 1fr auto; }

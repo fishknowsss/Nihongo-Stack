@@ -50,6 +50,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const fileRef = useRef<HTMLInputElement>(null)
   const builtInCompletedCount = jlptSets.filter((set) => completed.has(set.id)).length
   const completeImportedCount = importedSets.filter((set) => set.complete).length
+  const importedCompleteKeys = useMemo(() => new Set(importedPacks.filter((pack) => pack.complete && pack.session).map((pack) => `${pack.year}-${pack.session}-${pack.level}`)), [importedPacks])
 
   useEffect(() => {
     let cancelled = false
@@ -246,6 +247,12 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </button>
         ))}
       </section>
+      <details className="jlpt-slot-details">
+        <summary><span>查看 52 场完整真题覆盖清单</span><small>{completeImportedCount} / {jlptFullExamSlotCount} 已导入</small></summary>
+        <div className="jlpt-slot-groups">
+          {jlptYears.map((slotYear) => <div className="jlpt-slot-group" key={slotYear}><strong>{slotYear}</strong><div>{jlptExamSessionsByYear[slotYear].flatMap((session) => jlptLevels.map((slotLevel) => { const key = `${slotYear}-${session}-${slotLevel}`; const ready = importedCompleteKeys.has(key); return <span className={ready ? 'ready' : ''} key={key}>{session} · {slotLevel} · {ready ? '已导入' : '待导入'}</span> }))}</div></div>)}
+        </div>
+      </details>
       {importedPacks.length > 0 && (
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>

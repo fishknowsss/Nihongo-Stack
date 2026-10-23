@@ -17,6 +17,8 @@ try {
   await recordAttempt('baseline-01', 'baseline', [0, 1], 2, 2)
   await setPreference('studyLayer:reading:v2-u01-reading', 'full')
   await setPreference('studyLayer:cards', 'romaji')
+  await setPreference('annotationNote:毎日', '每天都要复习这个词。')
+  await setPreference('annotationFavorite:毎日', true)
   const backup = await createBackup()
   const parsed = JSON.parse(backup)
   const invalidTime = structuredClone(parsed)
@@ -38,6 +40,8 @@ try {
   )
   assert.equal((await db.preferences.get('studyLayer:reading:v2-u01-reading'))?.value, 'full')
   assert.equal((await db.preferences.get('studyLayer:cards'))?.value, 'romaji')
+  assert.equal((await db.preferences.get('annotationNote:毎日'))?.value, '每天都要复习这个词。')
+  assert.equal((await db.preferences.get('annotationFavorite:毎日'))?.value, true)
   assert.ok(
     restored.card.last_review instanceof Date,
     'restored last review must be a Date',

@@ -32,5 +32,10 @@ assert.equal(complete.questionCount, complete.questions.length)
 assert.equal(complete.sourceUrl, 'https://example.com/fixture-source')
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 })
 assert.equal(complete.questions.filter((question) => question.section === '聴解').every((question) => question.audioUrl), true)
+const tooSmall = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
+tooSmall.questions = (tooSmall.questions as unknown[]).filter((_, index) => index % 4 === 0)
+tooSmall.questionCount = 4
+tooSmall.sectionQuestionCounts = { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 }
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(tooSmall)), /至少需要 4 题/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://example.com/fixture-source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (12 per level), complete-pack validation, official links for ${jlptLevels.join('/')}`)

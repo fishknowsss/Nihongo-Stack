@@ -129,7 +129,17 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     }
   }
   async function removePack(packId: string) {
-    await db.preferences.delete(`jlptImportedPack:${packId}`)
+    const packPrefixes = [
+      `jlptImportedPack:${packId}`,
+      `jlptCompleted:${packId}`,
+      `jlptSectionCompleted:${packId}:`,
+      `jlptScore:${packId}`,
+      `jlptLastAttempt:${packId}`,
+      `jlptMistakes:${packId}`,
+      `jlptDraft:${packId}`,
+    ]
+    const preferenceKeys = (await db.preferences.toArray()).map((row) => row.key).filter((key) => packPrefixes.some((prefix) => key === prefix || key.startsWith(prefix)))
+    await db.preferences.bulkDelete(preferenceKeys)
     if (activeSetId === packId) {
       setActiveSetId(`jlpt-${year}-${level.toLowerCase()}`)
       setAnswers({})

@@ -20,12 +20,12 @@
 14. 在「设置」定期导出 JSON。恢复先显示双方记录数量，勾选已核对后才可确认；导入前副本会保留在本机，可另行导出。
 15. 阅读、听音文本和卡片例句可切换学习层：只看原文、汉字平假名、原文下方释义/语法、罗马音或全部层。排版固定为罗马音在上、平假名在汉字上方、释义/语法在原文下方。
 16. 在任意日文材料中选中文字，会打开读音、释义和语法说明；可收藏并写笔记。笔记、收藏和 JLPT 练习进度都进入本机备份。
-17. 「JLPT」按 N5–N2 与 2019–2025 建立学习索引；每个年份/等级索引包含 12 道原创分级教学题，不标作历年真题。官方 2009、2012、2018 样题/练习册、题目 PDF 和听力示例提供直达入口。
+17. 「JLPT」按 N5–N2 与 2019–2025 建立学习索引；每个年份/等级索引包含 16 道原创分级教学题，覆盖词汇、语法、阅读、听力各 4 题，不标作历年真题。官方 2009、2012、2018 样题/练习册、题目 PDF 和听力示例提供直达入口。
 18. 取得有权使用的完整真题后，先下载“完整题库模板”，按 `apps/codex/src/jlpt-import.ts` 中的 schema 填写，再点击「导入完整真题 JSON」一次选择多套文件，在本机按年份、场次、等级、科目和听力音频练习；切换考试模式并选择整套完整题库后，会按 N5–N2 官方建议时长倒计时。导入内容随本机备份保存，不自动上传 GitHub。
 
 ## 内容范围
 
-总计 **62 张卡、9 篇短文、10 段音频、7 个基础单元**；JLPT 教学包另行维护，目前包含 48 道分级教学题（每级 12 道，词汇/语法/阅读各 4 道）和 28 个年份/等级学习索引。教学包不冒充完整考试卷；听力使用官方入口或授权题库。完整历年试卷通过本机授权导入，不把未经许可的考试原文、音频或 PDF 提交到公开仓库。
+总计 **62 张卡、9 篇短文、10 段音频、7 个基础单元**；JLPT 教学包另行维护，目前包含 64 道分级教学题（每级 16 道，词汇/语法/阅读/听力各 4 道）和 28 个年份/等级学习索引。教学包不冒充完整考试卷；内置听力为明确标注的合成朗读练习，官方原卷听力使用官方入口或授权题库。完整历年试卷通过本机授权导入，不把未经许可的考试原文、音频或 PDF 提交到公开仓库。
 
 - 原 v1：20 张卡、2 篇短文、3 段 Tatoeba 真人短句。ID、文字与题意保持原样。
 - 新 v2：介绍自己 → 一天的时间 → 地点与交通 → 购物与数量 → 邀约与安排 → 天气与条件 → 综合复盘。
@@ -33,20 +33,22 @@
 - 新增七段音频是 **macOS Kyoko 合成语音**，用于私人基础练习，不计入真人首遍听力表现。
 - 原创内容已做结构、题文对应和基础语言检查，**未经过专业日语教师审校**。七单元为连续试用材料，不是正式教材、N2 课程或分数测评。
 
-应用内“公开资料”入口还包括 Japan Foundation 的 Erin 场景教材、Tatoeba 例句库和 Bunko Commons。Erin 通过链接使用，遵守其个人学习/教育使用条款；Tatoeba 文本使用时保留 CC BY 2.0 FR 署名，音频逐条核对；Bunko Commons 按材料页面的许可使用。
+应用内“公开资料”入口还包括 Japan Foundation 的 Irodori、Erin、Marugoto，Tadoku 分级阅读，Tatoeba 例句库和 Bunko Commons。各来源以链接方式使用；教材和阅读材料按其网站条款，Tatoeba 文本保留 CC BY 2.0 FR 署名，音频逐条核对，Bunko Commons 按材料页面许可使用。
 
 ### 完整 JLPT 题库导入
 
-完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 会显示在已导入题库卡片上。
+完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `questionNumber`、`reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioText`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 会显示在已导入题库卡片上。
 
 只有在确认整套试卷确实完整时才填写 `complete: true`，并同时提供：
 
 - `session`：考试场次，例如 `07` 或 `12`；
 - `questionCount`：必须等于 `questions.length`；
-- `sectionQuestionCounts`：`文字・語彙`、`文法`、`読解`、`聴解` 四科的题数，四科实际题数和声明必须完全一致，且每科至少 4 题；
-- 每一道 `聴解` 题的 `audioUrl`。
+- `sectionQuestionCounts`：`文字・語彙`、`文法`、`読解`、`聴解` 四科的实际题数，四科实际题数和声明必须完全一致；
+- 每一道题的正整数 `questionNumber`，并在各学习分区内从 1 连续编号；
+- 每一道题的平假名 `reading`、中文 `gloss`、逐题 `explanation` 和至少两项 `studySteps`；
+- 每一道 `聴解` 题的真实 `http(s) audioUrl`。
 
-导入器会拒绝缺科目、明显过少、题数不符或听力缺音频的“完整题库”标记。每科至少 4 题只是防止节选误标的保守底线，仍需核对来源和许可。可以先运行 `npm run validate:jlpt -- path/to/pack.json`，再在应用内导入。`complete: false` 适合教材节选、单科练习或只有部分题目的学习包。
+导入器会拒绝缺科目、低于该等级和年份格式整场题量、题号缺失、教学层不完整、题数不符或听力缺音频的“完整题库”标记。可以先运行 `npm run validate:jlpt -- path/to/pack.json`，再在应用内导入。`complete: false` 适合教材节选、单科练习或只有部分题目的学习包。
 
 阅读、听音与小测草稿自动保存。听音按实际连续播放覆盖判断是否完整；拖到末尾不能绕过提交门槛。重播、拖动、变速或提前查看文本会作为辅助记录。提交后查看文本和播放不会修改已保存的证据。
 

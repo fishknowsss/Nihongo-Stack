@@ -395,6 +395,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .study-layer-control > span { color: var(--muted); }
 .study-layer-control select { min-width: 156px; }
 .layered-japanese { font: 1.375rem/2.1 var(--jp-font); color: var(--ink); padding-block: 24px; overflow-wrap: anywhere; line-break: strict; word-break: normal; }
+.guide-phrases .layered-japanese, .library-card-answer .layered-japanese, .transcript .layered-japanese { padding-block: 0; }
+.guide-phrases dt .layered-japanese { font: inherit; }
 .layered-japanese rt { color: var(--muted); font-size: .55em; font-family: var(--jp-font); }
 .layer-token { display: inline-flex; flex-direction: column; align-items: center; justify-content: end; vertical-align: middle; position: relative; margin-inline: 1px; line-height: 1.15; }
 .layer-token ruby { line-height: 1.15; }

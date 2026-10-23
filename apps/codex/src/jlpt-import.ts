@@ -84,7 +84,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     if (!record.sectionQuestionCounts || typeof record.sectionQuestionCounts !== 'object' || Array.isArray(record.sectionQuestionCounts)) throw new Error('完整题库必须填写 sectionQuestionCounts')
     const sectionQuestionCounts = record.sectionQuestionCounts as Record<string, unknown>
     for (const section of ['文字・語彙', '文法', '読解', '聴解'] as const) {
-      if (!Number.isInteger(sectionQuestionCounts[section]) || Number(sectionQuestionCounts[section]) < 1) throw new Error(`完整题库必须填写 ${section} 的题量`)
+      if (!Number.isInteger(sectionQuestionCounts[section]) || Number(sectionQuestionCounts[section]) < 4) throw new Error(`完整题库的 ${section} 至少需要 4 题；少于此数量应标记为教学节选`)
       const actual = questions.filter((question) => question.section === section).length
       if (actual !== Number(sectionQuestionCounts[section])) throw new Error(`${section} 题量不匹配：声明 ${sectionQuestionCounts[section]}，实际 ${actual}`)
     }
@@ -152,13 +152,10 @@ export const importedJLPTCompleteExample = JSON.stringify({
   license: '内部测试资料，不是官方真题',
   sourceUrl: 'https://example.com/fixture-source',
   complete: true,
-  questionCount: 4,
-  sectionQuestionCounts: { '文字・語彙': 1, '文法': 1, '読解': 1, '聴解': 1 },
+  questionCount: 16,
+  sectionQuestionCounts: { '文字・語彙': 4, '文法': 4, '読解': 4, '聴解': 4 },
   questions: [
-    ['vocab', '文字・語彙'],
-    ['grammar', '文法'],
-    ['reading', '読解'],
-    ['listening', '聴解'],
+    ...(['文字・語彙', '文法', '読解', '聴解'] as const).flatMap((section) => Array.from({ length: 4 }, (_, index) => [`${section}-${index + 1}`, section] as const)),
   ].map(([id, section]) => ({
     id,
     section,

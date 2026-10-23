@@ -1,4 +1,4 @@
-# Nihongo Stack · Codex v0.6.0
+# Nihongo Stack · Codex v0.7.0
 
 本机优先的 Mac 日语学习应用，可双击 `Nihongo Stack Codex.app` 使用，无需终端或本地服务器。暖白 Solid Glass 分层与统一控件、朱红主动作、清晰的中文操作层级与明朝体日文阅读排版；应用图标为米白朱红叠放书页。
 

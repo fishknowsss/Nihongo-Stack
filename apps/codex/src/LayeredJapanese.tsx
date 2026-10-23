@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { segmentText, type StudyLayer } from './language'
+import { kanaToRomaji, segmentText, type StudyLayer } from './language'
 
 export default function LayeredJapanese({ segments, layer, className = '' }: { segments: Array<{ text: string; reading?: string }>; layer: StudyLayer; className?: string }) {
   const showFurigana = layer === 'furigana' || layer === 'full'
@@ -15,7 +15,7 @@ export default function LayeredJapanese({ segments, layer, className = '' }: { s
           : part.text
         if (!entry || (!showGloss && !showRomaji)) return <span key={`${part.text}-${partIndex}`}>{content}</span>
         return <span className="layer-token" key={`${part.text}-${partIndex}`}>
-          {showRomaji && <small className="layer-romaji">{entry.romaji}</small>}
+          {showRomaji && <small className="layer-romaji">{part.reading ? kanaToRomaji(part.reading) : entry.romaji}</small>}
           {content}
           {showGloss && entry.gloss && <small className="layer-gloss">{entry.gloss}</small>}
         </span>

@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { createHash } from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
+import { readings as catalogReadings } from '../src/catalog'
 const root = resolve(import.meta.dirname, '../../..')
 const originalPath = resolve(root, 'shared/content/starter-pack.v1.json')
 const original = JSON.parse(readFileSync(originalPath, 'utf8'))
@@ -87,6 +88,11 @@ for (const pack of [original, expanded]) {
       assert.equal(l.audioKind, 'synthetic')
       assert.equal(l.reviewStatus, 'machine_reviewed_teacher_pending')
     }
+  }
+}
+for (const reading of catalogReadings) {
+  for (const segment of reading.segments) {
+    assert.ok(!/[一-龯]/u.test(segment.text) || typeof segment.reading === 'string', `runtime reading missing furigana: ${reading.id} · ${segment.text}`)
   }
 }
 checkQuestions(original.baselineQuestions)

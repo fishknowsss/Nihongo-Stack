@@ -120,6 +120,11 @@ export function lookupJapanese(text: string): LexiconEntry | undefined {
 
 export function segmentText(text: string, suppliedReading?: string): Array<{ text: string; entry?: LexiconEntry; reading?: string }> {
   if (!text) return []
+  if (suppliedReading) {
+    const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')
+    const exact = bySurface.get(normalized)
+    return [{ text, entry: exact, reading: suppliedReading }]
+  }
   const result: Array<{ text: string; entry?: LexiconEntry; reading?: string }> = []
   let rest = text
   const sorted = [...allEntries].sort((a, b) => b.surface.length - a.surface.length)
@@ -135,7 +140,7 @@ export function segmentText(text: string, suppliedReading?: string): Array<{ tex
       return index > 0 && index < nearest ? index : nearest
     }, rest.length)
     const chunk = rest.slice(0, nextIndex)
-    result.push({ text: chunk, reading: result.length === 0 ? suppliedReading : undefined })
+    result.push({ text: chunk })
     rest = rest.slice(nextIndex)
   }
   return result

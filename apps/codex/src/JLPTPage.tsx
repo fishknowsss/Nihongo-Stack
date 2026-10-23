@@ -272,7 +272,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </ul>
           <details className="jlpt-format-details">
             <summary>完整真题 JSON 需要哪些字段？</summary>
-            <p>将 <code>complete</code> 设为 true 时，必须同时填写 <code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code>；四科题数必须与实际题目一致，每道聴解题必须有 <code>audioUrl</code>。这会阻止把只有几道题的练习包误标成完整真题。</p>
+            <p>将 <code>complete</code> 设为 true 时，必须同时填写 <code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code>；四科题数必须与实际题目一致且每科至少 4 题，每道聴解题必须有 <code>audioUrl</code>。这会阻止把只有几道题的练习包误标成完整真题。</p>
           </details>
           <div className="jlpt-source-list">
             <details className="jlpt-official-details">

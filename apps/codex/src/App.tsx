@@ -63,7 +63,7 @@ import WeeklyReport from './WeeklyReport'
 import AnnotationControl, { AnnotationNote, type Annotation } from './AnnotationControl'
 import StudyLayerControl from './StudyLayerControl'
 import LayeredJapanese from './LayeredJapanese'
-import type { StudyLayer } from './language'
+import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import JLPTPage from './JLPTPage'
 import { practiceEvidence } from './mistakes'
@@ -627,7 +627,7 @@ function TodayPage({
               <ArrowRight size={18} />
             </button>
           </div>
-          <UnitGuide unit={unit} />
+          <UnitGuide unit={unit} onNotify={onNotify} />
         </section>
         <section className="day-plan" aria-label="今日时间与完成情况">
           <h2>今天的安排</h2>
@@ -975,7 +975,7 @@ function CoursePage({
                     听音
                   </button>
                 </div>
-                <UnitGuide unit={item} />
+                <UnitGuide unit={item} onNotify={onNotify} />
                 {practiced && (
                   <label className="reflection">
                     <input
@@ -1332,7 +1332,11 @@ function ReadingExercise({
   const [busy, setBusy] = useState(false)
   const lock = useRef(false)
   const metaKey = `draft:reading-help:${reading.id}`
+  const studyLayerKey = `studyLayer:reading:${reading.id}`
   const effectiveLayer: StudyLayer = studyLayer !== 'off' ? studyLayer : annotation === 'material' ? 'furigana' : 'off'
+  useEffect(() => {
+    void db.preferences.get(studyLayerKey).then((row) => { if (isStudyLayer(row?.value)) setStudyLayer(row.value) })
+  }, [studyLayerKey])
   useEffect(() => {
     let cancelled = false
     void flushDrafts([metaKey]).then(() => db.preferences.get(metaKey)).then((x) => {
@@ -1387,6 +1391,14 @@ function ReadingExercise({
       setBusy(false)
     }
   }
+  async function changeStudyLayer(next: StudyLayer) {
+    setStudyLayer(next)
+    try { await setPreference(studyLayerKey, next) } catch { onNotify('学习层偏好未保存，本次仍可继续使用。', 'error') }
+    if (next !== 'off' && !practice.result) {
+      setHelpUsed(true)
+      void persistDraft(metaKey, true).catch(() => onNotify('辅助记录未保存，请重试。', 'error'))
+    }
+  }
   return (
     <div className="exercise-layout">
       <article className="material-card" id="reading-text" tabIndex={-1}>
@@ -1398,7 +1410,7 @@ function ReadingExercise({
             </p>
           </div>
           <div className="reading-tools">
-            <StudyLayerControl value={studyLayer} onChange={(next) => { setStudyLayer(next); if (next !== 'off' && !practice.result) { setHelpUsed(true); void persistDraft(metaKey, true).catch(() => onNotify('辅助记录未保存，请重试。', 'error')) } }} />
+            <StudyLayerControl value={studyLayer} onChange={(next) => { void changeStudyLayer(next) }} />
             <AnnotationControl
               label="字体注音"
               material
@@ -1554,6 +1566,10 @@ function ListeningExercise({
   const lock = useRef(false)
   const lastPosition = useRef<number | null>(null)
   const metaKey = `draft:listening-meta:${listening.id}`
+  const studyLayerKey = `studyLayer:listening:${listening.id}`
+  useEffect(() => {
+    void db.preferences.get(studyLayerKey).then((row) => { if (isStudyLayer(row?.value)) setStudyLayer(row.value) })
+  }, [studyLayerKey])
   useEffect(() => {
     let cancelled = false
     void flushDrafts([metaKey]).then(() => db.preferences.get(metaKey))
@@ -1603,6 +1619,10 @@ function ListeningExercise({
     void persistDraft(metaKey, JSON.stringify(next)).catch(() =>
       onNotify('播放记录未保存，请重试。', 'error'),
     )
+  }
+  function changeStudyLayer(next: StudyLayer) {
+    setStudyLayer(next)
+    void setPreference(studyLayerKey, next).catch(() => onNotify('学习层偏好未保存，本次仍可继续使用。', 'error'))
   }
   function capture(audio: HTMLAudioElement) {
     if (
@@ -1784,7 +1804,7 @@ function ListeningExercise({
         </button>
         {transcript && (
           <div className="transcript">
-            <div className="guide-toolbar"><h3>音频文本</h3><div className="reading-tools"><StudyLayerControl value={studyLayer} onChange={setStudyLayer} /><AnnotationControl value={annotation} onChange={setAnnotation} /></div></div>
+            <div className="guide-toolbar"><h3>音频文本</h3><div className="reading-tools"><StudyLayerControl value={studyLayer} onChange={changeStudyLayer} /><AnnotationControl value={annotation} onChange={setAnnotation} /></div></div>
             {annotation === 'font' && <AnnotationNote />}
             <LayeredJapanese segments={[{ text: listening.transcript }]} layer={studyLayer} className={annotation === 'font' ? 'font-furigana' : ''} />
             <p>{listening.translation}</p>

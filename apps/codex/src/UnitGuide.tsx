@@ -1,13 +1,18 @@
 import { cards, readings, type CourseUnit } from './content'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import AnnotationControl, { AnnotationNote, type Annotation } from './AnnotationControl'
 import StudyLayerControl from './StudyLayerControl'
 import LayeredJapanese from './LayeredJapanese'
-import type { StudyLayer } from './language'
+import { isStudyLayer, type StudyLayer } from './language'
+import { db, setPreference } from './db'
 
-export default function UnitGuide({ unit }: { unit: CourseUnit }) {
+export default function UnitGuide({ unit, onNotify }: { unit: CourseUnit; onNotify?: (message: string, kind?: 'success' | 'error') => void }) {
   const [annotation, setAnnotation] = useState<Annotation>('off')
   const [studyLayer, setStudyLayer] = useState<StudyLayer>('off')
+  const studyLayerKey = `studyLayer:unit:${unit.id}`
+  useEffect(() => {
+    void db.preferences.get(studyLayerKey).then((row) => { if (isStudyLayer(row?.value)) setStudyLayer(row.value) })
+  }, [studyLayerKey])
   const reading = readings.find(item => item.id === unit.readingId)!
   const unitCards = unit.cardIds.map(id => cards.find(card => card.id === id)!)
   return (
@@ -16,7 +21,7 @@ export default function UnitGuide({ unit }: { unit: CourseUnit }) {
       <div className="unit-guide-content">
         <h3>读的时候，留意这些</h3>
         <ul>{reading.focus.map(text => <li key={text}>{text}</li>)}</ul>
-        <div className="guide-toolbar"><h3>六个重点词句</h3><div className="reading-tools"><StudyLayerControl value={studyLayer} onChange={setStudyLayer} /><AnnotationControl label="字体注音" value={annotation} onChange={setAnnotation} /></div></div>
+        <div className="guide-toolbar"><h3>六个重点词句</h3><div className="reading-tools"><StudyLayerControl value={studyLayer} onChange={(next) => { setStudyLayer(next); void setPreference(studyLayerKey, next).catch(() => onNotify?.('学习层偏好未保存，请重试。', 'error')) }} /><AnnotationControl label="字体注音" value={annotation} onChange={setAnnotation} /></div></div>
         {annotation === 'font' && <AnnotationNote />}
         <dl className="guide-phrases">
           {unitCards.map(card => <div key={card.id}>

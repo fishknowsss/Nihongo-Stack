@@ -2,6 +2,10 @@ import { readings } from './catalog'
 
 export type StudyLayer = 'off' | 'furigana' | 'gloss' | 'romaji' | 'full'
 
+export function isStudyLayer(value: unknown): value is StudyLayer {
+  return value === 'off' || value === 'furigana' || value === 'gloss' || value === 'romaji' || value === 'full'
+}
+
 export type LexiconEntry = {
   surface: string
   reading: string

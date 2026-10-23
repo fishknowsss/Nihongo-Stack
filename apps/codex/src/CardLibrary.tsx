@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   ArrowRight,
   MagnifyingGlass,
@@ -6,6 +6,7 @@ import {
 } from '@phosphor-icons/react'
 import { cards, courseUnits } from './catalog'
 import {
+  db,
   setPreference,
   type CardProgress,
   type Preference,
@@ -15,7 +16,7 @@ import { difficultCardIds } from './learning'
 import AnnotationControl, { AnnotationNote, type Annotation } from './AnnotationControl'
 import StudyLayerControl from './StudyLayerControl'
 import LayeredJapanese from './LayeredJapanese'
-import type { StudyLayer } from './language'
+import { isStudyLayer, type StudyLayer } from './language'
 
 const kinds = { kana: '假名', vocabulary: '词汇', grammar: '语法' }
 export default function CardLibrary({
@@ -40,6 +41,10 @@ export default function CardLibrary({
   const [visible, setVisible] = useState(20)
   const [annotation, setAnnotation] = useState<Annotation>('off')
   const [studyLayer, setStudyLayer] = useState<StudyLayer>('off')
+  const studyLayerKey = 'studyLayer:cards'
+  useEffect(() => {
+    void db.preferences.get(studyLayerKey).then((row) => { if (isStudyLayer(row?.value)) setStudyLayer(row.value) })
+  }, [])
   const states = new Map(progress.map((row) => [row.id, row]))
   const difficult = difficultCardIds(events)
   const bookmarks = new Set(
@@ -169,7 +174,7 @@ export default function CardLibrary({
                   </summary>
                   <div className="library-card-answer">
                     <div className="reading-tools">
-                      <StudyLayerControl value={studyLayer} onChange={setStudyLayer} />
+                      <StudyLayerControl value={studyLayer} onChange={(next) => { setStudyLayer(next); void setPreference(studyLayerKey, next).catch(() => onNotify('学习层偏好未保存，本次仍可继续使用。', 'error')) }} />
                       <AnnotationControl label="字体注音" value={annotation} onChange={setAnnotation} />
                     </div>
                     {annotation === 'font' && <AnnotationNote />}

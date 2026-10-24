@@ -13,4 +13,6 @@ npm run build:private-site-jlpt
 
 前者转换 `HosnainRafi/jlpt-n5-resource-pack` 的 N5 题目；后者抓取 `JLPT Practice Test` 公开页面的文字词汇与阅读资料。生成的 JSON 位于 `private-assets/nihongo-stack-imports/` 或 `private-assets/nihongo-stack-site-imports/`，在应用 JLPT 页面点击“导入完整真题 JSON（可多选）”即可写入本机。
 
+当前已抓取 2019–2024 的 N2、N3 页面。该站没有对应年份的 N4/N5 dated 页面，N5 使用前一个转换器提供的资源包。公开页面没有配套听力题，所以站点资料生成包会保持 `complete: false`，不会被误标成逐场完整试卷。
+
 资料来源的题目、音频和图片仍归原权利人。当前流程面向用户个人学习；重新发布代码时不应把 `private-assets/` 内容加入提交。

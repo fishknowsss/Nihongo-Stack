@@ -301,7 +301,14 @@ export function segmentText(text: string, suppliedReading?: string): Array<{ tex
   let rest = text
   const sorted = [...allEntries].sort((a, b) => b.surface.length - a.surface.length)
   while (rest) {
-    const match = sorted.find((entry) => rest.startsWith(entry.surface))
+    const match = sorted.find((entry) => {
+      if (!rest.startsWith(entry.surface)) return false
+      // Do not split a longer kana word into a one-token grammar particle.
+      // For example, はじめまして must stay intact instead of becoming は + じめまして.
+      const nextChar = rest.slice(entry.surface.length, entry.surface.length + 1)
+      if (entry.kind === 'grammar' && /^[\u3040-\u309fー・]+$/u.test(entry.surface) && /^[\u3040-\u309fー・]$/u.test(nextChar)) return false
+      return true
+    })
     if (match) {
       result.push({ text: match.surface, entry: match })
       rest = rest.slice(match.surface.length)

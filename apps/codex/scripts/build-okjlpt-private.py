@@ -40,7 +40,7 @@ def material_map(paper: dict[str, Any]) -> dict[str, dict[str, Any]]:
     }
 
 
-def convert(paper: dict[str, Any], solutions: dict[str, Any]) -> dict[str, Any]:
+def convert(paper: dict[str, Any], solutions: dict[str, Any], source_url: str) -> dict[str, Any]:
     answers = {item["questionId"]: item for item in solutions.get("items", [])}
     materials = material_map(paper)
     counters = {section: 0 for section in ["文字・語彙", "文法", "読解", "聴解"]}
@@ -83,7 +83,7 @@ def convert(paper: dict[str, Any], solutions: dict[str, Any]) -> dict[str, Any]:
                     "把错因写入收藏或笔记，隔天只重做错题。",
                 ],
                 "itemType": str(mondai.get("type", section)),
-                "sourceUrl": SOURCE_URL,
+                "sourceUrl": source_url,
             }
             if isinstance(image, dict) and isinstance(image.get("url"), str):
                 question["imageUrl"] = image["url"]
@@ -92,17 +92,17 @@ def convert(paper: dict[str, Any], solutions: dict[str, Any]) -> dict[str, Any]:
             questions.append(question)
     return {
         "schemaVersion": 1,
-        "id": "private-okjlpt-2021-12-n4",
-        "year": 2021,
-        "session": "12",
-        "level": "N4",
-        "title": "OK JLPT · N4 2021 年 12 月整卷 · 本机个人学习",
+        "id": f"private-okjlpt-{paper['year']}-{paper['month']:02d}-{paper['level'].lower()}",
+        "year": paper["year"],
+        "session": f"{paper['month']:02d}",
+        "level": paper["level"],
+        "title": f"OK JLPT · {paper['level']} {paper['year']} 年 {paper['month']} 月整卷 · 本机个人学习",
         "sourceName": "OK JLPT",
         "license": "来源页面提供个人学习入口；题目、音频和图片仍归原权利人",
         "rightsBasis": "用户授权的本机个人学习副本；仅用于本机学习，不公开再分发",
-        "rightsEvidenceUrl": SOURCE_URL,
-        "sourceUrl": SOURCE_URL,
-        "complete": True,
+        "rightsEvidenceUrl": source_url,
+        "sourceUrl": source_url,
+        "complete": paper["year"] >= 2019,
         "questionCount": len(questions),
         "sectionQuestionCounts": counters,
         "questions": questions,
@@ -113,9 +113,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--paper", type=Path, default=ROOT / "private-assets/okjlpt-n4-2021-12-paper.json")
     parser.add_argument("--solutions", type=Path, default=ROOT / "private-assets/okjlpt-n4-2021-12-solutions.json")
+    parser.add_argument("--source-url", default=SOURCE_URL)
     parser.add_argument("--out", type=Path, default=ROOT / "private-assets/nihongo-stack-okjlpt-imports/n4-2021-12.json")
     args = parser.parse_args()
-    pack = convert(json.loads(args.paper.read_text(encoding="utf-8")), json.loads(args.solutions.read_text(encoding="utf-8")))
+    pack = convert(json.loads(args.paper.read_text(encoding="utf-8")), json.loads(args.solutions.read_text(encoding="utf-8")), args.source_url)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(pack, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"{pack['title']}: {pack['questionCount']} 题 · {pack['sectionQuestionCounts']}")

@@ -266,6 +266,22 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     chineseMethod: '把它当作题后查漏工具：先确认词条的读音和等级，再用例句判断搭配；数据是学习辅助，不代表官方当前考纲或某一道真题。',
     studySteps: ['先用原文中的词搜索，核对汉字、平假名和罗马音。', '再看词性、语法形成和例句，记录中文里容易误解的搭配。', '把复盘结果写入选中笔记，并回到 JLPT 题目重新作答。'],
   },
+  {
+    label: 'JLPT Practice Test：N3 听力练习与脚本',
+    url: 'https://www.jlptpracticetest.com/n3/listening',
+    level: '听力策略 · N3–N2 过渡',
+    japaneseGoal: '質問を先に聞き、要点・順序・話者の意図をつかむ。',
+    chineseMethod: '先不看脚本完成免费样题，再打开日文脚本对照声音；重点练“下一步、理由、主旨、自然回应”五类判断。',
+    studySteps: ['第一遍隐藏脚本，只记录人物、目的和结果。', '第二遍打开脚本，圈出转折、顺序词和最后决定。', '把错题按课题理解、要点理解、概要理解、发话表达、即时应答分类收藏。'],
+  },
+  {
+    label: 'JLPT Practice Test：N4/N5 编号练习',
+    url: 'https://www.jlptpracticetest.com/n4',
+    level: '基础题型复现 · N5–N4',
+    japaneseGoal: '基本語彙と文法を、短い文の中ですぐ使えるようにする。',
+    chineseMethod: '编号练习是原创题，不当作历年真题；适合先熟悉题型，再回到完整整卷训练时间和耐力。',
+    studySteps: ['先选择一个编号套题，关闭罗马音完成一轮。', '逐题看中文解析，把错误分为读音、词形、助词和句意。', '隔天重做错题，再用本机整卷练习检验迁移。'],
+  },
 ]
 
 export const jlptOfficialPracticeLinks: Record<JLPTLevel, Array<{ label: string; url: string }>> = {

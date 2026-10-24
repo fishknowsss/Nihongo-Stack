@@ -180,14 +180,51 @@ def convert(level: str, date: str, output: Path) -> dict[str, Any]:
     return pack
 
 
+def convert_numbered(level: str, number: int, output: Path) -> dict[str, Any]:
+    """Convert a numbered N4/N5 original practice set (not a dated paper)."""
+    vocabulary = extract_test(fetch(f"{BASE}/{level}/{number}/vocabulary"))
+    grammar = extract_test(fetch(f"{BASE}/{level}/{number}/grammar"))
+    questions = questions_from(vocabulary, "文字・語彙") + questions_from(grammar, "読解")
+    pack = {
+        "schemaVersion": 1,
+        "id": f"private-jlptpracticetest-numbered-{level}-{number}",
+        "year": 2026,
+        "level": level.upper(),
+        "title": f"JLPT Practice Test · {level.upper()} 编号练习 {number} · 本机个人学习",
+        "sourceName": "JLPT Practice Test · independent study site",
+        "license": "来源页面明确为 numbered practice material；题目与页面内容仍归原权利人",
+        "rightsBasis": "用户授权的本机个人学习副本；仅用于本机学习，不公开再分发",
+        "rightsEvidenceUrl": f"{BASE}/{level}/{number}",
+        "sourceUrl": f"{BASE}/{level}/{number}",
+        "complete": False,
+        "fullPaper": False,
+        "questionCount": len(questions),
+        "sectionQuestionCounts": {"文字・語彙": len(questions_from(vocabulary, "文字・語彙")), "読解": len(questions_from(grammar, "読解"))},
+        "questions": questions,
+    }
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(json.dumps(pack, ensure_ascii=False, indent=2), encoding="utf-8")
+    return pack
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--levels", default="n2", help="comma-separated levels, for example n2,n3,n4,n5")
     parser.add_argument("--from-year", type=int, default=2019)
     parser.add_argument("--to-year", type=int, default=2024)
+    parser.add_argument("--numbered", action="store_true", help="抓取 N4/N5 编号原创练习，而非日期套题")
     parser.add_argument("--out", type=Path, default=ROOT / "private-assets" / "nihongo-stack-site-imports")
     args = parser.parse_args()
     for level in [item.strip().lower() for item in args.levels.split(",") if item.strip()]:
+        if args.numbered:
+            for number in range(1, 11):
+                try:
+                    pack = convert_numbered(level, number, args.out / f"{level}-numbered-{number}.json")
+                except Exception as error:
+                    print(f"跳过 {level} 编号练习 {number}：{error}")
+                    continue
+                print(f"{pack['id']}: {pack['questionCount']} 题（原创文字词汇 + 阅读）")
+            continue
         for date in index_dates(level, args.from_year, args.to_year):
             pack = convert(level, date, args.out / f"{level}-{date}.json")
             print(f"{pack['id']}: {pack['questionCount']} 题（文字词汇 + 阅读）")

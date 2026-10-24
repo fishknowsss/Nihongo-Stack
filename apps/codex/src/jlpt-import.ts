@@ -24,14 +24,14 @@ export type ImportedJLPTPack = {
  * the session-to-session variation documented by the official site.
  */
 export function minimumCompleteQuestionCount(level: JLPTLevel, year: number, session: string): number {
-  if (level === 'N2') return 100
-  if (level === 'N3') return 95
+  if (level === 'N2') return 107
+  if (level === 'N3') return 102
   if (level === 'N4') {
     const beforeShortenedFormat = year < 2020 || (year === 2020 && session === '07')
-    return beforeShortenedFormat ? 90 : 78
+    return beforeShortenedFormat ? 98 : 85
   }
   const beforeShortenedFormat = year < 2020 || (year === 2020 && session === '07')
-  return beforeShortenedFormat ? 80 : 60
+  return beforeShortenedFormat ? 91 : 67
 }
 
 const levels = new Set<JLPTLevel>(['N5', 'N4', 'N3', 'N2'])

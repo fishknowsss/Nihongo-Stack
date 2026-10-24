@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
-import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
+import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
 import LayeredJapanese from './LayeredJapanese'
 
@@ -127,6 +127,15 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     try {
       const packs = await Promise.all(files.map(async (file) => parseImportedJLPTPack(await file.text())))
       if (new Set(packs.map((pack) => pack.id)).size !== packs.length) throw new Error('本次选择的题库 id 不能重复')
+      const existingSlots = new Map(importedPacks.flatMap((pack) => { const key = importedSlotKey(pack); return key ? [[key, pack.id] as const] : [] }))
+      const seenSlots = new Map<string, string>()
+      for (const pack of packs) {
+        const key = importedSlotKey(pack)
+        if (!key) continue
+        const conflict = existingSlots.get(key) ?? seenSlots.get(key)
+        if (conflict && conflict !== pack.id) throw new Error(`${pack.year} 年 ${pack.session} 场 ${pack.level} 已有另一套完整题库（${conflict}）；请使用相同 id 更新，或先移除旧题库`)
+        seenSlots.set(key, pack.id)
+      }
       await db.preferences.bulkPut(packs.map((pack) => ({ key: `jlptImportedPack:${pack.id}`, value: JSON.stringify(pack) })))
       const pack = packs[0]
       setLevel(pack.level)
@@ -328,6 +337,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
       </div>
     </div>
   )
+}
+
+function importedSlotKey(pack: ImportedJLPTPack): string | undefined {
+  return pack.complete && pack.session ? `${pack.year}-${pack.session}-${pack.level}` : undefined
 }
 
 function formatCountdown(seconds: number): string {

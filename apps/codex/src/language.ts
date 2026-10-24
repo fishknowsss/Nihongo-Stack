@@ -284,6 +284,12 @@ async function loadOfflineLookup(): Promise<OfflineLookupIndex | null> {
 function phraseGloss(text: string, index: OfflineLookupIndex): string | undefined {
   const keys = Object.keys(index.entries).sort((a, b) => b.length - a.length)
   const found: Array<{ surface: string; gloss: string }> = []
+  const grammarNoise = new Set(['です', 'ます', 'ません', 'あります', 'います'])
+  for (const entry of bySurface.values()) {
+    if (entry.kind === 'grammar' && entry.surface.length >= 2 && !grammarNoise.has(entry.surface) && text.includes(entry.surface)) {
+      found.push({ surface: entry.surface, gloss: entry.gloss ?? '语法结构' })
+    }
+  }
   let rest = text
   let offset = 0
   while (rest) {

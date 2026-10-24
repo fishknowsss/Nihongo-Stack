@@ -30,6 +30,7 @@ for (const question of jlptQuestions) {
   assert.ok(question.prompt.length > 0)
   assert.equal(question.options.length, 4)
   assert.ok(question.answer >= 0 && question.answer < question.options.length)
+  assert.ok(question.reading && question.gloss, `${question.id} must include reading and Chinese gloss`)
   assert.ok(question.explanation.length > 0)
   assert.ok(question.studySteps.length >= 2)
 }

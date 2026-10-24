@@ -43,7 +43,17 @@ def clean_text(value: str) -> str:
 
 
 def split_raw_sections(text: str) -> dict[str, str]:
-    positions = [(text.find(name), name) for name in SECTION_NAMES if text.find(name) >= 0]
+    positions = []
+    aliases = {
+        "文字・語彙": ["文字・語彙", "文字語彙", "もじ・ごい"],
+        "文法": ["文法"],
+        "読解": ["読解"],
+        "聴解": ["聴解"],
+    }
+    for name, candidates in aliases.items():
+        found = [text.find(candidate) for candidate in candidates if text.find(candidate) >= 0]
+        if found:
+            positions.append((min(found), name))
     positions.sort()
     sections: dict[str, str] = {}
     for index, (start, name) in enumerate(positions):
@@ -175,7 +185,22 @@ def main() -> None:
 
     text = extract_text(args.paper)
     answers = json.loads(args.answer_key.read_text(encoding="utf-8"))
-    positions = {name: text.find(name) for name in ["文字・語彙", "文法", "読解", "聴解"]}
+    def first_position(*patterns: str, start: int = 0) -> int:
+        found: list[int] = []
+        for pattern in patterns:
+            match = re.search(pattern, text[start:], flags=re.MULTILINE)
+            if match:
+                found.append(start + match.start())
+        return min(found) if found else -1
+
+    vocab_start = first_position(r"文字・語彙", r"文字語彙", r"もじ・ごい")
+    grammar_start = first_position(r"文法[・、\s]*読解", r"(?m)^\s*文法\s*$", start=max(0, vocab_start))
+    listening_start = first_position(r"聴解", start=max(0, grammar_start))
+    reading_start = first_position(r"(?m)^\s*読解\s*$", start=max(0, grammar_start))
+    if reading_start < 0:
+        problem_four = re.search(r"(?m)^\s*問題\s*4\s", text[max(0, grammar_start):])
+        reading_start = max(0, grammar_start) + problem_four.start() if problem_four else listening_start
+    positions = {"文字・語彙": vocab_start, "文法": grammar_start, "読解": reading_start, "聴解": listening_start}
     vocab = text[positions["文字・語彙"] : positions["文法"]]
     grammar = text[positions["文法"] : positions["読解"]]
     reading = text[positions["読解"] : positions["聴解"]]
@@ -185,14 +210,14 @@ def main() -> None:
     vocab_types = {1: "漢字読み", 2: "漢字表記", 3: "語彙", 4: "類義語", 5: "用法"}
     for number, block in blocks(vocab, 1, 34, "paren"):
         prompt, options = parse_block(block)
-        if number <= len(vocab_answers) and len(options) >= 2:
+        if number <= len(vocab_answers) and len(options) == 4:
             item_type = vocab_types[1 if number <= 7 else 2 if number <= 13 else 3 if number <= 24 else 4 if number <= 29 else 5]
             questions.append(make_question(args.level, "文字・語彙", number, prompt, options, vocab_answers[number - 1], args.source_url, item_type))
 
     grammar_answers = flatten_answers(answers, "文法・読解", ["1", "2"])
     for number, block in blocks(grammar, 1, 18, "paren"):
         prompt, options = parse_block(block)
-        if number <= len(grammar_answers) and len(options) >= 2:
+        if number <= len(grammar_answers) and len(options) == 4:
             questions.append(make_question(args.level, "文法", number, prompt, options, grammar_answers[number - 1], args.source_url, "文法"))
 
     # 文法・読解的第 3 题材料在题号 19–22 之前，四题共用同一篇短文。
@@ -204,13 +229,13 @@ def main() -> None:
         for index, (number, block) in enumerate(blocks(grammar[first_fill:], 19, 22, "paren")):
             prompt, options = parse_block(block)
             prompt = f"{material}\n（第 {number} 个空格）\n{prompt}".strip()
-            if index < len(fill_answers) and len(options) >= 2:
+            if index < len(fill_answers) and len(options) == 4:
                 questions.append(make_question(args.level, "文法", number, prompt, options, fill_answers[index], args.source_url, "文章文法"))
 
     reading_answers = flatten_answers(answers, "文法・読解", ["4", "5", "6", "7"])
     for index, (number, block) in enumerate(blocks(reading, 23, 38, "space")):
         prompt, options = parse_block(block)
-        if index < len(reading_answers) and len(options) >= 2:
+        if index < len(reading_answers) and len(options) == 4:
             questions.append(make_question(args.level, "読解", number, prompt, options, reading_answers[index], args.source_url, "読解"))
 
     raw_sections = split_raw_sections(text)

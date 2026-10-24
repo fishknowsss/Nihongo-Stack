@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Rating, type Grade } from 'ts-fsrs'
 import {
@@ -67,9 +67,11 @@ import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
+import StudyPlanPanel from './StudyPlanPanel'
 import { jlptFullExamSlotCount, jlptSets } from './jlpt'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
+import { buildStudyPlan, DEFAULT_JLPT_EXAM_DATE } from './studyPlan'
 import { version as appVersion } from '../package.json'
 
 type View =
@@ -206,6 +208,15 @@ function App() {
     }))
     .sort((a, b) => b.misses - a.misses)
   const focus = weakGroups[0]?.misses ? weakGroups[0] : null
+  const jlptCompletedCount = preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).length
+  const studyPlan = useMemo(() => buildStudyPlan({
+    today,
+    availableMinutes: minutes,
+    preferences,
+    baseline,
+    dueCards: due,
+    jlptCompletedCount,
+  }), [baseline, due, events, jlptCompletedCount, minutes, preferences, today])
   const queue = reviewQueue(
     progress,
     events,
@@ -373,6 +384,7 @@ function App() {
                     todayAttempts,
                     preferences,
                     baseline,
+                    studyPlan,
                     focusLabel: focus?.label ?? null,
                     onNotify,
                     setView,
@@ -483,6 +495,7 @@ type TodayProps = {
   todayAttempts: Attempt[]
   preferences: Preference[]
   baseline?: Attempt
+  studyPlan: ReturnType<typeof buildStudyPlan>
   focusLabel: string | null
   onNotify: Notify
   setView: (v: View) => void
@@ -500,6 +513,7 @@ function TodayPage({
   todayAttempts,
   preferences,
   baseline,
+  studyPlan,
   focusLabel,
   onNotify,
   setView,
@@ -567,6 +581,11 @@ function TodayPage({
       <PageIntro
         title="今日学习"
         description="先完成当前单元，再把学过的内容带进复习。"
+      />
+      <StudyPlanPanel
+        plan={studyPlan}
+        onFoundation={() => setView(baseline ? 'review' : 'baseline')}
+        onJlpt={() => setView('jlpt')}
       />
       <div className="today-layout">
         <section className="unit-focus" aria-label="当前学习单元">
@@ -2415,6 +2434,20 @@ function SettingsPage({
       setBusy(false)
     }
   }
+  async function saveTextSetting(key: string, value: string, message: string) {
+    if (lock.current) return
+    lock.current = true
+    setBusy(true)
+    try {
+      await setPreference(key, value)
+      onNotify(message)
+    } catch {
+      onNotify('设置未保存，请重试。', 'error')
+    } finally {
+      lock.current = false
+      setBusy(false)
+    }
+  }
   async function exportData() {
     if (lock.current) return
     lock.current = true
@@ -2519,6 +2552,20 @@ function SettingsPage({
               </option>
             ))}
         </select>
+      </section>
+      <section className="settings-section">
+        <div>
+          <h2>JLPT N2 目标日期</h2>
+          <p>双轨计划会按剩余天数自动调整基础理解与 N2 题型训练的时间比例。</p>
+        </div>
+        <input
+          disabled={busy}
+          aria-label="JLPT N2 目标日期"
+          type="date"
+          value={String(pref(preferences, 'jlptExamDate', DEFAULT_JLPT_EXAM_DATE))}
+          min={new Date().toISOString().slice(0, 10)}
+          onChange={(event) => void saveTextSetting('jlptExamDate', event.target.value, 'JLPT 目标日期已保存。')}
+        />
       </section>
       <section className="settings-section">
         <div>

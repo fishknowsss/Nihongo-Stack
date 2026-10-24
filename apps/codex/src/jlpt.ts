@@ -187,6 +187,7 @@ export const jlptSets: JLPTSet[] = jlptYears.flatMap((year) => jlptLevels.map((l
 }))
 
 export const jlptSources = [
+  { label: '日语语法指南（Tae Kim 中文译本）', url: 'https://res.wokanxing.info/jpgramma/', note: '公开中文语法教程，覆盖书写系统、基本语法、复合句、条件、敬语与高级表达；按原站目录学习并保留署名与 CC BY-NC-SA 许可。' },
   { label: 'JLPT 官方题型与题目构成', url: 'https://www.jlpt.jp/e/guideline/testsections.html' },
   { label: 'JLPT 官方样题与练习册', url: 'https://samplequestions.jlpt.jp/e/samples/sampleindex.html' },
   { label: 'JLPT 官方 FAQ · 历年原卷公开范围', url: 'https://www.jlpt.jp/sp/e/faq/', note: '官方说明不会公开每场考试的完全相同原题；应用仅内置官方公开资料入口，完整授权题库可从本机批量导入。' },
@@ -210,6 +211,14 @@ export type JLPTResourceRoute = {
 // Public entry points are linked in place. The app explains how to use each
 // source without copying material whose license belongs to the publisher.
 export const jlptResourceRoutes: JLPTResourceRoute[] = [
+  {
+    label: '日语语法指南（Tae Kim 中文译本）',
+    url: 'https://res.wokanxing.info/jpgramma/',
+    level: '语法主线 · N5–N2',
+    japaneseGoal: '文の骨格を理解し、助詞・活用・接続を使い分ける。',
+    chineseMethod: '按“书写系统→基本语法→语法精要→特定表达→高级话题”顺序学习；先读中文解释，再用日语例句朗读和改写。原站目录覆盖从假名到高级表达的完整教程。',
+    studySteps: ['基础阶段先学助词、形容词、动词活用和过去式，每次只处理一个结构。', '进入 N3/N2 后重点复习条件、让步、正式表达和句尾语气，把相似句型并排比较。', '每学一个语法写一条自己的句子，并回到 JLPT 错题检查它在真实题干中的作用。'],
+  },
   {
     label: 'Irodori：Japanese for Life in Japan',
     url: 'https://www.irodori.jpf.go.jp/en/',

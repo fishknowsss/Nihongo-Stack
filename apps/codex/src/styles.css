@@ -80,6 +80,20 @@ button { transition: background-color 140ms ease-out, border-color 140ms ease-ou
 .page-stack { display: grid; align-content: start; gap: 20px; max-width: 1220px; margin-inline: auto; min-width: 0; }
 .page-stack > * { min-width: 0; }
 .page-intro p { margin-top: 6px; max-width: 74ch; color: var(--muted); font-size: .9375rem; line-height: 1.65; }
+.study-plan-panel { display: grid; gap: 14px; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--panel); box-shadow: var(--surface-shadow); }
+.study-plan-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
+.study-plan-kicker { display: block; color: var(--accent); font-size: .75rem; font-weight: 650; letter-spacing: .02em; }
+.study-plan-heading h2 { margin-top: 3px; font-size: 1.25rem; }
+.study-plan-deadline { display: grid; justify-items: end; color: var(--muted); font-size: .75rem; white-space: nowrap; }
+.study-plan-deadline strong { color: var(--ink); font-size: 1.5rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.study-plan-rationale, .study-plan-footnote { color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.study-plan-tracks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.study-plan-track { display: grid; gap: 8px; min-width: 0; padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--control-radius); }
+.study-plan-track-title { display: flex; align-items: center; gap: 8px; color: var(--accent); }
+.study-plan-track-title strong { color: var(--ink); font-size: .875rem; }
+.study-plan-track-title span { margin-left: auto; color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.study-plan-track p { min-height: 2.8em; color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.study-plan-track .text-button { justify-self: start; min-height: 36px; padding-inline: 0; font-size: .8125rem; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .section-heading h2 { font-size: 1.25rem; }
 .field-hint, .content-note, .shortcut-hint { color: var(--muted); font-size: .8125rem; line-height: 1.7; }
@@ -374,6 +388,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .settings-section h2 { font-size: 1rem; }
 .settings-section p { color: var(--muted); font-size: .875rem; margin-top: 4px; max-width: 68ch; }
 .settings-section > select { flex-shrink: 0; }
+.settings-section > input[type="date"] { min-height: 44px; padding: 8px 10px; border: 1px solid var(--control-line); border-radius: var(--control-radius); background: var(--surface); color: var(--ink); }
 .settings-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 .settings-card { display: flex; flex-direction: column; align-items: start; gap: 12px; padding: 24px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .settings-card > svg { display: none; }
@@ -597,6 +612,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .topbar { padding-inline: 24px; }
   .top-date { display: none; }
   .today-layout { grid-template-columns: minmax(0,1fr); gap: 16px; }
+  .study-plan-tracks { grid-template-columns: minmax(0,1fr); }
   .day-plan { display: grid; grid-template-columns: minmax(0,1fr) 200px; gap: 8px 24px; padding: 16px 20px; }
   .day-plan h2 { grid-column: 1; }
   .day-plan dl { grid-column: 1; grid-row: 2 / span 2; margin: 0; align-self: center; }
@@ -644,6 +660,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .day-plan .time-budget-label { margin-top: 4px; }
   .day-plan .time-save { width: auto; justify-self: start; }
   .baseline-prompt { align-items: start; flex-direction: column; gap: 10px; }
+  .study-plan-heading { align-items: start; }
   .task-top { display: block; padding: 8px 12px; }
   .task-main { width: 100%; padding: 8px 0; gap: 8px; }
   .task-main > svg { display: none; }
@@ -713,6 +730,8 @@ audio { display: block; width: 100%; min-height: 44px; }
   .history-row { grid-template-columns: minmax(0,1fr) auto; gap: 8px; }
   .history-row .text-button { grid-column: 1 / -1; justify-self: start; }
   .settings-section { flex-wrap: wrap; gap: 12px; padding-bottom: 16px; }
+  .study-plan-heading { flex-direction: column; gap: 8px; }
+  .study-plan-deadline { justify-items: start; }
   .settings-grid { grid-template-columns: minmax(0,1fr); gap: 16px; }
   .settings-card, .backup-copy, .backup-preview { padding: 20px 16px; }
   .backup-counts { grid-template-columns: repeat(2,minmax(0,1fr)); }

@@ -269,8 +269,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </div>
       </details>
       {importedPacks.length > 0 && (
-        <section className="jlpt-imported-section" aria-label="已导入的完整真题">
-          <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
+        <section className="jlpt-imported-section" aria-label="已导入的 JLPT 资料">
+          <div className="section-heading"><h2>已导入的 JLPT 资料</h2><span className="field-hint">只显示本机导入内容，完整卷与复盘包分开标注</span></div>
           <div className="jlpt-imported-grid">
             {importedSets.map((set) => {
               const pack = importedPacks.find((item) => item.id === set.id)

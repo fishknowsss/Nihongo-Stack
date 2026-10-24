@@ -19,7 +19,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 BASE = "https://www.jlptpracticetest.com"
-OPENJLPT_PATH = ROOT / "apps" / "codex" / "public" / "data" / "openjlpt-jlpt.json"
+OPENJLPT_PATH = ROOT / "apps" / "nihongo-stack" / "public" / "data" / "openjlpt-jlpt.json"
 
 
 def load_dictionary() -> dict[str, dict[str, str]]:

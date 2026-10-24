@@ -1,19 +1,19 @@
 # Nihongo Stack MVP 开发计划草案 v0.1
 
-状态：保留为开发前的目标计划。Codex 版已开始实现，实际完成范围和使用方法以 [Codex 版说明](apps/codex/README.md) 为准；下表是目标验收条件，不代表每项均已交付。两版代码隔离规则见 [项目 README](README.md)。
+状态：保留为开发前的目标计划。当前实现已经开始，实际完成范围和使用方法以 [Nihongo Stack 说明](apps/nihongo-stack/README.md) 为准；下表是目标验收条件，不代表每项均已交付。项目结构见 [项目 README](README.md)。
 
 ## 首版边界
 
-今天首版的工作目标是 **双击 `Nihongo Stack Codex.app` 后在 Mac 上完成一次真实学习，并能继续记录与复习**：内置一小份已核对的试用内容、生成可改的 Today、完成卡片复习、在产品内阅读短文与播放短音频、作答并记录结果、查看简明进度、导出与恢复数据。首日内容少量且明确标注来源，随后扩充到可连续一周使用。前端保留网站构建入口，之后上线为可收藏的网站；手机访问和真正的自动同步仍需后续验证与开发。
+今天首版的工作目标是 **双击 `Nihongo Stack.app` 后在 Mac 上完成一次真实学习，并能继续记录与复习**：内置一小份已核对的试用内容、生成可改的 Today、完成卡片复习、在产品内阅读短文与播放短音频、作答并记录结果、查看简明进度、导出与恢复数据。首日内容少量且明确标注来源，随后扩充到可连续一周使用。前端保留网站构建入口，之后上线为可收藏的网站；手机访问和真正的自动同步仍需后续验证与开发。
 
-技术起点：Vite + React + TypeScript，保持 Web 学习逻辑与 Mac 壳分离；Mac 首日启动入口为 Tauri 2 `Nihongo Stack Codex.app`，将构建后的前端资源打进应用，双击即可打开；IndexedDB 通过 Dexie 封装，FSRS 排程通过 `ts-fsrs` 接入。同一前端后续可构建成网站/PWA，但 Mac `.app` 与浏览器仍各自存储数据，真正的 Mac/iPhone 同步须设计身份、远端存储、冲突处理及数据迁移。Tailwind CSS、Zustand、shadcn/ui 均不是首版必要依赖。[Tauri 前端资源打包](https://v2.tauri.app/reference/config/) · [Dexie 事务文档](https://dexie.org/docs/Transaction/Transaction.html) · [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs/blob/main/README.md)
+技术起点：Vite + React + TypeScript，保持 Web 学习逻辑与 Mac 壳分离；Mac 首日启动入口为 Tauri 2 `Nihongo Stack.app`，将构建后的前端资源打进应用，双击即可打开；IndexedDB 通过 Dexie 封装，FSRS 排程通过 `ts-fsrs` 接入。同一前端后续可构建成网站/PWA，但 Mac `.app` 与浏览器仍各自存储数据，真正的 Mac/iPhone 同步须设计身份、远端存储、冲突处理及数据迁移。Tailwind CSS、Zustand、shadcn/ui 均不是首版必要依赖。[Tauri 前端资源打包](https://v2.tauri.app/reference/config/) · [Dexie 事务文档](https://dexie.org/docs/Transaction/Transaction.html) · [ts-fsrs](https://github.com/open-spaced-repetition/ts-fsrs/blob/main/README.md)
 
 ## 开发顺序与验收
 
 | 顺序 | 交付切片 | 可审查的完成条件 |
 |---|---|
 | 0 | 基线与内容准备 | Mac 已定为主记录设备；首批阅读与音频逐项核对来源、许可和内容；用短测取得初始能力记录。 |
-| 1 | 项目壳与数据层 | 双击 `Nihongo Stack Codex.app` 可启动且不依赖终端；同一前端可独立构建网页版；数据库带版本迁移；内容包导入有校验和事务，失败时无部分写入；关闭重开后数据仍在。 |
+| 1 | 项目壳与数据层 | 双击 `Nihongo Stack.app` 可启动且不依赖终端；同一前端可独立构建网页版；数据库带版本迁移；内容包导入有校验和事务，失败时无部分写入；关闭重开后数据仍在。 |
 | 2 | Today 与学习 | 120 分钟 Core 可改；任务说明推荐理由；开始、完成、跳过与改期可用；无内容时有明确引导。 |
 | 3 | 卡片与复习 | 同一知识点可有独立卡型；四档反馈写入一次日志并更新 `dueAt`；重复点击不重复记账；跨日队列正确。 |
 | 4 | 产品内阅读与听力 | 至少有少量可完成的短文和真人短音频；阅读可查看文本与辅助信息，听力可播放、重听并延后显示文本；两者均可作答、查看解释并保存结果。真人音频不足时允许明确标注的设备日语语音辅助。 |

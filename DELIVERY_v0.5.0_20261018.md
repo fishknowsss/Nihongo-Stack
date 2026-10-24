@@ -1,6 +1,6 @@
-# Nihongo Stack Codex v0.5.0 · 本机交付
+# Nihongo Stack v0.5.0 · 本机交付
 
-2026-10-18。已更新并打开 `apps/codex/Nihongo Stack Codex.app`，双击即可使用。
+2026-10-18。已更新并打开 `apps/nihongo-stack/Nihongo Stack.app`，双击即可使用。
 
 ## 本轮变化
 
@@ -14,7 +14,7 @@
 
 内容仍为 62 张卡、9 篇短文、10 段音频、7 单元。学习要点是原材料的集中整理；专业教师审校和真人录音扩充继续按后续计划推进。
 
-Solid Glass 来源：[deeplethe/solid-glass](https://github.com/deeplethe/solid-glass)。适配样式见 `apps/codex/src/solid-glass.css`，MIT 许可随前端收录在 `public/licenses/solid-glass.txt`。设计约定已同步至 `apps/codex/DESIGN.md`。
+Solid Glass 来源：[deeplethe/solid-glass](https://github.com/deeplethe/solid-glass)。适配样式见 `apps/nihongo-stack/src/solid-glass.css`，MIT 许可随前端收录在 `public/licenses/solid-glass.txt`。设计约定已同步至 `apps/nihongo-stack/DESIGN.md`。
 
 ## 验证
 

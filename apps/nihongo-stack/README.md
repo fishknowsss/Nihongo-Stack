@@ -1,6 +1,6 @@
-# Nihongo Stack · Codex v0.7.0
+# Nihongo Stack v0.7.0
 
-本机优先的 Mac 日语学习应用，可双击 `Nihongo Stack Codex.app` 使用，无需终端或本地服务器。暖白 Solid Glass 分层与统一控件、朱红主动作、清晰的中文操作层级与明朝体日文阅读排版；应用图标为米白朱红叠放书页。
+本机优先的 Mac 日语学习应用，可双击 `Nihongo Stack.app` 使用，无需终端或本地服务器。暖白 Solid Glass 分层与统一控件、朱红主动作、清晰的中文操作层级与明朝体日文阅读排版；应用图标为米白朱红叠放书页。
 
 ## 开始学习
 
@@ -21,7 +21,7 @@
 15. 阅读、听音文本、卡片例句和 JLPT 学习模式选项可切换学习层：只看原文、汉字平假名、原文下方释义/语法、罗马音或全部层。排版固定为罗马音在上、平假名在汉字上方、释义/语法在原文下方；考试模式保留原文。
 16. 在任意日文材料中选中文字，会打开读音、释义和语法说明；可收藏并写笔记。笔记、收藏和 JLPT 练习进度都进入本机备份。
 17. 「JLPT」按 N5–N2 与 2019–2025 建立学习索引；每个年份/等级索引包含 16 道原创分级教学题，覆盖词汇、语法、阅读、听力各 4 题，不标作历年真题。完整真题进度按 52 个实际场次/等级位置统计（2020 年只有 12 月场）。官方 2009、2012、2018 样题/练习册、题目 PDF 和听力示例提供直达入口。
-18. 取得有权使用的完整真题后，先下载“当前等级字段模板”或“完整题库模板”和“52 场清单”，按 apps/codex/src/jlpt-import.ts 中的 schema 填写，再点击「导入完整真题 JSON」一次选择多套文件，在本机按年份、场次、等级、科目和听力音频练习；切换考试模式并选择整套完整题库后，会按 N5–N2 官方建议时长倒计时。完整包还必须写明 rightsBasis，可附 rightsEvidenceUrl；导入内容随本机备份保存，不自动上传 GitHub。
+18. 取得有权使用的完整真题后，先下载“当前等级字段模板”或“完整题库模板”和“52 场清单”，按 apps/nihongo-stack/src/jlpt-import.ts 中的 schema 填写，再点击「导入完整真题 JSON」一次选择多套文件，在本机按年份、场次、等级、科目和听力音频练习；切换考试模式并选择整套完整题库后，会按 N5–N2 官方建议时长倒计时。完整包还必须写明 rightsBasis，可附 rightsEvidenceUrl；导入内容随本机备份保存，不自动上传 GitHub。
 
 ## 内容范围
 
@@ -35,7 +35,7 @@
 
 应用内“公开资料”入口还包括 Japan Foundation 的 Irodori、Erin、Marugoto，Tadoku 分级阅读，Tatoeba 例句库，OpenJLPT（CC BY-SA 4.0）和 Bunko Commons。各来源以链接方式使用；教材和阅读材料按其网站条款，Tatoeba 文本保留 CC BY 2.0 FR 署名，OpenJLPT 保留项目及上游署名并遵守 ShareAlike，音频逐条核对，Bunko Commons 按材料页面许可使用。
 
-应用内还随包提供一个精简的 N5–N2 离线词汇索引，来源为 Tomoshi 开放数据层的 CC BY-SA 4.0 派生数据，包含词形、平假名、中文简释和社区等级。它只用于选中解释和复盘；JLPT 等级是社区估计，不是官方词表。来源、上游署名和重建脚本见 apps/codex/public/data/README.md 与 apps/codex/scripts/build-openjlpt-index.py。
+应用内还随包提供一个精简的 N5–N2 离线词汇索引，来源为 Tomoshi 开放数据层的 CC BY-SA 4.0 派生数据，包含词形、平假名、中文简释和社区等级。它只用于选中解释和复盘；JLPT 等级是社区估计，不是官方词表。来源、上游署名和重建脚本见 apps/nihongo-stack/public/data/README.md 与 apps/nihongo-stack/scripts/build-openjlpt-index.py。
 
 ### 完整 JLPT 题库导入
 
@@ -59,7 +59,7 @@
 
 ## 数据与使用边界
 
-- 保持 `com.nihongostack.codex` 和 IndexedDB `nihongo-stack-codex`，旧数据可继续使用；兼容原 v1 JSON 备份。
+- 使用 `com.nihongostack.desktop` 和历史 IndexedDB `nihongo-stack-codex`，旧数据可继续使用；兼容原 v1 JSON 备份。
 - 桌面应用、Mac 浏览器与 iPhone 浏览器的数据彼此独立；没有自动同步或公开网站。
 - 学习卡片的“进入复习”、课程的“已练”都是记录口径，不能当作掌握判定。
 - 导入前副本是本机防误操作措施，不代替外部文件备份。下一次恢复会更新这份副本。
@@ -67,7 +67,7 @@
 
 ## 开发与验证
 
-在 `apps/codex/` 运行：
+在 `apps/nihongo-stack/` 运行：
 
 ```sh
 npm ci
@@ -78,12 +78,12 @@ npm run test:language
 npm run test:jlpt
 npm run build
 npm run tauri:build
-codesign --verify --deep --strict 'Nihongo Stack Codex.app'
+codesign --verify --deep --strict 'Nihongo Stack.app'
 ```
 
 `test:content` 核对 v1 内容指纹、ID、引用、题目及十段音频的解码；它不是教师审校或听感审听。`test:learning` 检查播放覆盖、跳播缺口、暂停恢复、辅助证据与复习队列。`test:db` 使用内存 IndexedDB，不改真实记录。
 
-原生恢复的写入验收使用 `qa` Rust feature 与独立 WKWebView data store，不使用正式学习数据。QA 构建配置与当轮证据见 `../../output/product-improvement/2026-10-07/`。v0.3.0 的独立 QA 配置、导出文件与验收见 `../../output/product-improvement/2026-10-08/`。正常使用只启动本目录的 Codex 应用，不启动 QA 应用。
+原生恢复的写入验收使用 `qa` Rust feature 与独立 WKWebView data store，不使用正式学习数据。QA 构建配置与当轮证据见 `../../output/product-improvement/2026-10-07/`。v0.3.0 的独立 QA 配置、导出文件与验收见 `../../output/product-improvement/2026-10-08/`。正常使用只启动本目录的 Nihongo Stack 应用，不启动 QA 应用。
 
 窗口框架固定，只有正文滚动；短窗口侧栏可单独滚动。v0.4.0 独立 QA 与滚动证据见 `../../output/product-improvement/2026-10-08-v04/`。
 

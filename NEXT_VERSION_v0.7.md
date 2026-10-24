@@ -1,4 +1,4 @@
-# Nihongo Stack Codex 后续安排
+# Nihongo Stack 后续安排
 
 2026-10-18，接续 v0.6.0 显示、交互与 FuriFont 改进。
 

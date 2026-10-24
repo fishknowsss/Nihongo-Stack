@@ -1,10 +1,10 @@
-# Nihongo Stack Codex v0.3.0 · 本机交付
+# Nihongo Stack v0.3.0 · 本机交付
 
 2026-10-08。已交付新的 Mac 应用、卡片库、分轮复习、学习节奏设置和应用图标。保持本地数据库、旧学习记录与内容兼容；继续供私人本机试用。
 
 ## 启动与变化
 
-最终应用：`apps/codex/Nihongo Stack Codex.app`，版本 **0.3.0**，双击使用。bundle identifier `com.nihongostack.codex` 和数据库 `nihongo-stack-codex` 保持原样。
+最终应用：`apps/nihongo-stack/Nihongo Stack.app`，版本 **0.3.0**，双击使用。bundle identifier `com.nihongostack.desktop` 和数据库 `nihongo-stack-codex` 保持原样。
 
 | 部分 | 本轮实际变化 |
 | --- | --- |

@@ -1,6 +1,6 @@
-# Nihongo Stack Codex v0.6.0 · 显示与交互改进
+# Nihongo Stack v0.6.0 · 显示与交互改进
 
-2026-10-18。已更新并打开 `apps/codex/Nihongo Stack Codex.app`，双击即可使用。
+2026-10-18。已更新并打开 `apps/nihongo-stack/Nihongo Stack.app`，双击即可使用。
 
 ## 实际变化
 
@@ -25,7 +25,7 @@
 
 完整审查和逐项依据见 `output/product-improvement/2026-10-18-v06/审查与修复.md`。该目录保留 JSON 结果、脚本、原生截图/AX、构建日志、包哈希、字体校验及旧应用/源码 `before/`。
 
-FuriFont 文件与官方 SHA-256 一致；字体、代码和词典来源的许可随包保存，记录见 `apps/codex/public/fonts/README.md`。自动读音需要结合上下文核对；本轮未替代专业教师审校。
+FuriFont 文件与官方 SHA-256 一致；字体、代码和词典来源的许可随包保存，记录见 `apps/nihongo-stack/public/fonts/README.md`。自动读音需要结合上下文核对；本轮未替代专业教师审校。
 
 ## 接着使用
 

@@ -4,7 +4,7 @@ Nihongo Stack 支持把用户拥有使用依据的 JLPT 资料作为 JSON 导入
 
 本机公开资料放在根目录 `private-assets/`，该目录已加入 `.gitignore`。它不随代码提交，也不会被自动上传到公开仓库。
 
-在 `apps/codex` 下运行：
+在 `apps/nihongo-stack` 下运行：
 
 ```bash
 npm run build:private-jlpt

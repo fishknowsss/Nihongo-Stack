@@ -1,5 +1,5 @@
 [package]
-name = "nihongo-stack-codex"
+name = "nihongo-stack"
 version = "0.7.0"
 description = "Nihongo Stack personal learning workbench"
 authors = ["Nihongo Stack"]

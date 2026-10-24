@@ -1,6 +1,6 @@
-# Nihongo Stack Codex v0.4.0 · 本机交付
+# Nihongo Stack v0.4.0 · 本机交付
 
-2026-10-08。已更新 `apps/codex/Nihongo Stack Codex.app`，可双击使用。正式 bundle identifier `com.nihongostack.codex` 与数据库 `nihongo-stack-codex` 保持兼容。
+2026-10-08。已更新 `apps/nihongo-stack/Nihongo Stack.app`，可双击使用。正式 bundle identifier `com.nihongostack.desktop` 与数据库 `nihongo-stack-codex` 保持兼容。
 
 ## 本轮完成
 

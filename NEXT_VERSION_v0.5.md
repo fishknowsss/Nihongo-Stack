@@ -1,4 +1,4 @@
-# Nihongo Stack Codex 后续安排
+# Nihongo Stack 后续安排
 
 2026-10-08，接续 v0.4.0。
 

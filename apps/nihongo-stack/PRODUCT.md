@@ -1,4 +1,4 @@
-# Nihongo Stack Codex
+# Nihongo Stack
 
 <!-- impeccable:product-schema 1 -->
 
@@ -14,7 +14,7 @@ React/TypeScript 界面封装在 Tauri macOS 应用中；桌面优先，本机�
 打开后知道下一步学什么，中断后能继续，学习记录可信且可备份。
 
 ## Capabilities and Constraints
-- Codex 产品独立维护，不共享另一实现的业务代码和数据库。
+- 当前只有一套产品实现，业务代码、构建和本机学习流程集中维护。
 - v1 内容 ID、题意与既有排程保持兼容；v2 单元扩容新增独立 ID。
 - 数据保存在本机 IndexedDB；无账户、远端同步和公开网站。
 - 新增原创材料及合成语音只按试用练习交付；教师审校、真人录音扩充与一周真实使用校准尚未完成。

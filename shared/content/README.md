@@ -1,6 +1,6 @@
 # Nihongo Stack 共享学习内容
 
-这里仅放与产品实现无关的学习数据和媒体。Codex、Claude 版本各自在自己的应用目录读取并呈现；这里不放 React 组件、数据库访问、业务状态或构建配置。
+这里仅放与产品实现无关的学习数据和媒体。Nihongo Stack 从 `apps/nihongo-stack/` 读取并呈现；这里不放 React 组件、数据库访问、业务状态或构建配置。
 
 `starter-pack.v1.json` 是首日试用包：词汇、基础语法、两篇项目自编短文及理解题、三段短句听力。文件名和内部 `schemaVersion` 均固定为 v1；后续需要改字段、删除 ID 或改变题目语义时，新建 v2 包并让各版本应用各自决定何时升级。不要在这里放任一产品版本的数据库结构或组件。
 
@@ -16,6 +16,6 @@
 
 文本、选择题和解析为本项目原创，`reviewStatus=machine_reviewed_teacher_pending`。本轮只完成结构、题文对应和基础语言复核，尚未取得母语者/专业教师审校记录。
 
-新音频为本机 `say -v Kyoko` 生成，再转为 MP3；在产品内明确标记“合成语音”。源记录 `ns-speech-v2` 标记 `personal_reference_only`，只用于私人练习，公开再分发权限尚未核验。不能把它们称为真人录音或真实听力能力验证。生成脚本位于 `apps/codex/scripts/generate-practice-audio.mjs`，仅补缺失文件。
+新音频为本机 `say -v Kyoko` 生成，再转为 MP3；在产品内明确标记“合成语音”。源记录 `ns-speech-v2` 标记 `personal_reference_only`，只用于私人练习，公开再分发权限尚未核验。不能把它们称为真人录音或真实听力能力验证。生成脚本位于 `apps/nihongo-stack/scripts/generate-practice-audio.mjs`，仅补缺失文件。
 
 专业语言审校、相应真人录音、录音许可与一周真实使用后的估时校准仍待完成。试用资料可用于连续练习，不能据此宣称正式课程或 N2 测评。

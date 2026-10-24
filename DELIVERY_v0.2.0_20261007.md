@@ -1,10 +1,10 @@
-# Nihongo Stack Codex v0.2.0 · 本机交付
+# Nihongo Stack v0.2.0 · 本机交付
 
 2026-10-07。桌面应用已重新打包、签名校验并打开。原有学习记录保留。交付范围是私人本机试用，P2 连续材料与产品入口完成试用版；专业教学验收与一周真实使用仍待完成。
 
 ## 应用与使用
 
-- 最终应用：`apps/codex/Nihongo Stack Codex.app`，版本 0.2.0，bundle identifier 仍为 `com.nihongostack.codex`。
+- 最终应用：`apps/nihongo-stack/Nihongo Stack.app`，版本 0.2.0，bundle identifier 仍为 `com.nihongostack.desktop`。
 - 双击可使用，不需要终端或本地服务器。在「课程」选单元，在「今日」开始复习、阅读、听音。
 - 「设置」导出 JSON；文件名含本地日期、时分秒与毫秒，避免同日导出仅使用相同日期名称。
 - 学习记录、草稿、课程位置与任务调整都存在应用自己的本机数据库；与浏览器数据独立。

@@ -67,7 +67,7 @@ import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
-import { jlptSets } from './jlpt'
+import { jlptFullExamSlotCount, jlptSets } from './jlpt'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
 import { version as appVersion } from '../package.json'
@@ -2250,7 +2250,7 @@ function ProgressPage({
       </p>
       <section className="progress-jlpt" aria-labelledby="progress-jlpt-title">
         <div className="section-heading"><div><h2 id="progress-jlpt-title">JLPT 学习进度</h2><p className="field-hint">原创教学包与本机授权题库分开统计。</p></div><span className="field-hint">{jlptSets.length} 个年份/等级索引</span></div>
-        <div className="progress-jlpt-stats"><span><strong>{jlptCompletedCount}</strong> / {jlptSets.length} 教学包已练</span><span><strong>{jlptImportedCompleteCount}</strong> 套完整题库</span><span><strong>{jlptMistakeCount}</strong> 道错题待复盘</span></div>
+        <div className="progress-jlpt-stats"><span><strong>{jlptCompletedCount}</strong> / {jlptSets.length} 教学包已练</span><span><strong>{jlptImportedCompleteCount}</strong> / {jlptFullExamSlotCount} 场完整题库</span><span><strong>{jlptMistakeCount}</strong> 道错题待复盘</span></div>
       </section>
       <WeeklyReport {...{ preferences, attempts, events, now }} />
       <SelectionNotes preferences={preferences} onNotify={onNotify} />

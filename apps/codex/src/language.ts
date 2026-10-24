@@ -270,6 +270,34 @@ async function loadOfflineLookup(): Promise<OfflineLookupIndex | null> {
   return offlineLookupPromise
 }
 
+function phraseGloss(text: string, index: OfflineLookupIndex): string | undefined {
+  const keys = Object.keys(index.entries).sort((a, b) => b.length - a.length)
+  const found: Array<{ surface: string; gloss: string }> = []
+  let rest = text
+  let offset = 0
+  while (rest) {
+    const match = keys.find((surface) => {
+      if (!rest.startsWith(surface)) return false
+      if (!/^[\u3040-\u309fー・]+$/u.test(surface)) return true
+      const previous = text.slice(offset - 1, offset)
+      const next = rest.slice(surface.length, surface.length + 1)
+      return !/^[\u3040-\u309fー・]$/u.test(previous) && !/^[\u3040-\u309fー・]$/u.test(next)
+    })
+    if (match) {
+      const entry = index.entries[match]
+      if (!found.some((item) => item.surface === match)) found.push({ surface: match, gloss: entry.gloss })
+      rest = rest.slice(match.length)
+      offset += match.length
+    } else {
+      rest = rest.slice(1)
+      offset += 1
+    }
+  }
+  if (!found.length) return undefined
+  const useful = found.filter((item) => !/^[\u3040-\u309fー・]$/u.test(item.surface))
+  return useful.slice(0, 6).map((item) => item.surface + '：' + item.gloss).join('；') || undefined
+}
+
 /** Supplement the small curated dictionary with the bundled CC BY-SA lookup index. */
 export async function lookupJapaneseAsync(text: string): Promise<LexiconEntry | undefined> {
   const normalized = normalizeLookupText(text)
@@ -277,7 +305,18 @@ export async function lookupJapaneseAsync(text: string): Promise<LexiconEntry | 
   if (curated?.reading || curated?.gloss && !curated.gloss.includes('暂未收录')) return curated
   const index = await loadOfflineLookup()
   const entry = index?.entries[normalized]
-  if (!entry) return curated
+  if (!entry) {
+    if (curated?.kind === 'phrase') {
+      const gloss = index ? phraseGloss(normalized, index) : undefined
+      if (gloss) return {
+        ...curated,
+        gloss,
+        explanation: '已从离线词典识别出部分词汇；完整句子的语气和句法仍需结合上下文。',
+        source: 'Tomoshi open data · CC BY-SA 4.0',
+      }
+    }
+    return curated
+  }
   return {
     surface: normalized,
     reading: entry.reading,

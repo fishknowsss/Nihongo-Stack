@@ -21,7 +21,7 @@
 15. 阅读、听音文本、卡片例句和 JLPT 学习模式选项可切换学习层：只看原文、汉字平假名、原文下方释义/语法、罗马音或全部层。排版固定为罗马音在上、平假名在汉字上方、释义/语法在原文下方；考试模式保留原文。
 16. 在任意日文材料中选中文字，会打开读音、释义和语法说明；可收藏并写笔记。笔记、收藏和 JLPT 练习进度都进入本机备份。
 17. 「JLPT」按 N5–N2 与 2019–2025 建立学习索引；每个年份/等级索引包含 16 道原创分级教学题，覆盖词汇、语法、阅读、听力各 4 题，不标作历年真题。完整真题进度按 52 个实际场次/等级位置统计（2020 年只有 12 月场）。官方 2009、2012、2018 样题/练习册、题目 PDF 和听力示例提供直达入口。
-18. 取得有权使用的完整真题后，先下载“完整题库模板”，按 `apps/codex/src/jlpt-import.ts` 中的 schema 填写，再点击「导入完整真题 JSON」一次选择多套文件，在本机按年份、场次、等级、科目和听力音频练习；切换考试模式并选择整套完整题库后，会按 N5–N2 官方建议时长倒计时。导入内容随本机备份保存，不自动上传 GitHub。
+18. 取得有权使用的完整真题后，先下载“完整题库模板”和“52 场清单”，按 `apps/codex/src/jlpt-import.ts` 中的 schema 填写，再点击「导入完整真题 JSON」一次选择多套文件，在本机按年份、场次、等级、科目和听力音频练习；切换考试模式并选择整套完整题库后，会按 N5–N2 官方建议时长倒计时。完整包还必须写明 `rightsBasis`，可附 `rightsEvidenceUrl`；导入内容随本机备份保存，不自动上传 GitHub。
 
 ## 内容范围
 
@@ -37,18 +37,21 @@
 
 ### 完整 JLPT 题库导入
 
-完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `questionNumber`、`reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioText`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 会显示在已导入题库卡片上。
+完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`rightsBasis`、`rightsEvidenceUrl`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `questionNumber`、`reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioText`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 与 `rightsEvidenceUrl` 会显示在已导入题库卡片上。
 
 只有在确认整套试卷确实完整时才填写 `complete: true`，并同时提供：
 
 - `session`：考试场次，例如 `07` 或 `12`；
+- `rightsBasis`：说明版权所有者许可、开放许可或个人使用依据；可用 `rightsEvidenceUrl` 指向许可条款、出版社授权或来源说明；
 - `questionCount`：必须等于 `questions.length`；
 - `sectionQuestionCounts`：`文字・語彙`、`文法`、`読解`、`聴解` 四科的实际题数，四科实际题数和声明必须完全一致；
 - 每一道题的正整数 `questionNumber`，并在各学习分区内从 1 连续编号；
 - 每一道题的平假名 `reading`、中文 `gloss`、逐题 `explanation` 和至少两项 `studySteps`；
 - 每一道 `聴解` 题的真实 `http(s) audioUrl`。
 
-导入器会拒绝缺科目、低于该等级和年份格式整场题量、题号缺失、教学层不完整、题数不符或听力缺音频的“完整题库”标记。可以先运行 `npm run validate:jlpt -- path/to/pack.json`，再在应用内导入。`complete: false` 适合教材节选、单科练习或只有部分题目的学习包。
+导入器会拒绝缺科目、低于该等级和年份格式整场题量、题号缺失、教学层不完整、题数不符、听力缺音频或没有使用依据的“完整题库”标记。可以先运行 `npm run validate:jlpt -- path/to/pack.json`，再在应用内导入。`complete: false` 适合教材节选、单科练习或只有部分题目的学习包。
+
+官方 JLPT FAQ 与站点政策说明，官方不会公开每场考试完全相同的完整原卷；官方公开的是题型样题和练习册，练习册中的第三方材料还需要另行核对授权。因此公开仓库只保存 52 个场次/等级的覆盖清单、导入器和官方入口，不打包来源不明的原卷、答案、音频或扫描 PDF。需要“绝对完整真题”时，使用版权所有者允许你使用的本机资料导入；导入器会逐场检查题量、分区、连续题号、中文教学层和听力音频。
 
 阅读、听音与小测草稿自动保存。听音按实际连续播放覆盖判断是否完整；拖到末尾不能绕过提交门槛。重播、拖动、变速或提前查看文本会作为辅助记录。提交后查看文本和播放不会修改已保存的证据。
 

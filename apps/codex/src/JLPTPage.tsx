@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
-import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
+import { downloadCompleteImportTemplate, downloadImportTemplate, downloadJLPTCoverageManifest, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
 import LayeredJapanese from './LayeredJapanese'
 
@@ -228,6 +228,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <button className="text-button compact" onClick={() => downloadCompleteImportTemplate(downloadText)}>完整题库模板</button>
+        <button className="text-button compact" onClick={() => downloadJLPTCoverageManifest(downloadText)}>下载 52 场清单</button>
         <input ref={fileRef} className="sr-only" type="file" multiple accept="application/json,.json" onChange={(event) => { void importPacks(Array.from(event.target.files ?? [])); event.currentTarget.value = '' }} />
       </section>
       <section className="jlpt-controls" aria-label="选择 JLPT 练习范围">
@@ -267,7 +268,10 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <section className="jlpt-imported-section" aria-label="已导入的完整真题">
           <div className="section-heading"><h2>已导入的完整真题</h2><span className="field-hint">只显示本机导入内容</span></div>
           <div className="jlpt-imported-grid">
-            {importedSets.map((set) => <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all'); void setPreference('jlptActiveSet', set.id) }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 分区已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div></div>)}
+            {importedSets.map((set) => {
+              const pack = importedPacks.find((item) => item.id === set.id)
+              return <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all'); void setPreference('jlptActiveSet', set.id) }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 分区已核对` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}{pack?.rightsEvidenceUrl && <a href={pack.rightsEvidenceUrl} target="_blank" rel="noreferrer">授权依据</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>{pack?.rightsBasis && <small className="jlpt-rights-basis">使用依据：{pack.rightsBasis}</small>}</div>
+            })}
           </div>
         </section>
       )}
@@ -317,7 +321,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </article>
         <aside className="jlpt-side-note">
           <h2><Info size={18} /> 资料边界与使用方式</h2>
-          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷只接受你有权使用的 JSON 导入，并只保存在本机备份中。</p>
+          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷只接受你有权使用的 JSON 导入，并只保存在本机备份中；导入完整卷时必须填写使用依据，避免把未授权原卷带入公开仓库。</p>
           <ul>
             <li>先看日文原句，尝试自己读。</li>
             <li>再打开读音、释义和罗马音辅助。</li>
@@ -325,7 +329,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </ul>
           <details className="jlpt-format-details">
             <summary>完整真题 JSON 需要哪些字段？</summary>
-            <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；每题还要有平假名、中文释义、逐题解析和至少两步学习步骤。题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。2020 年只接受 12 月场。这会阻止把几道题的教学节选误标成完整真题。</p>
+            <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>rightsBasis</code>（授权或个人使用依据）、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；每题还要有平假名、中文释义、逐题解析和至少两步学习步骤。题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。2020 年只接受 12 月场。这会阻止把几道题的教学节选误标成完整真题。</p>
           </details>
           <div className="jlpt-source-list">
             <details className="jlpt-official-details">

@@ -1,4 +1,4 @@
-import { jlptExamSessionsByYear, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
+import { jlptExamSessionsByYear, jlptLevels, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 
 export type ImportedJLPTPack = {
   schemaVersion: 1
@@ -9,6 +9,10 @@ export type ImportedJLPTPack = {
   title: string
   sourceName: string
   license: string
+  /** Human-readable basis for using this pack (for example, a written licence or personal-use copy). */
+  rightsBasis?: string
+  /** Optional URL to the licence, publisher permission, or source terms. */
+  rightsEvidenceUrl?: string
   sourceUrl?: string
   complete?: boolean
   /** The source-declared total. A complete pack must match the imported rows. */
@@ -109,7 +113,9 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   if (new Set(questions.map((question) => question.id)).size !== questions.length) throw new Error('题目 id 不能重复')
   const complete = record.complete === true
   if (complete) {
-    if ([record.id, record.title, record.sourceName, record.license, record.sourceUrl].some((value) => typeof value === 'string' && (value.includes('replace-with-') || value.includes('填写') || value.includes('example.com')))) throw new Error('完整题库仍包含模板占位符，请先填写真实来源和题目')
+    if ([record.id, record.title, record.sourceName, record.license, record.rightsBasis, record.sourceUrl, record.rightsEvidenceUrl].some((value) => typeof value === 'string' && (value.includes('replace-with-') || value.includes('填写') || value.includes('example.com')))) throw new Error('完整题库仍包含模板占位符，请先填写真实来源和题目')
+    if (typeof record.rightsBasis !== 'string' || !record.rightsBasis.trim()) throw new Error('完整题库必须填写 rightsBasis，说明你有权使用或仅限本机使用的依据')
+    if (record.rightsEvidenceUrl !== undefined) sourceUrl(record.rightsEvidenceUrl, 'rightsEvidenceUrl')
     const questionPlaceholders = ['填写日文题干', '填写平假名读音', '填写中文释义', '填写逐题中文解析', '选项 A', '选项 B', '选项 C', '选项 D']
     if (questions.some((question) => questionPlaceholders.some((placeholder) => JSON.stringify(question).includes(placeholder)))) throw new Error('完整题库仍包含题目占位符，请先填写真实题目')
     if (questions.some((question) => !question.reading?.trim() || !question.gloss?.trim())) throw new Error('完整题库每道题都必须提供平假名读音和中文释义')
@@ -148,6 +154,8 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     sourceName: text(record.sourceName, 'sourceName'),
     license: text(record.license, 'license'),
     sourceUrl: sourceUrl(record.sourceUrl, 'sourceUrl'),
+    rightsBasis: typeof record.rightsBasis === 'string' ? record.rightsBasis.trim() : undefined,
+    rightsEvidenceUrl: sourceUrl(record.rightsEvidenceUrl, 'rightsEvidenceUrl'),
     complete,
     questionCount: typeof record.questionCount === 'number' ? record.questionCount : undefined,
     sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)
@@ -166,6 +174,8 @@ export const importedJLPTExample = `{
   "title": "2025 年 7 月 N5 导入模板",
   "sourceName": "填写授权来源",
   "license": "填写个人使用或再分发许可",
+  "rightsBasis": "填写版权所有者许可、开放许可或个人使用依据",
+  "rightsEvidenceUrl": "https://example.com/licence-or-terms",
   "sourceUrl": "https://example.com/original-source",
   "complete": false,
   "questionCount": 1,
@@ -194,6 +204,8 @@ export const importedJLPTCompleteTemplate = JSON.stringify({
   title: '填写年份与场次 · N5 完整题库',
   sourceName: '填写授权来源',
   license: '填写个人使用或再分发许可',
+  rightsBasis: '填写版权所有者许可、开放许可或个人使用依据',
+  rightsEvidenceUrl: 'https://example.com/licence-or-terms',
   sourceUrl: 'https://example.com/original-source',
   complete: true,
   questionCount: 67,
@@ -229,6 +241,8 @@ export const importedJLPTCompleteExample = JSON.stringify({
   title: '完整题库校验 fixture',
   sourceName: 'Nihongo Stack automated check',
   license: '内部测试资料，不是官方真题',
+  rightsBasis: '内部测试 fixture，仅用于自动化校验',
+  rightsEvidenceUrl: 'https://fixture.invalid/terms',
   sourceUrl: 'https://fixture.invalid/source',
   complete: true,
   questionCount: 67,
@@ -261,4 +275,22 @@ export function downloadImportTemplate(download: (text: string, name: string) =>
 
 export function downloadCompleteImportTemplate(download: (text: string, name: string) => void): void {
   download(importedJLPTCompleteTemplate, 'nihongo-stack-jlpt-complete-template.json')
+}
+
+/**
+ * A machine-readable checklist for the 52 recent level/session slots.
+ * It contains no exam questions and can safely be shared with a rights-holder
+ * or used to track locally licensed source files.
+ */
+export function downloadJLPTCoverageManifest(download: (text: string, name: string) => void): void {
+  const slots = jlptYears.flatMap((year) => jlptExamSessionsByYear[year].flatMap((session) => jlptLevels.map((level) => ({
+    year,
+    session,
+    level,
+    minimumQuestionCount: minimumCompleteQuestionCount(level, year, session),
+    status: '待取得授权资料',
+    sourceFile: '',
+    rightsBasis: '',
+  }))))
+  download(JSON.stringify({ schemaVersion: 1, scope: 'JLPT 2019–2025 N5–N2', note: '清单不包含题目、答案、音频或 PDF；导入前请逐场核对版权和授权。', slots }, null, 2), 'nihongo-stack-jlpt-coverage-manifest.json')
 }

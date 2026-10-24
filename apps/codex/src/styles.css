@@ -478,6 +478,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-imported-card { display: grid; gap: 4px; min-width: 0; }
 .jlpt-imported-actions { display: flex; align-items: center; gap: 10px; }
 .jlpt-imported-actions > a { color: var(--accent); font-size: .75rem; }
+.jlpt-rights-basis { color: var(--muted); font-size: .7rem; line-height: 1.5; }
 .jlpt-remove-button { display: inline-flex; align-items: center; gap: 5px; justify-self: start; min-height: 32px; padding: 4px 8px; border: 0; background: transparent; color: var(--muted); font-size: .75rem; }
 .jlpt-remove-button:hover { color: var(--error); background: var(--error-soft); }
 .jlpt-resource-route { display: grid; gap: 12px; padding: 18px 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--panel); }

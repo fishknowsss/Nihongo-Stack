@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
-import { importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, minimumCompleteQuestionCount, parseImportedJLPTPack } from '../src/jlpt-import'
+import { downloadJLPTCoverageManifest, importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, minimumCompleteQuestionCount, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
@@ -44,6 +44,8 @@ const complete = parseImportedJLPTPack(importedJLPTCompleteExample)
 assert.equal(complete.complete, true)
 assert.equal(complete.questionCount, complete.questions.length)
 assert.equal(complete.sourceUrl, 'https://fixture.invalid/source')
+assert.equal(complete.rightsBasis, '内部测试 fixture，仅用于自动化校验')
+assert.equal(complete.rightsEvidenceUrl, 'https://fixture.invalid/terms')
 assert.equal(complete.questions.length, 67)
 assert.deepEqual(complete.sectionQuestionCounts, { '文字・語彙': 21, '文法': 15, '読解': 7, '聴解': 24 })
 assert.equal(complete.questions.every((question) => Number.isInteger(question.questionNumber)), true)
@@ -68,4 +70,11 @@ const unsafeAudio = JSON.parse(importedJLPTExample) as Record<string, unknown>
 ;(unsafeAudio.questions as Array<Record<string, unknown>>)[0].audioUrl = 'javascript:alert(1)'
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(unsafeAudio)), /audioUrl必须是 http\(s\) URL/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteExample.replace('https://fixture.invalid/source', 'javascript:alert(1)')), /sourceUrl必须是 http\(s\) URL/)
+const missingRightsBasis = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
+delete missingRightsBasis.rightsBasis
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(missingRightsBasis)), /必须填写 rightsBasis/)
+let manifest = ''
+downloadJLPTCoverageManifest((text) => { manifest = text })
+const parsedManifest = JSON.parse(manifest) as { slots: Array<unknown> }
+assert.equal(parsedManifest.slots.length, jlptFullExamSlotCount)
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (16 per level, four sections), complete-pack validation, official links for ${jlptLevels.join('/')}`)

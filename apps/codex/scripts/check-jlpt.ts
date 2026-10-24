@@ -51,6 +51,9 @@ assert.equal(complete.questions.filter((question) => question.section === '聴�
 const missingTeaching = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 missingTeaching.questions = (missingTeaching.questions as Array<Record<string, unknown>>).map((question, index) => index === 0 ? { ...question, reading: '' } : question)
 assert.throws(() => parseImportedJLPTPack(JSON.stringify(missingTeaching)), /平假名读音和中文释义/)
+const emptyStudyStep = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
+emptyStudyStep.questions = (emptyStudyStep.questions as Array<Record<string, unknown>>).map((question, index) => index === 0 ? { ...question, studySteps: ['', '第二步'] } : question)
+assert.throws(() => parseImportedJLPTPack(JSON.stringify(emptyStudyStep)), /至少两步非空学习步骤/)
 assert.throws(() => parseImportedJLPTPack(importedJLPTCompleteTemplate), /模板占位符/)
 const unfinishedQuestions = JSON.parse(importedJLPTCompleteExample) as Record<string, unknown>
 unfinishedQuestions.questions = (unfinishedQuestions.questions as Array<Record<string, unknown>>).map((question) => ({ ...question, prompt: '填写日文题干' }))

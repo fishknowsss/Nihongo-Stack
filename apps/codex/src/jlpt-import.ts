@@ -113,7 +113,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     const questionPlaceholders = ['填写日文题干', '填写平假名读音', '填写中文释义', '填写逐题中文解析', '选项 A', '选项 B', '选项 C', '选项 D']
     if (questions.some((question) => questionPlaceholders.some((placeholder) => JSON.stringify(question).includes(placeholder)))) throw new Error('完整题库仍包含题目占位符，请先填写真实题目')
     if (questions.some((question) => !question.reading?.trim() || !question.gloss?.trim())) throw new Error('完整题库每道题都必须提供平假名读音和中文释义')
-    if (questions.some((question) => question.explanation === '导入资料未提供解析，请结合原始答案和教材复盘。' || question.studySteps.length < 2)) throw new Error('完整题库每道题都必须提供逐题中文解析和至少两步学习步骤')
+    if (questions.some((question) => question.explanation === '导入资料未提供解析，请结合原始答案和教材复盘。' || question.studySteps.length < 2 || question.studySteps.some((step) => !step.trim()))) throw new Error('完整题库每道题都必须提供逐题中文解析和至少两步非空学习步骤')
     if (typeof record.session !== 'string' || !record.session.trim()) throw new Error('完整题库必须填写 session（例如 07 或 12）')
     const session = record.session.trim()
     if (!/^\d{2}$/.test(session) || !jlptExamSessionsByYear[numericYear]?.includes(session)) throw new Error(`${numericYear} 年没有 ${session} 场 JLPT 完整考试位置；近七年只接受当年实际场次`)

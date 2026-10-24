@@ -19,7 +19,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
   const closeButton = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    function readSelection() {
+    function readSelection(force = false) {
       const current = window.getSelection()
       const text = current?.toString().trim() ?? ''
       if (!text || !/[\u3040-\u30ff\u3400-\u9fff]/u.test(text) || !current?.rangeCount) {
@@ -29,12 +29,15 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       const node = current.anchorNode instanceof Element ? current.anchorNode : current.anchorNode?.parentElement
       if (node?.closest('input, textarea, select, button, a')) return
       const rect = current.getRangeAt(0).getBoundingClientRect()
-      if (lastText.current === text) return
+      if (lastText.current === text && !force) return
       lastText.current = text
       window.speechSynthesis?.cancel()
       const popupWidth = Math.min(348, Math.max(0, window.innerWidth - 24))
       const maxLeft = Math.max(12, window.innerWidth - popupWidth - 12)
-      const maxTop = Math.max(12, window.innerHeight - 320 - 12)
+      const isMobileViewport = window.innerWidth < 560
+      const reservedBottom = isMobileViewport ? 76 : 12
+      const estimatedHeight = isMobileViewport ? Math.min(480, window.innerHeight - 24) : 320
+      const maxTop = Math.max(12, window.innerHeight - estimatedHeight - reservedBottom)
       const next = { text, entry: lookupJapanese(text), top: Math.max(12, Math.min(maxTop, rect.bottom + 10)), left: Math.max(12, Math.min(maxLeft, rect.left)) }
       setSelection(next)
       setSaved(false)
@@ -49,9 +52,10 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
         setFavorite(favoriteRow?.value === true)
       })
     }
-    document.addEventListener('mouseup', readSelection)
-    document.addEventListener('keyup', readSelection)
-    document.addEventListener('selectionchange', readSelection)
+    const handleSelectionEvent = () => readSelection()
+    document.addEventListener('mouseup', handleSelectionEvent)
+    document.addEventListener('keyup', handleSelectionEvent)
+    document.addEventListener('selectionchange', handleSelectionEvent)
     function closeOutside(event: MouseEvent) {
       const target = event.target
       if (target instanceof Element && target.closest('.selection-explainer')) return
@@ -67,13 +71,18 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
     }
     document.addEventListener('mousedown', closeOutside)
     document.addEventListener('keydown', closeWithEscape)
+    const handleViewportChange = () => readSelection(true)
+    window.addEventListener('resize', handleViewportChange)
+    window.addEventListener('scroll', handleViewportChange, true)
     const poll = window.setInterval(readSelection, 350)
     return () => {
-      document.removeEventListener('mouseup', readSelection)
-      document.removeEventListener('keyup', readSelection)
-      document.removeEventListener('selectionchange', readSelection)
+      document.removeEventListener('mouseup', handleSelectionEvent)
+      document.removeEventListener('keyup', handleSelectionEvent)
+      document.removeEventListener('selectionchange', handleSelectionEvent)
       document.removeEventListener('mousedown', closeOutside)
       document.removeEventListener('keydown', closeWithEscape)
+      window.removeEventListener('resize', handleViewportChange)
+      window.removeEventListener('scroll', handleViewportChange, true)
       window.clearInterval(poll)
     }
   }, [])

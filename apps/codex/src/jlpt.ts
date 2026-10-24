@@ -20,6 +20,7 @@ export type JLPTQuestion = {
   studySteps: string[]
   itemType?: string
   audioUrl?: string
+  imageUrl?: string
   sourceUrl?: string
   source: 'original-practice' | 'licensed-import'
 }

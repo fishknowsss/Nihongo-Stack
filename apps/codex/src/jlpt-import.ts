@@ -106,6 +106,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
       studySteps: Array.isArray(question.studySteps) && question.studySteps.length ? question.studySteps.map(String) : ['先独立完成，再对照原始答案。', '把不熟的词句加入选中笔记。'],
       itemType: typeof question.itemType === 'string' ? question.itemType : undefined,
       audioUrl: audioUrl(question.audioUrl, `第 ${index + 1} 题 audioUrl`),
+      imageUrl: sourceUrl(question.imageUrl, `第 ${index + 1} 题 imageUrl`),
       sourceUrl: sourceUrl(question.sourceUrl, `第 ${index + 1} 题 sourceUrl`),
       source: 'licensed-import',
     }

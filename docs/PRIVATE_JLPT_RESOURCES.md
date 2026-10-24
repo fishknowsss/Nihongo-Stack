@@ -20,4 +20,6 @@ npm run build:private-conjugaizen
 
 先运行 `npm run fetch:private-conjugaizen` 提取当前公开页面的数据快照，再运行 `npm run build:private-conjugaizen` 转换 Conjugaizen 的两套 N4 原创模拟题。题目包含四个学习分区和听力脚本，应用使用本机朗读播放；由于来源没有随题目提供可直接复用的录音 URL，生成包保持 `complete: false`。
 
+`build:private-okjlpt` 转换 OK JLPT 的公开纸卷响应和公开 solutions 响应。当前本机已接入 N4 2021 年 12 月整卷，包含中文逐题解析、词义、听力音频和题目图片；资料只写入 `private-assets/`，不会进入公开仓库。
+
 资料来源的题目、音频和图片仍归原权利人。当前流程面向用户个人学习；重新发布代码时不应把 `private-assets/` 内容加入提交。

@@ -518,6 +518,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-question-support > small { color: var(--accent); font-size: .75rem; letter-spacing: .02em; }
 .jlpt-question-support > strong { color: var(--ink); font-weight: 500; }
 .jlpt-question-audio { display: block; width: 100%; min-height: 42px; margin-top: 12px; }
+.jlpt-question-image { display: block; max-width: min(100%, 620px); max-height: 420px; object-fit: contain; margin-top: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
 .jlpt-options { display: grid; gap: 6px; margin-top: 12px; }
 .jlpt-options label { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: .875rem; cursor: pointer; }
 .jlpt-option-letter { font-weight: 600; }

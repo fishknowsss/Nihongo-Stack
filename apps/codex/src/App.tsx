@@ -585,7 +585,11 @@ function TodayPage({
       <StudyPlanPanel
         plan={studyPlan}
         onFoundation={() => setView(baseline ? 'review' : 'baseline')}
-        onJlpt={() => setView('jlpt')}
+        onJlpt={() => {
+          void setPreference('jlptActiveSet', 'jlpt-2025-n2')
+            .catch(() => onNotify('N2 目标入口未保存，本次仍可打开 JLPT 工作台。', 'error'))
+          setView('jlpt')
+        }}
       />
       <div className="today-layout">
         <section className="unit-focus" aria-label="当前学习单元">

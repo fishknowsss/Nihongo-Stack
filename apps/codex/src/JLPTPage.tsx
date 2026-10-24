@@ -13,9 +13,11 @@ type JLPTPracticeMode = 'learn' | 'exam'
 type JLPTSupport = 'off' | 'reading' | 'full'
 
 export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
-  const [level, setLevel] = useState<JLPTLevel>('N5')
+  // The user's current target is N2. Foundation work remains available from 今日学习,
+  // while opening the JLPT workbench should land on the target exam level.
+  const [level, setLevel] = useState<JLPTLevel>('N2')
   const [year, setYear] = useState(2025)
-  const [activeSetId, setActiveSetId] = useState(`jlpt-2025-n5`)
+  const [activeSetId, setActiveSetId] = useState(`jlpt-2025-n2`)
   const [questionFilter, setQuestionFilter] = useState<JLPTSection | 'all'>('all')
   const [practiceMode, setPracticeMode] = useState<JLPTPracticeMode>('learn')
   const [support, setSupport] = useState<JLPTSupport>('reading')

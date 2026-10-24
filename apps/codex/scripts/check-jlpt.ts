@@ -54,11 +54,13 @@ const rawReview = parseImportedJLPTPack(JSON.stringify({
   rawSections: { '文法': '問題７ fixture', '聴解': '男：fixture' },
   answerKey: { '文法': { '7': [1, 2] } },
   listeningScript: '男：fixture',
+  listeningAudioUrl: 'https://fixture.invalid/listening.mp3',
   questions: [],
 }))
 assert.equal(rawReview.questions.length, 0)
 assert.equal(rawReview.rawSections?.['文法'], '問題７ fixture')
 assert.equal(rawReview.answerKey?.['文法'] !== undefined, true)
+assert.equal(rawReview.listeningAudioUrl, 'https://fixture.invalid/listening.mp3')
 const complete = parseImportedJLPTPack(importedJLPTCompleteExample)
 assert.equal(complete.complete, true)
 assert.equal(complete.questionCount, complete.questions.length)

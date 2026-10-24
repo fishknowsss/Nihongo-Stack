@@ -509,6 +509,8 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-raw-section > summary small { color: var(--muted); font-size: .7rem; font-variant-numeric: tabular-nums; }
 .jlpt-raw-text { max-height: 560px; overflow: auto; margin: 0 12px 12px; padding: 12px; border-top: 1px solid var(--line); color: var(--ink); font-family: var(--jp-font); font-size: .9rem; line-height: 1.85; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
 .jlpt-raw-answer-key pre { max-height: 360px; overflow: auto; margin: 0 12px 12px; padding: 12px; border-top: 1px solid var(--line); color: var(--muted); background: var(--panel); font-size: .72rem; line-height: 1.6; white-space: pre-wrap; }
+.jlpt-raw-audio { display: grid; gap: 7px; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--panel); color: var(--muted); font-size: .75rem; }
+.jlpt-raw-audio audio { width: 100%; min-height: 42px; }
 .jlpt-exam-timer { display: grid; grid-template-columns: auto auto 1fr; align-items: baseline; gap: 8px 12px; margin-top: 16px; padding: 10px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-size: .75rem; }
 .jlpt-exam-timer strong { color: var(--accent); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
 .jlpt-exam-timer small { color: var(--muted); }

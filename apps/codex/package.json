@@ -20,7 +20,8 @@
     "fetch:private-conjugaizen": "node scripts/extract-conjugaizen-private.mjs",
     "build:private-conjugaizen": "python3 scripts/build-conjugaizen-private.py",
     "build:private-okjlpt": "python3 scripts/build-okjlpt-private.py",
-    "build:private-eulerex": "python3 scripts/build-eulerex-private.py"
+    "build:private-eulerex": "python3 scripts/build-eulerex-private.py",
+    "build:private-ayumi": "python3 scripts/build-ayumi-private.py"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

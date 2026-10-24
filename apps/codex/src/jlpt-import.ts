@@ -27,6 +27,7 @@ export type ImportedJLPTPack = {
   /** Source answer groups when the corpus exposes them. The app renders them as review clues, never as official scores. */
   answerKey?: Record<string, unknown>
   listeningScript?: string
+  listeningAudioUrl?: string
   questions: JLPTQuestion[]
 }
 
@@ -185,6 +186,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     rawSections,
     answerKey: record.answerKey && typeof record.answerKey === 'object' && !Array.isArray(record.answerKey) ? record.answerKey as Record<string, unknown> : undefined,
     listeningScript: typeof record.listeningScript === 'string' && record.listeningScript.trim() ? record.listeningScript.trim() : undefined,
+    listeningAudioUrl: audioUrl(record.listeningAudioUrl, 'listeningAudioUrl'),
     questions,
   }
 }

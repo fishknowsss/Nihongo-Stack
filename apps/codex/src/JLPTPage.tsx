@@ -392,6 +392,10 @@ function RawCorpusViewer({ pack }: { pack: ImportedJLPTPack }) {
         <summary>查看答案线索（用于复盘，不代表官方计分）</summary>
         <pre>{JSON.stringify(pack.answerKey, null, 2)}</pre>
       </details>}
+      {pack.listeningAudioUrl && <div className="jlpt-raw-audio">
+        <span>本场听力音频</span>
+        <audio controls preload="metadata" src={pack.listeningAudioUrl} aria-label={`${pack.year} 年 ${pack.session ?? ''} 场 ${pack.level} 听力音频`} />
+      </div>}
       {pack.listeningScript && <details className="jlpt-raw-listening">
         <summary>查看听力原文</summary>
         <div className="jlpt-raw-text" lang="ja">{pack.listeningScript}</div>

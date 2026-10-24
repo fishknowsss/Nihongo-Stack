@@ -247,7 +247,7 @@ for (const entry of allEntries) {
 }
 
 export function lookupJapanese(text: string): LexiconEntry | undefined {
-  const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')
+  const normalized = text.trim().replace(/^「(.+)」$/u, '$1').replace(/[。！？、，．,.!?\s]+$/u, '')
   if (bySurface.has(normalized)) return bySurface.get(normalized)
   return inferredEntry(normalized)
 }

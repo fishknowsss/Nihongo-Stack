@@ -506,6 +506,10 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-question legend > span { display: inline-grid; place-items: center; width: 24px; height: 24px; margin-right: 8px; border-radius: 50%; color: var(--accent); background: var(--accent-soft); font-size: .75rem; }
 .jlpt-question legend > b { margin-right: 8px; color: var(--muted); font-size: .75rem; font-weight: 500; }
 .jlpt-question legend > em { margin-right: 8px; color: var(--muted); font-size: .75rem; font-style: normal; }
+.jlpt-question-prompt { display: inline; margin-left: 2px; }
+.jlpt-question-prompt .layered-japanese { display: inline; padding: 0; font: inherit; line-height: inherit; }
+.jlpt-question-prompt .layered-japanese .layer-token { margin-inline: 0; }
+.jlpt-question-prompt .layered-japanese rt { font-size: .55em; }
 .jlpt-question-support { display: grid; justify-items: start; gap: 2px; margin-top: 10px; padding: 8px 10px; border: 1px solid var(--line); border-left-color: var(--accent); background: var(--accent-soft); color: var(--muted); font-size: .8125rem; }
 .jlpt-question-support > span { color: var(--accent); font-family: var(--jp-font); }
 .jlpt-question-support > small { color: var(--accent); font-size: .75rem; letter-spacing: .02em; }

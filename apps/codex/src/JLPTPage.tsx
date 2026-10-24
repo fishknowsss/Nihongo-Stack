@@ -5,6 +5,7 @@ import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptL
 import { db, setPreference } from './db'
 import { downloadCompleteImportTemplate, downloadImportTemplate, parseImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
+import LayeredJapanese from './LayeredJapanese'
 
 type Notify = (message: string, kind?: 'success' | 'error') => void
 type JLPTMistakeRecord = { id: string; answer: number; incorrectCount: number; lastSeenAt: string }
@@ -347,9 +348,11 @@ function downloadText(text: string, name: string) {
 }
 
 function JLPTQuestionRow({ question, index, value, submitted, mode, support, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; mode: JLPTPracticeMode; support: JLPTSupport; onChange: (value: number) => void }) {
+  const promptLayer = mode === 'learn' && support !== 'off' ? (support === 'full' ? 'full' : 'furigana') : 'off'
+  const quotedPrompt = question.prompt.match(/^(.*?)(「[^」]+」)(.*)$/u)
   return (
     <fieldset id={`jlpt-question-${question.id}`} className={`jlpt-question ${submitted ? 'submitted' : ''}`}>
-      <legend><span>{index + 1}</span><b>{question.section}</b>{question.questionNumber !== undefined && <em>原题第 {question.questionNumber} 题</em>}{question.itemType && <em>{question.itemType}</em>}{question.prompt}</legend>
+      <legend><span>{index + 1}</span><b>{question.section}</b>{question.questionNumber !== undefined && <em>原题第 {question.questionNumber} 题</em>}{question.itemType && <em>{question.itemType}</em>}<span className="jlpt-question-prompt">{quotedPrompt && promptLayer !== 'off' ? <><span>{quotedPrompt[1]}</span><LayeredJapanese as="span" segments={[{ text: quotedPrompt[2].slice(1, -1), reading: question.reading }]} layer={promptLayer} /><span>{quotedPrompt[3]}</span></> : question.prompt}</span></legend>
       {mode === 'learn' && support !== 'off' && (question.reading || question.gloss) && <div className="jlpt-question-support">{support === 'full' && question.reading && <small>{kanaToRomaji(question.reading)}</small>}<span lang="ja">{question.reading ?? '暂无读音'}</span>{support === 'full' && question.gloss && <strong>{question.gloss}</strong>}</div>}
       {question.audioUrl && <audio className="jlpt-question-audio" controls preload="metadata" src={question.audioUrl} aria-label={`第 ${index + 1} 题听力`} />}
       {!question.audioUrl && question.audioText && <button className="outline-button compact jlpt-speech-button" onClick={() => speakJapanese(question.audioText as string)}><SpeakerHigh size={16} /> 播放合成日语朗读</button>}

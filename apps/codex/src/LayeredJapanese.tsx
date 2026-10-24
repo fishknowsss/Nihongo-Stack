@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react'
 import { kanaToRomaji, segmentText, type StudyLayer } from './language'
 
-export default function LayeredJapanese({ segments, layer, className = '' }: { segments: Array<{ text: string; reading?: string }>; layer: StudyLayer; className?: string }) {
+export default function LayeredJapanese({ segments, layer, className = '', as = 'div' }: { segments: Array<{ text: string; reading?: string }>; layer: StudyLayer; className?: string; as?: 'div' | 'span' }) {
   const showFurigana = layer === 'furigana' || layer === 'full'
   const showGloss = layer === 'gloss' || layer === 'full'
   const showRomaji = layer === 'romaji' || layer === 'full'
-  return <div className={`layered-japanese ${layer !== 'off' ? `layer-${layer}` : ''} ${className}`} lang="ja">
+  const Root = as
+  return <Root className={`layered-japanese ${layer !== 'off' ? `layer-${layer}` : ''} ${className}`} lang="ja">
     {segments.map((segment, segmentIndex) => {
       const parts = segmentText(segment.text, segment.reading)
       return <span key={`${segment.text}-${segmentIndex}`}>{parts.map((part, partIndex) => {
@@ -23,5 +24,5 @@ export default function LayeredJapanese({ segments, layer, className = '' }: { s
         </span>
       })}</span>
     })}
-  </div>
+  </Root>
 }

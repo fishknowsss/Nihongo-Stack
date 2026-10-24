@@ -29,6 +29,7 @@ for (const question of jlptQuestions) {
   assert.ok(question.explanation.length > 0)
   assert.ok(question.studySteps.length >= 2)
 }
+assert.ok(jlptQuestions.filter((question) => question.reading).length >= 60)
 const imported = parseImportedJLPTPack(importedJLPTExample)
 assert.equal(imported.level, 'N5')
 assert.equal(imported.questions[0].source, 'licensed-import')

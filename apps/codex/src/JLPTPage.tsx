@@ -3,7 +3,7 @@ import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
 import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
-import { downloadCompleteImportTemplate, downloadImportTemplate, downloadJLPTCoverageManifest, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
+import { downloadCompleteImportTemplate, downloadImportTemplate, downloadJLPTCoverageManifest, downloadJLPTLevelFieldTemplate, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
 import LayeredJapanese from './LayeredJapanese'
 
@@ -228,6 +228,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <button className="text-button compact" onClick={() => downloadCompleteImportTemplate(downloadText)}>完整题库模板</button>
+        <button className="text-button compact" onClick={() => downloadJLPTLevelFieldTemplate(downloadText, level, year)}>当前等级字段模板</button>
         <button className="text-button compact" onClick={() => downloadJLPTCoverageManifest(downloadText)}>下载 52 场清单</button>
         <input ref={fileRef} className="sr-only" type="file" multiple accept="application/json,.json" onChange={(event) => { void importPacks(Array.from(event.target.files ?? [])); event.currentTarget.value = '' }} />
       </section>

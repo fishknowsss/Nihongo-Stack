@@ -277,6 +277,31 @@ export function downloadCompleteImportTemplate(download: (text: string, name: st
   download(importedJLPTCompleteTemplate, 'nihongo-stack-jlpt-complete-template.json')
 }
 
+export function downloadJLPTLevelFieldTemplate(download: (text: string, name: string) => void, level: JLPTLevel, year: number): void {
+  const session = jlptExamSessionsByYear[year]?.[0] ?? '07'
+  const template = {
+    schemaVersion: 1,
+    id: 'replace-with-' + year + '-' + session + '-' + level.toLowerCase(),
+    year,
+    session,
+    level,
+    title: '填写年份与场次 · ' + level + ' 完整题库',
+    sourceName: '填写授权来源',
+    license: '填写个人使用或再分发许可',
+    rightsBasis: '填写版权所有者许可、开放许可或个人使用依据',
+    rightsEvidenceUrl: 'https://example.com/licence-or-terms',
+    sourceUrl: 'https://example.com/original-source',
+    complete: false,
+    requirements: {
+      minimumQuestionCount: minimumCompleteQuestionCount(level, year, session),
+      requiredSections: ['文字・語彙', '文法', '読解', '聴解'],
+      note: '填入实际完整试卷后，再将 complete 改为 true，并补齐题量、题号、中文教学层和听力音频。',
+    },
+    questions: [],
+  }
+  download(JSON.stringify(template, null, 2), 'nihongo-stack-jlpt-' + level.toLowerCase() + '-fields-template.json')
+}
+
 /**
  * A machine-readable checklist for the 52 recent level/session slots.
  * It contains no exam questions and can safely be shared with a rights-holder

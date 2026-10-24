@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
-import { downloadJLPTCoverageManifest, importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, minimumCompleteQuestionCount, parseImportedJLPTPack } from '../src/jlpt-import'
+import { downloadJLPTCoverageManifest, downloadJLPTLevelFieldTemplate, importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, minimumCompleteQuestionCount, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
 assert.equal(new Set(jlptSets.map((set) => set.id)).size, jlptSets.length)
@@ -77,4 +77,11 @@ let manifest = ''
 downloadJLPTCoverageManifest((text) => { manifest = text })
 const parsedManifest = JSON.parse(manifest) as { slots: Array<unknown> }
 assert.equal(parsedManifest.slots.length, jlptFullExamSlotCount)
+let levelTemplate = ''
+downloadJLPTLevelFieldTemplate((text) => { levelTemplate = text }, 'N2', 2025)
+const parsedLevelTemplate = JSON.parse(levelTemplate) as { level?: string; year?: number; requirements?: { minimumQuestionCount?: number }; questions?: unknown[] }
+assert.equal(parsedLevelTemplate.level, 'N2')
+assert.equal(parsedLevelTemplate.year, 2025)
+assert.equal(parsedLevelTemplate.requirements?.minimumQuestionCount, minimumCompleteQuestionCount('N2', 2025, '07'))
+assert.deepEqual(parsedLevelTemplate.questions, [])
 console.log(`JLPT checks passed: ${jlptSets.length} year-level packs, ${jlptQuestions.length} teaching questions (16 per level, four sections), complete-pack validation, official links for ${jlptLevels.join('/')}`)

@@ -489,6 +489,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-resource-meta > small { grid-column: 2; color: var(--muted); font-size: .72rem; }
 .jlpt-resource-list p { margin: 0 0 0 32px; color: var(--muted); font-size: .8rem; line-height: 1.7; }
 .jlpt-resource-list .jlpt-resource-goal { color: var(--ink); font-family: var(--jp-font); font-size: .9rem; }
+.jlpt-resource-steps { display: grid; gap: 3px; margin: 0 0 0 48px; padding-left: 16px; color: var(--muted); font-size: .75rem; line-height: 1.6; }
 .jlpt-workbench { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 20px; align-items: start; }
 .jlpt-practice-panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .jlpt-section-count { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
@@ -717,6 +718,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .jlpt-imported-grid { grid-template-columns: minmax(0, 1fr); }
   .jlpt-resource-route { padding: 14px 16px; }
   .jlpt-resource-list { grid-template-columns: minmax(0, 1fr); }
+  .jlpt-resource-steps { margin-left: 32px; }
   .jlpt-slot-groups { grid-template-columns: minmax(0, 1fr); gap: 10px; }
   .jlpt-workbench { grid-template-columns: minmax(0, 1fr); }
   .jlpt-practice-panel { padding: 16px; }

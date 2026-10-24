@@ -278,6 +278,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
             <div className="jlpt-resource-meta"><span>{index + 1}</span><a href={resource.url} target="_blank" rel="noreferrer">{resource.label} <ArrowRight size={14} /></a><small>{resource.level}</small></div>
             <p className="jlpt-resource-goal" lang="ja">{resource.japaneseGoal}</p>
             <p>{resource.chineseMethod}</p>
+            <ol className="jlpt-resource-steps">{resource.studySteps.map((step) => <li key={step}>{step}</li>)}</ol>
           </li>)}
         </ol>
       </section>

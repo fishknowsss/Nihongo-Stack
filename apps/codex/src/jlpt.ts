@@ -201,6 +201,7 @@ export type JLPTResourceRoute = {
   level: string
   japaneseGoal: string
   chineseMethod: string
+  studySteps: string[]
 }
 
 // Public entry points are linked in place. The app explains how to use each
@@ -212,6 +213,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '基础生活输入 · N5–N3 起步',
     japaneseGoal: '生活の場面で「できること」を増やす。',
     chineseMethod: '先完成每课 Can-do，再听音频跟读；它适合建立场景和句型，不直接替代 JLPT 题型训练。',
+    studySteps: ['先读本课 Can-do 和场景图，预测会用到什么表达。', '听音频两遍：第一遍抓任务，第二遍跟读关键句。', '用自己的学校、租房或工作场景改写一句，再回到 JLPT 题型复习。'],
   },
   {
     label: 'Erin’s Challenge! I Can Speak Japanese',
@@ -219,6 +221,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '场景会话 · N5–N3',
     japaneseGoal: '場面を見て、聞いて、まねて使う。',
     chineseMethod: '先看情境猜意思，再打开语法说明；把例句改成自己的学校、工作或生活场景。',
+    studySteps: ['先不看字幕观看情境，记录你猜到的人物关系和目的。', '打开脚本与语法说明，标出礼貌程度和固定表达。', '替换人物、地点或时间，重新说一遍自己的版本。'],
   },
   {
     label: 'Tadoku 分级阅读',
@@ -226,6 +229,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '大量阅读 · N5–N2',
     japaneseGoal: '辞書を引きすぎず、やさしい本をたくさん読む。',
     chineseMethod: '先选能读懂约八成的级别，只查影响主旨的词；读完用中文说出人物、行动和结果。',
+    studySteps: ['先按等级选一篇，第一遍不查词，只判断主题和情绪。', '第二遍只查影响主旨的词，把重复出现的表达收藏。', '用三句中文复述人物、行动、结果，再朗读日文一遍。'],
   },
   {
     label: 'JLPT 官方样题与练习册',
@@ -233,6 +237,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '题型与计时 · N5–N2',
     japaneseGoal: '問題形式と時間配分に慣れる。',
     chineseMethod: '先按真实时长完成，再按词汇、语法、阅读、听力分别复盘；不要把原始对错直接换算成正式成绩。',
+    studySteps: ['先关闭辅助层，按官方时间完成一科或整套。', '逐题打开读音和中文解析，写出错因：词义、句型、信息定位或听辨。', '隔天只重做错题，再用完整模式检查是否能独立作答。'],
   },
   {
     label: 'Marugoto：Japanese Language and Culture',
@@ -240,6 +245,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '语言与文化 · N4–N2 延伸',
     japaneseGoal: 'ことばと文化を一緒に学び、伝え合う。',
     chineseMethod: '遇到表达差异时，先记录说话目的和关系，再理解为什么不能只按中文直译。',
+    studySteps: ['先判断说话人关系和场合，再看表达本身。', '把敬体、语气和文化信息分别记在笔记中。', '用中文解释“为什么这样说”，再写一条同场景日文。'],
   },
   {
     label: 'Tatoeba 可署名例句库',
@@ -247,6 +253,7 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     level: '例句复现 · N5–N2',
     japaneseGoal: '短い例文を声に出して、使い方を確かめる。',
     chineseMethod: '用它核对词语搭配和助词；逐条查看许可，收藏时保留来源，不把孤立例句当成语法定论。',
+    studySteps: ['先搜索目标词的多个例句，比较它前后的搭配。', '选一条带音频或上下文清楚的例句，朗读并标出助词。', '把例句保存为自己的句型模板，并保留来源信息。'],
   },
 ]
 

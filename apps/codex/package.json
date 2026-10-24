@@ -14,7 +14,9 @@
     "test:language": "tsx scripts/check-language.ts",
     "test:learning": "tsx scripts/check-learning.ts",
     "test:jlpt": "tsx scripts/check-jlpt.ts",
-    "validate:jlpt": "tsx scripts/validate-jlpt-import.ts"
+    "validate:jlpt": "tsx scripts/validate-jlpt-import.ts",
+    "build:private-jlpt": "python3 scripts/build-private-jlpt.py",
+    "build:private-site-jlpt": "python3 scripts/build-jlptpracticetest-private.py"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

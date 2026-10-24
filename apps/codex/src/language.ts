@@ -183,6 +183,23 @@ export const lexicon: LexiconEntry[] = [
   { surface: '行きませんか', reading: 'いきませんか', romaji: 'ikimasen ka', gloss: '要不要一起去？', kind: 'grammar' },
   { surface: 'どうして', reading: 'どうして', romaji: 'dōshite', gloss: '为什么', kind: 'hiragana' },
   { surface: 'そして', reading: 'そして', romaji: 'soshite', gloss: '然后；而且', kind: 'hiragana' },
+  { surface: 'は', reading: 'は', romaji: 'wa', gloss: '主题助词：说到……', kind: 'grammar', explanation: '把句子的主题提出来；写作「は」，读作 wa。' },
+  { surface: 'が', reading: 'が', romaji: 'ga', gloss: '主语助词；标记新信息', kind: 'grammar', explanation: '常用于指出谁或什么具有某种状态，也可回答“谁／什么”。' },
+  { surface: 'を', reading: 'を', romaji: 'o', gloss: '动作对象助词', kind: 'grammar', explanation: '标记动作直接作用的对象，例如「映画を見ます」。' },
+  { surface: 'に', reading: 'に', romaji: 'ni', gloss: '时间、到达点或对象', kind: 'grammar', explanation: '可表示具体时间、移动到达点或动作对象，要结合动词判断。' },
+  { surface: 'で', reading: 'で', romaji: 'de', gloss: '动作场所或手段', kind: 'grammar', explanation: '表示在哪里做动作，或用什么交通工具、方法完成动作。' },
+  { surface: 'の', reading: 'の', romaji: 'no', gloss: '所属或名词修饰', kind: 'grammar', explanation: '连接两个名词，常对应中文“的”，也可表示类别或内容。' },
+  { surface: 'へ', reading: 'へ', romaji: 'e', gloss: '移动方向', kind: 'grammar', explanation: '表示朝向某地；写作「へ」，在移动表达中读作 e。' },
+  { surface: 'と', reading: 'と', romaji: 'to', gloss: '和；与；引用内容', kind: 'grammar', explanation: '可连接共同动作的对象，也可引出说话、思考等内容。' },
+  { surface: 'も', reading: 'も', romaji: 'mo', gloss: '也；同样', kind: 'grammar', explanation: '把前面信息扩展到另一个对象，常对应中文“也”。' },
+  { surface: 'から', reading: 'から', romaji: 'kara', gloss: '从；因为', kind: 'grammar', explanation: '接地点或时间表示起点，接句子时也可说明原因。' },
+  { surface: 'まで', reading: 'まで', romaji: 'made', gloss: '到；直到', kind: 'grammar', explanation: '表示范围的终点，例如「駅まで歩きます」。' },
+  { surface: 'だけ', reading: 'だけ', romaji: 'dake', gloss: '只；仅', kind: 'grammar', explanation: '限定范围，表示只有前面的对象或数量。' },
+  { surface: 'しか', reading: 'しか', romaji: 'shika', gloss: '只有……（后接否定）', kind: 'grammar', explanation: '「しか」后面通常接否定，强调范围很小，例如「一つしかありません」。' },
+  { surface: 'ので', reading: 'ので', romaji: 'node', gloss: '因为；由于', kind: 'grammar', explanation: '较客观、缓和地说明原因，比直接的「から」更适合解释情况。' },
+  { surface: 'けど', reading: 'けど', romaji: 'kedo', gloss: '但是；不过', kind: 'grammar', explanation: '连接前后相反或补充的信息，也常用于委婉地引出请求。' },
+  { surface: 'ても', reading: 'ても', romaji: 'temo', gloss: '即使……也……', kind: 'grammar', explanation: '表示让步条件，前项成立也不改变后项结果。' },
+  { surface: 'なら', reading: 'なら', romaji: 'nara', gloss: '如果是……；既然……', kind: 'grammar', explanation: '以对方提到的信息为前提提出建议或判断。' },
   { surface: 'アプリ', reading: 'アプリ', romaji: 'apuri', gloss: '应用；应用程序', kind: 'katakana' },
   { surface: 'インターネット', reading: 'インターネット', romaji: 'inta-netto', gloss: '互联网', kind: 'katakana' },
   { surface: 'スマートフォン', reading: 'スマートフォン', romaji: 'suma-to fon', gloss: '智能手机', kind: 'katakana' },
@@ -232,10 +249,6 @@ for (const entry of allEntries) {
 export function lookupJapanese(text: string): LexiconEntry | undefined {
   const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '')
   if (bySurface.has(normalized)) return bySurface.get(normalized)
-  if (normalized.length <= 12 && !/[\s、。！？，．,.!?]/u.test(normalized)) {
-    const contained = [...allEntries].sort((a, b) => b.surface.length - a.surface.length).find((entry) => normalized.includes(entry.surface))
-    if (contained) return contained
-  }
   return inferredEntry(normalized)
 }
 

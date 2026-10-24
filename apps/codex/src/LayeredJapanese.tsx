@@ -11,7 +11,8 @@ export default function LayeredJapanese({ segments, layer, className = '', as = 
       const parts = segmentText(segment.text, segment.reading)
       return <span key={`${segment.text}-${segmentIndex}`}>{parts.map((part, partIndex) => {
         const entry = part.entry
-        const content: ReactNode = showFurigana && (entry?.reading || part.reading)
+        const needsRuby = /[\u3400-\u9fff々\u30a0-\u30ff]/u.test(part.text)
+        const content: ReactNode = showFurigana && needsRuby && (entry?.reading || part.reading)
           ? <ruby>{part.text}<rt>{entry?.reading ?? part.reading}</rt></ruby>
           : part.text
         const hasRomaji = showRomaji && Boolean(part.reading || entry?.romaji)

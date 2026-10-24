@@ -19,6 +19,35 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[3]
 BASE = "https://www.jlptpracticetest.com"
+OPENJLPT_PATH = ROOT / "apps" / "codex" / "public" / "data" / "openjlpt-jlpt.json"
+
+
+def load_dictionary() -> dict[str, dict[str, str]]:
+    if not OPENJLPT_PATH.exists():
+        return {}
+    data = json.loads(OPENJLPT_PATH.read_text(encoding="utf-8"))
+    entries = data.get("entries", {})
+    result: dict[str, dict[str, str]] = {}
+    for surface, entry in entries.items():
+        if not isinstance(surface, str) or not isinstance(entry, dict):
+            continue
+        has_kanji = any("\u4e00" <= character <= "\u9fff" for character in surface)
+        # Single kana/particle entries make a reading line noisy and add little
+        # Chinese value. Keep complete words and kanji compounds instead.
+        if len(surface) < 2 or not has_kanji:
+            continue
+        reading = entry.get("reading")
+        gloss = entry.get("gloss")
+        if isinstance(reading, str) and reading.strip():
+            result[surface] = {"reading": reading.strip(), "gloss": str(gloss or "").strip()}
+    return result
+
+
+DICTIONARY = load_dictionary()
+DICTIONARY_SURFACES = sorted(DICTIONARY, key=len, reverse=True)
+DICTIONARY_SURFACES_BY_FIRST: dict[str, list[str]] = {}
+for _surface in DICTIONARY_SURFACES:
+    DICTIONARY_SURFACES_BY_FIRST.setdefault(_surface[0], []).append(_surface)
 
 
 def fetch(url: str) -> str:
@@ -46,6 +75,38 @@ def clean(value: Any) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+def dictionary_hints(value: str) -> tuple[str, list[str]]:
+    """Return a best-effort kana line and compact Chinese word hints.
+
+    The source pages do not publish furigana for every question. Longest-known
+    dictionary matches keep common compounds readable while leaving unknown
+    proper nouns untouched for later selection-based lookup in the app.
+    """
+    if not value or not DICTIONARY_SURFACES:
+        return "", []
+    readings: list[str] = []
+    raw = ""
+    glosses: list[str] = []
+    index = 0
+    while index < len(value):
+        match = next((surface for surface in DICTIONARY_SURFACES_BY_FIRST.get(value[index], []) if value.startswith(surface, index)), None)
+        if match:
+            if raw:
+                readings.append(raw)
+                raw = ""
+            entry = DICTIONARY[match]
+            readings.append(entry["reading"])
+            if entry["gloss"] and entry["gloss"] not in glosses:
+                glosses.append(f"{match}：{entry['gloss']}")
+            index += len(match)
+        else:
+            raw += value[index]
+            index += 1
+    if raw:
+        readings.append(raw)
+    return " ".join(readings), glosses[:4]
+
+
 def questions_from(data: dict[str, Any], section: str) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for group in data.get("sections", [])[0].get("groups", []):
@@ -56,6 +117,11 @@ def questions_from(data: dict[str, Any], section: str) -> list[dict[str, Any]]:
                 continue
             answer = max(0, min(answer, len(options) - 1))
             prompt = clean(question.get("textHtml") or question.get("text"))
+            reading, glosses = dictionary_hints(prompt)
+            option_reading, option_glosses = dictionary_hints(options[answer])
+            if option_reading and option_reading != options[answer]:
+                reading = f"{reading}；答案词：{option_reading}"
+            gloss_hints = (glosses + option_glosses)[:4]
             result.append({
                 "id": f"{section}-{question.get('id', len(result) + 1)}",
                 "section": section,
@@ -63,8 +129,8 @@ def questions_from(data: dict[str, Any], section: str) -> list[dict[str, Any]]:
                 "prompt": prompt or f"第 {len(result) + 1} 题",
                 "options": options,
                 "answer": answer,
-                "reading": "请先朗读题干，再用上下文确认读音",
-                "gloss": "中文释义：先结合原文语境理解，再核对正确选项。",
+                "reading": reading or "请先朗读题干，再用上下文确认读音",
+                "gloss": "中文词义提示：" + ("；".join(gloss_hints) if gloss_hints else "先结合原文语境理解，再核对正确选项。"),
                 "explanation": (
                     "中文学习法：先独立作答，再把正确选项放回原句；阅读题先找主张、理由、条件和结论，"
                     "避免按汉字表面意思直译。来源页面未提供逐题中文解析，请保留原文上下文复盘。"

@@ -56,6 +56,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       const target = event.target
       if (target instanceof Element && target.closest('.selection-explainer')) return
       lastText.current = ''
+      window.getSelection()?.removeAllRanges()
       setSelection(null)
     }
     function closeWithEscape(event: KeyboardEvent) {

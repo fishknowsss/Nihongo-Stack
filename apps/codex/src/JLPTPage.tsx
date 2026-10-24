@@ -373,7 +373,7 @@ function JLPTQuestionRow({ question, index, value, submitted, mode, support, onC
         {question.options.map((option, optionIndex) => (
           <label key={option} className={`${value === optionIndex ? 'chosen' : ''} ${submitted && optionIndex === question.answer ? 'correct' : ''} ${submitted && value === optionIndex && optionIndex !== question.answer ? 'incorrect' : ''}`}>
             <input type="radio" name={question.id} checked={value === optionIndex} disabled={submitted} onChange={() => onChange(optionIndex)} />
-            <span>{String.fromCharCode(65 + optionIndex)}. {option}</span>
+            <span><b className="jlpt-option-letter">{String.fromCharCode(65 + optionIndex)}.</b> {/^[\u3040-\u30ff\u3400-\u9fff]/u.test(option) && promptLayer !== 'off' ? <LayeredJapanese as="span" segments={[{ text: option }]} layer={promptLayer} /> : option}</span>
           </label>
         ))}
       </div>

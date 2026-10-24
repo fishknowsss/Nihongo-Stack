@@ -517,6 +517,9 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-question-audio { display: block; width: 100%; min-height: 42px; margin-top: 12px; }
 .jlpt-options { display: grid; gap: 6px; margin-top: 12px; }
 .jlpt-options label { display: flex; align-items: center; gap: 9px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: .875rem; cursor: pointer; }
+.jlpt-option-letter { font-weight: 600; }
+.jlpt-options .layered-japanese { display: inline; padding: 0; font: inherit; line-height: inherit; }
+.jlpt-options .layered-japanese .layer-token { margin-inline: 0; }
 .jlpt-options label:hover, .jlpt-options label.chosen { border-color: var(--control-line); background: var(--hover); }
 .jlpt-options label.correct { border-color: var(--green); background: var(--soft-green); }
 .jlpt-options label.incorrect { border-color: var(--error); background: var(--error-soft); }

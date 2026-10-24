@@ -128,8 +128,8 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
         </div>
         <button ref={closeButton} className="icon-button" aria-label="关闭解释" onClick={() => { lastText.current = ''; window.getSelection()?.removeAllRanges(); setSelection(null) }}><X size={17} /></button>
       </div>
-      <div className="selection-reading" lang="ja">{reading ?? '暂未收录读音'}</div>
       {romaji && <div className="selection-romaji">{romaji}</div>}
+      <div className="selection-reading" lang="ja">{reading ?? '暂未收录读音'}</div>
       {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : selection.entry.kind === 'phrase' ? '词句片段' : '词汇'}</span>}
       <p className="selection-gloss">{selection.entry?.gloss ?? '可先把这段加入笔记，稍后补充词义。'}</p>
       {selection.entry?.explanation && <p className="field-hint">{selection.entry.explanation}</p>}

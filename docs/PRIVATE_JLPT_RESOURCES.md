@@ -32,3 +32,5 @@ npm run build:private-eulerex
 `build:private-eulerex` 读取本机的 `private-assets/jlpt-test/normalized/`，把 2019–2023 的 N5–N2 逐场公开语料转换为“原卷语料复盘”包。它保留原卷文字分区、可用的答案组和听力原文，导入后可直接阅读、选中解释和记录笔记；由于 OCR、答案或听力覆盖不均，这类资料保持 `complete: false`，不计入 52 场完整真题统计，也不进入考试计时和得分流程。
 
 `build:private-ayumi` 可把本机下载的 Ayumi PDF 转成同样的复盘包，并保留一条公开听力地址。当前已接入 N3 2022 年 7 月纸卷、答案线索和听力入口；它仍保持 `complete: false`，直到逐题分割、读音、中文教学和音频对应关系全部核对完成。
+
+`build:private-ayumi-questions` 会在复盘包基础上拆出能可靠恢复的文字・語彙、文法和読解题目。当前 N3 2022 年 7 月样本生成 72 道可作答题目，聴解仍保留在原卷复盘区；题目带有答案线索、中文学习步骤和来源，仍不计入完整真题统计。

@@ -16,7 +16,9 @@
     "test:jlpt": "tsx scripts/check-jlpt.ts",
     "validate:jlpt": "tsx scripts/validate-jlpt-import.ts",
     "build:private-jlpt": "python3 scripts/build-private-jlpt.py",
-    "build:private-site-jlpt": "python3 scripts/build-jlptpracticetest-private.py"
+    "build:private-site-jlpt": "python3 scripts/build-jlptpracticetest-private.py",
+    "fetch:private-conjugaizen": "node scripts/extract-conjugaizen-private.mjs",
+    "build:private-conjugaizen": "python3 scripts/build-conjugaizen-private.py"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",

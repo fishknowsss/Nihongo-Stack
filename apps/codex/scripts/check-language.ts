@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
-import { kanaToRomaji, lookupJapanese, segmentText } from '../src/language'
+import { kanaToRomaji, lookupJapanese, lookupJapaneseAsync, segmentText } from '../src/language'
 import { cards } from '../src/catalog'
 
 assert.equal(kanaToRomaji('がっこう'), 'gakkou')
@@ -55,4 +55,13 @@ assert.ok(offlineIndex.entries && Object.keys(offlineIndex.entries).length > 100
 assert.equal(offlineIndex.entries?.['会う']?.reading, 'あう')
 assert.equal(offlineIndex.entries?.['会う']?.level, 'N5')
 assert.ok(offlineIndex.entries?.['男の人']?.gloss)
+const originalFetch = globalThis.fetch
+globalThis.fetch = (async () => ({
+  ok: true,
+  json: async () => ({ entries: { 便利: { reading: 'べんり', gloss: '方便', level: 'N5' } } }),
+})) as typeof fetch
+const phrase = await lookupJapaneseAsync('便利さだけでなく')
+assert.ok(phrase?.gloss?.includes('不仅……还……'))
+assert.ok(phrase?.gloss?.includes('便利：方便'))
+globalThis.fetch = originalFetch
 console.log('Language checks passed: kana transliteration, merged glosses, katakana lookup, and segmentation')

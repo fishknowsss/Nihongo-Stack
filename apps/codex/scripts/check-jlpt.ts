@@ -41,6 +41,24 @@ assert.equal(imported.level, 'N5')
 assert.equal(imported.questions[0].source, 'licensed-import')
 assert.equal(imported.questions.length, 1)
 assert.equal(imported.complete, false)
+const rawReview = parseImportedJLPTPack(JSON.stringify({
+  schemaVersion: 1,
+  id: 'fixture-raw-review-2023-12-n2',
+  year: 2023,
+  session: '12',
+  level: 'N2',
+  title: '原卷语料复盘 fixture',
+  sourceName: 'Nihongo Stack automated check',
+  license: '内部测试资料，不是官方真题',
+  contentKind: 'text-excerpt',
+  rawSections: { '文法': '問題７ fixture', '聴解': '男：fixture' },
+  answerKey: { '文法': { '7': [1, 2] } },
+  listeningScript: '男：fixture',
+  questions: [],
+}))
+assert.equal(rawReview.questions.length, 0)
+assert.equal(rawReview.rawSections?.['文法'], '問題７ fixture')
+assert.equal(rawReview.answerKey?.['文法'] !== undefined, true)
 const complete = parseImportedJLPTPack(importedJLPTCompleteExample)
 assert.equal(complete.complete, true)
 assert.equal(complete.questionCount, complete.questions.length)

@@ -10,9 +10,10 @@ Nihongo Stack 支持把用户拥有使用依据的 JLPT 资料作为 JSON 导入
 npm run build:private-jlpt
 npm run build:private-site-jlpt
 npm run build:private-conjugaizen
+npm run build:private-eulerex
 ```
 
-前者转换 `HosnainRafi/jlpt-n5-resource-pack` 的 N5 题目；后者抓取 `JLPT Practice Test` 公开页面的文字词汇与阅读资料。生成的 JSON 位于 `private-assets/nihongo-stack-imports/` 或 `private-assets/nihongo-stack-site-imports/`，在应用 JLPT 页面点击“导入完整真题 JSON（可多选）”即可写入本机。
+前者转换 `HosnainRafi/jlpt-n5-resource-pack` 的 N5 题目；后者抓取 `JLPT Practice Test` 公开页面的文字词汇与阅读资料。生成的 JSON 位于 `private-assets/nihongo-stack-imports/` 或 `private-assets/nihongo-stack-site-imports/`，在应用 JLPT 页面点击“导入本机题库/原卷资料 JSON（可多选）”即可写入本机。
 
 当前已抓取 2019–2024 的 N2、N3 页面。该站没有对应年份的 N4/N5 dated 页面，N5 使用前一个转换器提供的资源包。公开页面没有配套听力题，所以站点资料生成包会保持 `complete: false`，不会被误标成逐场完整试卷。
 
@@ -27,3 +28,5 @@ npm run build:private-conjugaizen
 `build:private-site-jlpt -- --levels n4,n5 --numbered` 会抓取 JLPT Practice Test 的 20 套编号原创练习（N4 10 套、N5 10 套），作为文字词汇与阅读补充。来源页面明确说明这些编号套题不是历年真题，应用会保持“完整个人整卷”或原创练习的来源说明。
 
 资料来源的题目、音频和图片仍归原权利人。当前流程面向用户个人学习；重新发布代码时不应把 `private-assets/` 内容加入提交。
+
+`build:private-eulerex` 读取本机的 `private-assets/jlpt-test/normalized/`，把 2019–2023 的 N5–N2 逐场公开语料转换为“原卷语料复盘”包。它保留原卷文字分区、可用的答案组和听力原文，导入后可直接阅读、选中解释和记录笔记；由于 OCR、答案或听力覆盖不均，这类资料保持 `complete: false`，不计入 52 场完整真题统计，也不进入考试计时和得分流程。

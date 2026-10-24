@@ -30,10 +30,11 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
     if (!row.key.startsWith('jlptImportedPack:') || typeof row.value !== 'string') return []
     try { return [parseImportedJLPTPack(row.value)] } catch { return [] }
   }), [preferences])
-  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, session: pack.session, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete, fullPaper: pack.fullPaper, contentKind: pack.contentKind, sourceUrl: pack.sourceUrl, questionCount: pack.questionCount, sectionQuestionCounts: pack.sectionQuestionCounts })), [importedPacks])
+  const importedSets = useMemo(() => importedPacks.map((pack) => ({ id: pack.id, year: pack.year, session: pack.session, level: pack.level, title: pack.title, status: 'licensed-import' as const, questionIds: pack.questions.map((question) => question.id), note: `授权导入 · ${pack.sourceName} · ${pack.license}`, complete: pack.complete, fullPaper: pack.fullPaper, contentKind: pack.contentKind, rawSections: pack.rawSections, sourceUrl: pack.sourceUrl, questionCount: pack.questionCount, sectionQuestionCounts: pack.sectionQuestionCounts })), [importedPacks])
   const allSets = useMemo(() => [...jlptSets.filter((set) => !importedSets.some((imported) => imported.id === set.id)), ...importedSets], [importedSets])
   const allQuestions = useMemo(() => [...jlptQuestions, ...importedPacks.flatMap((pack) => pack.questions)], [importedPacks])
   const activeSet = allSets.find((set) => set.id === activeSetId) ?? allSets[0]
+  const activeImportedPack = importedPacks.find((pack) => pack.id === activeSet.id)
   const questions = useMemo(() => activeSet.questionIds.map((id) => allQuestions.find((question) => question.id === id)).filter(Boolean) as JLPTQuestion[], [activeSet, allQuestions])
   const visibleQuestions = useMemo(() => questionFilter === 'all' ? questions : questions.filter((question) => question.section === questionFilter), [questionFilter, questions])
   const persistedMistakes = useMemo(() => {
@@ -225,8 +226,8 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <h2>从基础开始，逐层读懂</h2>
           <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
         </div>
-        <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · <strong>{fullPaperImportedCount}</strong> 套完整整卷资料 · <strong>{completeImportedCount}</strong> / {jlptFullExamSlotCount} 场近七年完整真题</span>
-        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入完整真题 JSON（可多选）'}</button>
+        <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · <strong>{fullPaperImportedCount}</strong> 套整卷资料 · <strong>{completeImportedCount}</strong> / {jlptFullExamSlotCount} 场近七年完整真题</span>
+        <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入本机题库/原卷资料 JSON（可多选）'}</button>
         <button className="text-button compact" onClick={() => downloadImportTemplate(downloadText)}>下载模板</button>
         <button className="text-button compact" onClick={() => downloadCompleteImportTemplate(downloadText)}>完整题库模板</button>
         <button className="text-button compact" onClick={() => downloadJLPTLevelFieldTemplate(downloadText, level, year)}>当前等级字段模板</button>
@@ -272,7 +273,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           <div className="jlpt-imported-grid">
             {importedSets.map((set) => {
               const pack = importedPacks.find((item) => item.id === set.id)
-              return <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all'); void setPreference('jlptActiveSet', set.id) }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 分区已核对` : set.contentKind === 'full-paper' ? `${set.year < 2019 ? '完整历史整卷' : '完整个人整卷'} · ${set.questionCount ?? set.questionIds.length} 题` : set.contentKind === 'original-practice' ? `原创练习 · ${set.questionCount ?? set.questionIds.length} 题` : set.contentKind === 'text-excerpt' ? `文字词汇/阅读资料 · ${set.questionCount ?? set.questionIds.length} 题` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}{pack?.rightsEvidenceUrl && <a href={pack.rightsEvidenceUrl} target="_blank" rel="noreferrer">授权依据</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>{pack?.rightsBasis && <small className="jlpt-rights-basis">使用依据：{pack.rightsBasis}</small>}</div>
+              return <div className="jlpt-imported-card" key={set.id}><button className={`jlpt-set ${set.id === activeSet.id ? 'active' : ''}`} onClick={() => { setLevel(set.level); setYear(set.year); setActiveSetId(set.id); setAnswers({}); setSubmitted(false); setQuestionFilter('all'); void setPreference('jlptActiveSet', set.id) }}><span>{set.year} 年 {set.session ? `第 ${set.session} 场` : ''} · {set.level}</span><strong>{set.title}</strong><small>{set.complete ? `完整真题 · ${set.questionCount ?? set.questionIds.length} 题 · 分区已核对` : set.rawSections ? `原卷语料复盘 · ${Object.keys(set.rawSections).length} 个文本分区` : set.contentKind === 'full-paper' ? `${set.year < 2019 ? '完整历史整卷' : '完整个人整卷'} · ${set.questionCount ?? set.questionIds.length} 题` : set.contentKind === 'original-practice' ? `原创练习 · ${set.questionCount ?? set.questionIds.length} 题` : set.contentKind === 'text-excerpt' ? `文字词汇/阅读资料 · ${set.questionCount ?? set.questionIds.length} 题` : `导入题库 · ${set.questionIds.length} 题`}</small></button><div className="jlpt-imported-actions">{set.sourceUrl && <a href={set.sourceUrl} target="_blank" rel="noreferrer">原始来源</a>}{pack?.rightsEvidenceUrl && <a href={pack.rightsEvidenceUrl} target="_blank" rel="noreferrer">授权依据</a>}<button className="jlpt-remove-button" aria-label={`移除 ${set.title}`} onClick={() => void removePack(set.id)}><TrashSimple size={15} /> 移除</button></div>{pack?.rightsBasis && <small className="jlpt-rights-basis">使用依据：{pack.rightsBasis}</small>}</div>
             })}
           </div>
         </section>
@@ -296,21 +297,23 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
               <p className="field-hint">{activeSet.note}</p>
             </div>
             <div className="jlpt-practice-tools">
-              <label><span className="sr-only">练习模式</span><select aria-label="练习模式" value={practiceMode} onChange={(event) => { const next = event.target.value as JLPTPracticeMode; setPracticeMode(next); void setPreference('jlptPracticeMode', next).catch(() => onNotify('练习模式偏好未保存，本次仍可继续使用。', 'error')); setSubmitted(false) }}><option value="learn">学习模式</option><option value="exam">考试模式</option></select></label>
-              <label><span className="sr-only">JLPT 辅助层</span><select aria-label="JLPT 辅助层" value={support} onChange={(event) => changeSupport(event.target.value as JLPTSupport)}><option value="off">关闭辅助</option><option value="reading">显示读音</option><option value="full">读音 + 罗马音 + 释义</option></select></label>
-              <label><span className="sr-only">题型筛选</span><select aria-label="题型筛选" value={questionFilter} onChange={(event) => { setQuestionFilter(event.target.value as JLPTSection | 'all'); setSubmitted(false) }}><option value="all">整套试卷</option>{[...new Set(questions.map((question) => question.section))].map((section) => <option key={section} value={section}>{section}</option>)}</select></label>
-              <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>
-              {activeSet.complete && <span className="jlpt-section-progress">已完成科目 {completedSections.size} / 4</span>}
+              {activeImportedPack?.rawSections ? <span className="jlpt-raw-mode-label">原卷文本复盘 · 可直接选中日语解释</span> : <>
+                <label><span className="sr-only">练习模式</span><select aria-label="练习模式" value={practiceMode} onChange={(event) => { const next = event.target.value as JLPTPracticeMode; setPracticeMode(next); void setPreference('jlptPracticeMode', next).catch(() => onNotify('练习模式偏好未保存，本次仍可继续使用。', 'error')); setSubmitted(false) }}><option value="learn">学习模式</option><option value="exam">考试模式</option></select></label>
+                <label><span className="sr-only">JLPT 辅助层</span><select aria-label="JLPT 辅助层" value={support} onChange={(event) => changeSupport(event.target.value as JLPTSupport)}><option value="off">关闭辅助</option><option value="reading">显示读音</option><option value="full">读音 + 罗马音 + 释义</option></select></label>
+                <label><span className="sr-only">题型筛选</span><select aria-label="题型筛选" value={questionFilter} onChange={(event) => { setQuestionFilter(event.target.value as JLPTSection | 'all'); setSubmitted(false) }}><option value="all">整套试卷</option>{[...new Set(questions.map((question) => question.section))].map((section) => <option key={section} value={section}>{section}</option>)}</select></label>
+                <span className="jlpt-section-count"><ListChecks size={17} /> {visibleQuestions.length} / {questions.length} 题</span>
+                {activeSet.complete && <span className="jlpt-section-progress">已完成科目 {completedSections.size} / 4</span>}
+              </>}
             </div>
           </div>
           {timedExam && examSecondsLeft !== null && <div className={`jlpt-exam-timer ${examSecondsLeft < 300 ? 'warning' : ''}`} role="timer" aria-label="完整试卷剩余时间"><span>完整试卷计时</span><strong>{formatCountdown(examSecondsLeft)}</strong><small>{examSecondsLeft === 0 ? '时间已到，请提交当前答案。' : '按官方建议时长计时；时间到后仍可提交并查看解析。'}</small></div>}
-          <div className="jlpt-questions">
+          {activeImportedPack?.rawSections ? <RawCorpusViewer pack={activeImportedPack} /> : <div className="jlpt-questions">
             {visibleQuestions.map((question, index) => (
               <JLPTQuestionRow key={question.id} question={question} index={index} value={answers[question.id]} submitted={submitted} mode={practiceMode} support={support} onChange={(value) => { const next = { ...answers, [question.id]: value }; setAnswers(next); void setPreference(draftKey, JSON.stringify(next)).catch(() => onNotify('本题草稿未保存，请稍后重试。', 'error')) }} />
             ))}
-          </div>
-          {persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道 · 按错误次数</span></div>{persistedMistakes.map(({ question, answer, incorrectCount }) => <details key={question.id}><summary>{question.prompt}<small>错 {incorrectCount} 次 · {question.section}</small></summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p><button className="outline-button compact" onClick={() => retryQuestion(question)}>重新答这题</button></div></details>)}</section>}
-          {submitted ? (
+          </div>}
+          {!activeImportedPack?.rawSections && persistedMistakes.length > 0 && <section className="jlpt-mistakes" aria-label="本套真题错题回看"><div className="section-heading"><h3>本套最近错题</h3><span className="field-hint">{persistedMistakes.length} 道 · 按错误次数</span></div>{persistedMistakes.map(({ question, answer, incorrectCount }) => <details key={question.id}><summary>{question.prompt}<small>错 {incorrectCount} 次 · {question.section}</small></summary><div><p>你的选择：{answer === -2 ? '不知道' : question.options[answer] ?? '未记录'}</p><p className="correct-answer">正确答案：{question.options[question.answer]}</p><p>{question.explanation}</p><button className="outline-button compact" onClick={() => retryQuestion(question)}>重新答这题</button></div></details>)}</section>}
+          {!activeImportedPack?.rawSections && (submitted ? (
             <div className="jlpt-result" role="status">
               <CheckCircle size={20} />
               本组答对 {score} / {visibleQuestions.length}。建议把错题下的“学习步骤”读一遍，再切换辅助层重做。
@@ -319,11 +322,11 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
             </div>
           ) : (
             <button className="primary-button jlpt-submit" onClick={submit}>提交本组并查看解析 <ArrowRight size={17} /></button>
-          )}
+          ))}
         </article>
         <aside className="jlpt-side-note">
           <h2><Info size={18} /> 资料边界与使用方式</h2>
-          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷只接受你有权使用的 JSON 导入，并只保存在本机备份中；导入完整卷时必须填写使用依据，避免把未授权原卷带入公开仓库。</p>
+          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷与公开原卷语料只接受本机 JSON 导入，并只保存在本机备份中；导入时保留来源和使用依据，避免把个人资料包带入公开仓库。</p>
           <ul>
             <li>先看日文原句，尝试自己读。</li>
             <li>再打开读音、释义和罗马音辅助。</li>
@@ -365,6 +368,36 @@ function downloadText(text: string, name: string) {
   anchor.click()
   anchor.remove()
   window.setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+function RawCorpusViewer({ pack }: { pack: ImportedJLPTPack }) {
+  const sections = Object.entries(pack.rawSections ?? {}) as Array<[string, string]>
+  const answerGroups = Object.entries(pack.answerKey ?? {})
+  return (
+    <section className="jlpt-raw-corpus" aria-label="原卷语料复盘">
+      <div className="jlpt-raw-corpus-intro">
+        <span className="jlpt-guide-kicker">原卷语料复盘</span>
+        <h3>先读原文，再用答案线索复盘</h3>
+        <p>这份本机资料保留了公开语料中的原文分区、答案线索和听力脚本。不同场次的 OCR、答案或听力可能不完整，因此它用于精读、选中解释和错因记录，不计入完整真题得分。</p>
+      </div>
+      <div className="jlpt-raw-corpus-sections">
+        {sections.map(([section, body]) => (
+          <details className="jlpt-raw-section" key={section} open={section === '文字・語彙' || section === '全文'}>
+            <summary><span>{section}</span><small>{body.length.toLocaleString()} 字</small></summary>
+            <div className="jlpt-raw-text" lang="ja">{body}</div>
+          </details>
+        ))}
+      </div>
+      {answerGroups.length > 0 && <details className="jlpt-raw-answer-key">
+        <summary>查看答案线索（用于复盘，不代表官方计分）</summary>
+        <pre>{JSON.stringify(pack.answerKey, null, 2)}</pre>
+      </details>}
+      {pack.listeningScript && <details className="jlpt-raw-listening">
+        <summary>查看听力原文</summary>
+        <div className="jlpt-raw-text" lang="ja">{pack.listeningScript}</div>
+      </details>}
+    </section>
+  )
 }
 
 function JLPTQuestionRow({ question, index, value, submitted, mode, support, onChange }: { question: JLPTQuestion; index: number; value?: number; submitted: boolean; mode: JLPTPracticeMode; support: JLPTSupport; onChange: (value: number) => void }) {

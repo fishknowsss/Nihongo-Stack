@@ -22,6 +22,11 @@ export type ImportedJLPTPack = {
   questionCount?: number
   /** The source-declared count for each learning section. */
   sectionQuestionCounts?: Partial<Record<JLPTSection, number>>
+  /** Raw source text from a local personal-use corpus. It is shown for reading and selection, not scored as a full paper. */
+  rawSections?: Partial<Record<JLPTSection | '全文', string>>
+  /** Source answer groups when the corpus exposes them. The app renders them as review clues, never as official scores. */
+  answerKey?: Record<string, unknown>
+  listeningScript?: string
   questions: JLPTQuestion[]
 }
 
@@ -85,7 +90,11 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
   const year = record.year
   const numericYear = typeof year === 'number' ? year : NaN
   if (!Number.isInteger(numericYear) || numericYear < 2010 || numericYear > 2100) throw new Error('year 必须是有效年份')
-  if (!Array.isArray(record.questions) || record.questions.length === 0) throw new Error('questions 不能为空')
+  const rawSections = record.rawSections && typeof record.rawSections === 'object' && !Array.isArray(record.rawSections)
+    ? Object.fromEntries(Object.entries(record.rawSections as Record<string, unknown>).filter(([key, value]) => ['文字・語彙', '文法', '読解', '聴解', '全文'].includes(key) && typeof value === 'string' && value.trim()).map(([key, value]) => [key, String(value).trim()])) as Partial<Record<JLPTSection | '全文', string>>
+    : undefined
+  const hasRawSections = Boolean(rawSections && Object.keys(rawSections).length > 0)
+  if (!Array.isArray(record.questions) || (record.questions.length === 0 && !hasRawSections)) throw new Error('questions 不能为空；原卷语料复盘至少需要 rawSections')
   const questions: JLPTQuestion[] = record.questions.map((value, index) => {
     if (!value || typeof value !== 'object') throw new Error(`第 ${index + 1} 题格式无效`)
     const question = value as Record<string, unknown>
@@ -173,6 +182,9 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)
       ? Object.fromEntries(Object.entries(record.sectionQuestionCounts as Record<string, unknown>).filter(([key, value]) => sections.has(key as JLPTSection) && Number.isInteger(value)).map(([key, value]) => [key, Number(value)])) as Partial<Record<JLPTSection, number>>
       : undefined,
+    rawSections,
+    answerKey: record.answerKey && typeof record.answerKey === 'object' && !Array.isArray(record.answerKey) ? record.answerKey as Record<string, unknown> : undefined,
+    listeningScript: typeof record.listeningScript === 'string' && record.listeningScript.trim() ? record.listeningScript.trim() : undefined,
     questions,
   }
 }

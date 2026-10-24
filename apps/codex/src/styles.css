@@ -496,8 +496,19 @@ audio { display: block; width: 100%; min-height: 44px; }
 .jlpt-practice-panel { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--glass-radius); background: var(--surface); }
 .jlpt-section-count { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: .8125rem; white-space: nowrap; }
 .jlpt-section-progress { color: var(--green); font-size: .75rem; white-space: nowrap; }
+.jlpt-raw-mode-label { padding: 7px 10px; border: 1px solid var(--line); border-radius: 999px; color: var(--accent); background: var(--accent-soft); font-size: .75rem; }
 .jlpt-practice-tools { display: flex; align-items: center; gap: 10px; }
 .jlpt-practice-tools select { min-height: 38px; font-size: .8125rem; }
+.jlpt-raw-corpus { display: grid; gap: 14px; margin-top: 18px; }
+.jlpt-raw-corpus-intro { display: grid; gap: 5px; padding: 14px 16px; border: 1px solid var(--line); border-top: 2px solid var(--accent); border-radius: 10px; background: var(--panel); }
+.jlpt-raw-corpus-intro h3 { font-size: 1rem; }
+.jlpt-raw-corpus-intro p { color: var(--muted); font-size: .8125rem; line-height: 1.7; }
+.jlpt-raw-corpus-sections { display: grid; gap: 8px; }
+.jlpt-raw-section, .jlpt-raw-answer-key, .jlpt-raw-listening { border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+.jlpt-raw-section > summary, .jlpt-raw-answer-key > summary, .jlpt-raw-listening > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 44px; padding: 0 12px; cursor: pointer; color: var(--ink); font-size: .8125rem; }
+.jlpt-raw-section > summary small { color: var(--muted); font-size: .7rem; font-variant-numeric: tabular-nums; }
+.jlpt-raw-text { max-height: 560px; overflow: auto; margin: 0 12px 12px; padding: 12px; border-top: 1px solid var(--line); color: var(--ink); font-family: var(--jp-font); font-size: .9rem; line-height: 1.85; white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+.jlpt-raw-answer-key pre { max-height: 360px; overflow: auto; margin: 0 12px 12px; padding: 12px; border-top: 1px solid var(--line); color: var(--muted); background: var(--panel); font-size: .72rem; line-height: 1.6; white-space: pre-wrap; }
 .jlpt-exam-timer { display: grid; grid-template-columns: auto auto 1fr; align-items: baseline; gap: 8px 12px; margin-top: 16px; padding: 10px 12px; border: 1px solid var(--line); background: var(--panel); color: var(--muted); font-size: .75rem; }
 .jlpt-exam-timer strong { color: var(--accent); font-size: 1.1rem; font-variant-numeric: tabular-nums; }
 .jlpt-exam-timer small { color: var(--muted); }

@@ -10,7 +10,7 @@ assert.equal(minimumCompleteQuestionCount('N5', 2025, '07'), 67)
 assert.equal(minimumCompleteQuestionCount('N5', 2019, '07'), 91)
 assert.equal(minimumCompleteQuestionCount('N4', 2025, '12'), 85)
 assert.equal(minimumCompleteQuestionCount('N2', 2025, '12'), 107)
-assert.ok(jlptResourceRoutes.length >= 6)
+assert.ok(jlptResourceRoutes.length >= 7)
 assert.equal(new Set(jlptResourceRoutes.map((route) => route.url)).size, jlptResourceRoutes.length)
 assert.ok(jlptResourceRoutes.every((route) => route.japaneseGoal.length > 0 && route.chineseMethod.length > 0 && route.studySteps.length >= 3 && route.url.startsWith('https://')))
 for (const level of jlptLevels) {

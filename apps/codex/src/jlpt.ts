@@ -192,6 +192,7 @@ export const jlptSources = [
   { label: 'JLPT 官方教师说明材料', url: 'https://www.jlpt.jp/e/reference/forteachers.html' },
   { label: 'Japan Foundation · Erin 场景教材', url: 'https://www.erin.jpf.go.jp/en/', note: '个人学习或教育使用；应用只提供入口，不复制站内内容。' },
   { label: 'Tatoeba · 可署名例句库', url: 'https://tatoeba.org/en/downloads', note: '文本默认 CC BY 2.0 FR；音频必须逐条核对许可。' },
+  { label: 'OpenJLPT · CC BY-SA 4.0 词汇与语法数据', url: 'https://github.com/evanclan/OpenJLPT', note: '公开数据包含 N5–N1 词汇、汉字、例句和语法；使用时保留 OpenJLPT 及其上游署名，并遵守 CC BY-SA 4.0。' },
   { label: 'Bunko Commons · 开放日语材料', url: 'https://bunkocommons.org/', note: '按每份材料页面的 Creative Commons 许可使用。' },
 ]
 
@@ -254,6 +255,14 @@ export const jlptResourceRoutes: JLPTResourceRoute[] = [
     japaneseGoal: '短い例文を声に出して、使い方を確かめる。',
     chineseMethod: '用它核对词语搭配和助词；逐条查看许可，收藏时保留来源，不把孤立例句当成语法定论。',
     studySteps: ['先搜索目标词的多个例句，比较它前后的搭配。', '选一条带音频或上下文清楚的例句，朗读并标出助词。', '把例句保存为自己的句型模板，并保留来源信息。'],
+  },
+  {
+    label: 'OpenJLPT：可核对的词汇、汉字与语法数据',
+    url: 'https://github.com/evanclan/OpenJLPT',
+    level: '词汇与语法复盘 · N5–N2',
+    japaneseGoal: '単語・漢字・文法を例文の中で確認する。',
+    chineseMethod: '把它当作题后查漏工具：先确认词条的读音和等级，再用例句判断搭配；数据是学习辅助，不代表官方当前考纲或某一道真题。',
+    studySteps: ['先用原文中的词搜索，核对汉字、平假名和罗马音。', '再看词性、语法形成和例句，记录中文里容易误解的搭配。', '把复盘结果写入选中笔记，并回到 JLPT 题目重新作答。'],
   },
 ]
 

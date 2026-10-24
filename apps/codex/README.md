@@ -33,7 +33,7 @@
 - 新增七段音频是 **macOS Kyoko 合成语音**，用于私人基础练习，不计入真人首遍听力表现。
 - 原创内容已做结构、题文对应和基础语言检查，**未经过专业日语教师审校**。七单元为连续试用材料，不是正式教材、N2 课程或分数测评。
 
-应用内“公开资料”入口还包括 Japan Foundation 的 Irodori、Erin、Marugoto，Tadoku 分级阅读，Tatoeba 例句库和 Bunko Commons。各来源以链接方式使用；教材和阅读材料按其网站条款，Tatoeba 文本保留 CC BY 2.0 FR 署名，音频逐条核对，Bunko Commons 按材料页面许可使用。
+应用内“公开资料”入口还包括 Japan Foundation 的 Irodori、Erin、Marugoto，Tadoku 分级阅读，Tatoeba 例句库，OpenJLPT（CC BY-SA 4.0）和 Bunko Commons。各来源以链接方式使用；教材和阅读材料按其网站条款，Tatoeba 文本保留 CC BY 2.0 FR 署名，OpenJLPT 保留项目及上游署名并遵守 ShareAlike，音频逐条核对，Bunko Commons 按材料页面许可使用。
 
 ### 完整 JLPT 题库导入
 

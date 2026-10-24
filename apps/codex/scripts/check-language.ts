@@ -28,6 +28,8 @@ assert.equal(lookupJapanese('にもかかわらず')?.gloss, '尽管……；却
 assert.equal(lookupJapanese('につれて')?.kind, 'grammar')
 assert.equal(lookupJapanese('ながら')?.gloss, '一边……一边……；虽然……但是……')
 assert.equal(lookupJapanese('ておく')?.kind, 'grammar')
+assert.equal(lookupJapanese('だけでは')?.gloss, '仅仅……的话；只……还不够')
+assert.equal(lookupJapanese('ように見えますが')?.kind, 'grammar')
 const particleSentence = segmentText('私は電車で行きます')
 assert.deepEqual(particleSentence.map((part) => part.entry?.surface), ['私', 'は', '電車', 'で', '行きます'])
 assert.equal(particleSentence.find((part) => part.entry?.surface === 'は')?.entry?.gloss, '主题助词：说到……')

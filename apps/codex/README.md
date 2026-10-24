@@ -35,6 +35,8 @@
 
 应用内“公开资料”入口还包括 Japan Foundation 的 Irodori、Erin、Marugoto，Tadoku 分级阅读，Tatoeba 例句库，OpenJLPT（CC BY-SA 4.0）和 Bunko Commons。各来源以链接方式使用；教材和阅读材料按其网站条款，Tatoeba 文本保留 CC BY 2.0 FR 署名，OpenJLPT 保留项目及上游署名并遵守 ShareAlike，音频逐条核对，Bunko Commons 按材料页面许可使用。
 
+应用内还随包提供一个精简的 N5–N2 离线词汇索引，来源为 Tomoshi 开放数据层的 CC BY-SA 4.0 派生数据，包含词形、平假名、中文简释和社区等级。它只用于选中解释和复盘；JLPT 等级是社区估计，不是官方词表。来源、上游署名和重建脚本见 apps/codex/public/data/README.md 与 apps/codex/scripts/build-openjlpt-index.py。
+
 ### 完整 JLPT 题库导入
 
 完整试卷 JSON 的根对象保留 `schemaVersion: 1`、`id`、`year`、`session`、`level`、`title`、`sourceName`、`license`、`rightsBasis`、`rightsEvidenceUrl`、`sourceUrl`、`complete` 和 `questions`。每道题至少需要 `id`、`section`、`prompt`、`options`、`answer`；可补充 `questionNumber`、`reading`、`gloss`、`explanation`、`studySteps`、`itemType`、`audioText`、`audioUrl` 和 `sourceUrl`。根对象的 `sourceUrl` 与 `rightsEvidenceUrl` 会显示在已导入题库卡片上。

@@ -427,6 +427,7 @@ audio { display: block; width: 100%; min-height: 44px; }
 .selection-romaji { color: var(--muted); font-size: .8125rem; letter-spacing: .02em; }
 .selection-kind { display: inline-flex; width: fit-content; padding: 2px 6px; border-radius: 4px; color: var(--accent); background: var(--accent-soft); font-size: .6875rem; }
 .selection-gloss { font-size: .9375rem; }
+.selection-source { margin: 0; color: var(--muted); font-size: .6875rem; line-height: 1.5; }
 .selection-dictionary-link { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; color: var(--accent); font-size: .8125rem; text-decoration: underline; text-underline-offset: 3px; }
 .selection-dictionary-link span { color: var(--muted); font-size: .72rem; text-decoration: none; }
 .selection-speak { justify-self: start; }

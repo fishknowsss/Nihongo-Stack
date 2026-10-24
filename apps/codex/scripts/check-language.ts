@@ -1,4 +1,6 @@
 import assert from 'node:assert/strict'
+import fs from 'node:fs'
+import path from 'node:path'
 import { kanaToRomaji, lookupJapanese, segmentText } from '../src/language'
 import { cards } from '../src/catalog'
 
@@ -39,4 +41,12 @@ const supplied = segmentText('にスーパーへ行きました。', 'にすー�
 assert.equal(supplied.length, 1)
 assert.equal(supplied[0].text, 'にスーパーへ行きました。')
 assert.equal(supplied[0].reading, 'にすーぱーへいきました。')
+const offlineIndex = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'public/data/openjlpt-jlpt.json'), 'utf8')) as {
+  license?: string
+  entries?: Record<string, { reading?: string; gloss?: string; level?: string }>
+}
+assert.equal(offlineIndex.license, 'CC BY-SA 4.0')
+assert.ok(offlineIndex.entries && Object.keys(offlineIndex.entries).length > 10000)
+assert.equal(offlineIndex.entries?.['会う']?.reading, 'あう')
+assert.equal(offlineIndex.entries?.['会う']?.level, 'N5')
 console.log('Language checks passed: kana transliteration, merged glosses, katakana lookup, and segmentation')

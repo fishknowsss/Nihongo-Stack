@@ -13,6 +13,8 @@ export type LexiconEntry = {
   gloss?: string
   kind?: 'kanji' | 'katakana' | 'grammar' | 'hiragana' | 'phrase'
   explanation?: string
+  jlptLevel?: string
+  source?: string
 }
 
 function isKatakana(value: string): boolean {
@@ -247,9 +249,45 @@ for (const entry of allEntries) {
 }
 
 export function lookupJapanese(text: string): LexiconEntry | undefined {
-  const normalized = text.trim().replace(/[。！？、，．,.!?\s]+$/u, '').replace(/^(?:「(.+)」|『(.+)』|【(.+)】)$/u, (_, corner, doubleCorner, bracket) => corner ?? doubleCorner ?? bracket)
+  const normalized = normalizeLookupText(text)
   if (bySurface.has(normalized)) return bySurface.get(normalized)
   return inferredEntry(normalized)
+}
+
+function normalizeLookupText(text: string): string {
+  return text.trim().replace(/[。！？、，．,.!?\s]+$/u, '').replace(/^(?:「(.+)」|『(.+)』|【(.+)】)$/u, (_, corner, doubleCorner, bracket) => corner ?? doubleCorner ?? bracket)
+}
+
+type OfflineLookupIndex = {
+  entries: Record<string, { reading: string; gloss: string; level: string }>
+}
+let offlineLookupPromise: Promise<OfflineLookupIndex | null> | undefined
+
+async function loadOfflineLookup(): Promise<OfflineLookupIndex | null> {
+  offlineLookupPromise ??= fetch('/data/openjlpt-jlpt.json')
+    .then((response) => response.ok ? response.json() as Promise<OfflineLookupIndex> : null)
+    .catch(() => null)
+  return offlineLookupPromise
+}
+
+/** Supplement the small curated dictionary with the bundled CC BY-SA lookup index. */
+export async function lookupJapaneseAsync(text: string): Promise<LexiconEntry | undefined> {
+  const normalized = normalizeLookupText(text)
+  const curated = lookupJapanese(normalized)
+  if (curated?.reading || curated?.gloss && !curated.gloss.includes('暂未收录')) return curated
+  const index = await loadOfflineLookup()
+  const entry = index?.entries[normalized]
+  if (!entry) return curated
+  return {
+    surface: normalized,
+    reading: entry.reading,
+    romaji: kanaToRomaji(entry.reading),
+    gloss: entry.gloss,
+    kind: isKatakana(normalized) ? 'katakana' : /^[\u3040-\u309fー・\s]+$/u.test(normalized) ? 'hiragana' : 'kanji',
+    explanation: '来自 N' + entry.level.slice(1) + ' 词汇辅助索引；等级为社区估计，不是官方考纲。',
+    jlptLevel: entry.level,
+    source: 'Tomoshi open data · CC BY-SA 4.0',
+  }
 }
 
 export function segmentText(text: string, suppliedReading?: string): Array<{ text: string; entry?: LexiconEntry; reading?: string }> {

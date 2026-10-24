@@ -50,7 +50,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   const draftKey = `jlptDraft:${activeSet.id}`
   const fileRef = useRef<HTMLInputElement>(null)
   const builtInCompletedCount = jlptSets.filter((set) => completed.has(set.id)).length
-  const completeImportedCount = importedSets.filter((set) => set.complete).length
+  const completeImportedCount = useMemo(() => new Set(importedPacks.filter((pack) => pack.complete && pack.session).map((pack) => `${pack.year}-${pack.session}-${pack.level}`)).size, [importedPacks])
   const importedCompleteKeys = useMemo(() => new Set(importedPacks.filter((pack) => pack.complete && pack.session).map((pack) => `${pack.year}-${pack.session}-${pack.level}`)), [importedPacks])
 
   useEffect(() => {

@@ -189,6 +189,7 @@ export const jlptSources = [
   { label: 'JLPT 官方题型与题目构成', url: 'https://www.jlpt.jp/e/guideline/testsections.html' },
   { label: 'JLPT 官方样题与练习册', url: 'https://samplequestions.jlpt.jp/e/samples/sampleindex.html' },
   { label: 'JLPT 官方 FAQ · 历年原卷公开范围', url: 'https://www.jlpt.jp/sp/e/faq/', note: '官方说明不会公开每场考试的完全相同原题；应用仅内置官方公开资料入口，完整授权题库可从本机批量导入。' },
+  { label: 'JLPT 官方站点政策 · 版权与引用', url: 'https://www.jlpt.jp/e/policy.html', note: '查看官方版权、引用和第三方材料授权说明；公开链接不等于允许复制原题。' },
   { label: 'JLPT 官方教师说明材料', url: 'https://www.jlpt.jp/e/reference/forteachers.html' },
   { label: 'Japan Foundation · Erin 场景教材', url: 'https://www.erin.jpf.go.jp/en/', note: '个人学习或教育使用；应用只提供入口，不复制站内内容。' },
   { label: 'Tatoeba · 可署名例句库', url: 'https://tatoeba.org/en/downloads', note: '文本默认 CC BY 2.0 FR；音频必须逐条核对许可。' },

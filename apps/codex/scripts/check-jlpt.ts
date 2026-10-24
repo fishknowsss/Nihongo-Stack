@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptYears } from '../src/jlpt'
+import { jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears } from '../src/jlpt'
 import { downloadJLPTCoverageManifest, downloadJLPTLevelFieldTemplate, importedJLPTCompleteExample, importedJLPTCompleteTemplate, importedJLPTExample, minimumCompleteQuestionCount, parseImportedJLPTPack } from '../src/jlpt-import'
 
 assert.equal(jlptSets.length, jlptYears.length * jlptLevels.length)
@@ -12,6 +12,7 @@ assert.equal(minimumCompleteQuestionCount('N4', 2025, '12'), 85)
 assert.equal(minimumCompleteQuestionCount('N2', 2025, '12'), 107)
 assert.ok(jlptResourceRoutes.length >= 7)
 assert.equal(new Set(jlptResourceRoutes.map((route) => route.url)).size, jlptResourceRoutes.length)
+assert.ok(jlptSources.some((source) => source.url === 'https://www.jlpt.jp/e/policy.html'))
 assert.ok(jlptResourceRoutes.every((route) => route.japaneseGoal.length > 0 && route.chineseMethod.length > 0 && route.studySteps.length >= 3 && route.url.startsWith('https://')))
 for (const level of jlptLevels) {
   const sets = jlptSets.filter((set) => set.level === level)

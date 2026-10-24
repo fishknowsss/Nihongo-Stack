@@ -200,6 +200,7 @@ def convert(source: Path, output: Path) -> dict[str, Any]:
         "sourceUrl": data["meta"].get("url", REPO_URL),
         "complete": complete,
         "fullPaper": True,
+        "contentKind": "full-paper",
         "questionCount": len(questions),
         "sectionQuestionCounts": {"文字・語彙": vocab_count, "文法": grammar_count, "読解": reading_count, "聴解": listening_count},
         "questions": questions,

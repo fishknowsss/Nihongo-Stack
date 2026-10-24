@@ -104,6 +104,7 @@ def convert(paper: dict[str, Any], solutions: dict[str, Any], source_url: str) -
         "sourceUrl": source_url,
         "complete": paper["year"] >= 2019,
         "fullPaper": True,
+        "contentKind": "full-paper",
         "questionCount": len(questions),
         "sectionQuestionCounts": counters,
         "questions": questions,

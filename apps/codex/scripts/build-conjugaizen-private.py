@@ -95,6 +95,7 @@ def convert(test: dict[str, Any], output: Path) -> dict[str, Any]:
         "rightsEvidenceUrl": SOURCE_URL,
         "sourceUrl": SOURCE_URL,
         "complete": False,
+        "contentKind": "original-practice",
         "questionCount": len(questions),
         "sectionQuestionCounts": counters,
         "questions": questions,

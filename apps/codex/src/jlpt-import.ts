@@ -15,6 +15,8 @@ export type ImportedJLPTPack = {
   rightsEvidenceUrl?: string
   sourceUrl?: string
   complete?: boolean
+  /** True when the imported source contains the full paper, including historical sessions outside the 2019–2025 dashboard. */
+  fullPaper?: boolean
   /** The source-declared total. A complete pack must match the imported rows. */
   questionCount?: number
   /** The source-declared count for each learning section. */
@@ -158,6 +160,7 @@ export function parseImportedJLPTPack(raw: string): ImportedJLPTPack {
     rightsBasis: typeof record.rightsBasis === 'string' ? record.rightsBasis.trim() : undefined,
     rightsEvidenceUrl: sourceUrl(record.rightsEvidenceUrl, 'rightsEvidenceUrl'),
     complete,
+    fullPaper: record.fullPaper === true || complete,
     questionCount: typeof record.questionCount === 'number' ? record.questionCount : undefined,
     sectionQuestionCounts: record.sectionQuestionCounts && typeof record.sectionQuestionCounts === 'object' && !Array.isArray(record.sectionQuestionCounts)
       ? Object.fromEntries(Object.entries(record.sectionQuestionCounts as Record<string, unknown>).filter(([key, value]) => sections.has(key as JLPTSection) && Number.isInteger(value)).map(([key, value]) => [key, Number(value)])) as Partial<Record<JLPTSection, number>>

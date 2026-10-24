@@ -103,6 +103,7 @@ def convert(paper: dict[str, Any], solutions: dict[str, Any], source_url: str) -
         "rightsEvidenceUrl": source_url,
         "sourceUrl": source_url,
         "complete": paper["year"] >= 2019,
+        "fullPaper": True,
         "questionCount": len(questions),
         "sectionQuestionCounts": counters,
         "questions": questions,

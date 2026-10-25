@@ -589,16 +589,6 @@ audio { display: block; width: 100%; min-height: 44px; }
 
 /* v0.7.1 workbench pass: information density, pane scrolling and solid-glass controls. */
 .topbar { margin: 10px 14px 0; min-height: 56px; padding-inline: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgb(255 254 250 / 82%); box-shadow: var(--surface-shadow); }
-.sidebar { padding-top: max(24px, calc(var(--mygo-titlebar-height, 0px) + 12px)); }
-.topbar {
-  --app-region: drag;
-  margin: 0;
-  min-height: var(--mygo-titlebar-height, 56px);
-  height: var(--mygo-titlebar-height, 56px);
-  padding: 0 max(18px, var(--mygo-titlebar-inset-right, 0px)) 0 max(18px, var(--mygo-titlebar-inset-left, 0px));
-  border-radius: 0 0 12px 12px;
-}
-.topbar-right, .topbar button, .topbar a, .topbar input, .topbar select { --app-region: no-drag; }
 .main-column { gap: 0; }
 .main-content { padding-top: 18px; }
 .today-overview { display: grid; gap: 16px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--surface-shadow); }
@@ -721,7 +711,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .nav-item { flex-direction: column; justify-content: center; gap: 3px; padding: 6px 0; min-height: 60px; font-size: .75rem; border-radius: 6px; }
   .nav-item svg { width: 19px; height: 19px; }
   .nav-count { display: none; }
-  .topbar { padding: 0 max(16px, var(--mygo-titlebar-inset-right, 0px)) 0 max(16px, var(--mygo-titlebar-inset-left, 0px)); min-height: var(--mygo-titlebar-height, 54px); height: var(--mygo-titlebar-height, 54px); gap: 8px; }
+  .topbar { padding: 4px 16px; min-height: 54px; gap: 8px; }
   .breadcrumb { font-size: .75rem; }
   .breadcrumb > span { margin-inline: 4px; }
   .topbar-right { gap: 0; }

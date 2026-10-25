@@ -79,7 +79,7 @@ npm run test:jlpt
 npm run build
 npm run mygo:vet
 npm run mygo:build
-codesign --verify --deep --strict 'build/mygo/darwin-arm64/Nihongo Stack.app'
+codesign --verify --deep --strict 'Nihongo Stack.app'
 ```
 
 `test:content` 核对 v1 内容指纹、ID、引用、题目及十段音频的解码；它不是教师审校或听感审听。`test:learning` 检查播放覆盖、跳播缺口、暂停恢复、辅助证据与复习队列。`test:db` 使用内存 IndexedDB，不改真实记录。

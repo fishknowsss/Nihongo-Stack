@@ -7,4 +7,5 @@ const destination = resolve(project, 'Nihongo Stack.app')
 
 await rm(destination, { recursive: true, force: true })
 await cp(source, destination, { recursive: true })
+await rm(source, { recursive: true, force: true })
 console.log(`Ready to open: ${destination}`)

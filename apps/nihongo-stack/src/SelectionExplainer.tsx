@@ -133,7 +133,7 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       {selection.entry?.kind && <span className="selection-kind">{selection.entry.kind === 'grammar' ? '语法' : selection.entry.kind === 'katakana' ? '片假名词汇' : selection.entry.kind === 'phrase' ? '词句片段' : '词汇'}</span>}
       <p className="selection-gloss">{selection.entry?.gloss ?? '可先把这段加入笔记，稍后补充词义。'}</p>
       {selection.entry?.explanation && <p className="field-hint">{selection.entry.explanation}</p>}
-      {selection.entry?.source && <p className="selection-source">{selection.entry.source}{selection.entry.jlptLevel ? ' · ' + selection.entry.jlptLevel : ''}</p>}
+      {selection.entry?.source && <p className="selection-source">{selection.entry.source}{selection.entry.jlptLevel ? '，' + selection.entry.jlptLevel : ''}</p>}
       {needsDictionaryLookup && <a className="selection-dictionary-link" href={`https://jisho.org/search/${encodeURIComponent(currentSelection.text)}`} target="_blank" rel="noreferrer">打开公开词典查询 <span>会在外部网站查找选中内容</span></a>}
       <button className="outline-button compact selection-speak" onClick={speak}><SpeakerHigh size={16} /> 日语朗读</button>
       <textarea value={note} onChange={(event) => { setNote(event.target.value); setSaved(false) }} placeholder="写下你的理解、例句或易错点…" aria-label="选中内容笔记" />

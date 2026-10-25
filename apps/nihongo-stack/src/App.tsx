@@ -143,6 +143,7 @@ function App() {
   } | null>(null)
   const toastTimer = useRef<number | undefined>(undefined)
   const mainRef = useRef<HTMLElement>(null)
+  const navRef = useRef<HTMLElement>(null)
   const mounted = useRef(false)
   const now = useClock()
   const progressQuery = useLiveQuery(() => db.progress.toArray(), [])
@@ -245,6 +246,32 @@ function App() {
       mainRef.current?.focus({ preventScroll: true })
     }
   }, [ready, view])
+  useEffect(() => {
+    const nav = navRef.current
+    if (!nav || !window.matchMedia('(max-width: 760px)').matches) return
+    const active = nav.querySelector<HTMLElement>('.nav-item[aria-current="page"]')
+    if (!active) return
+    const frame = window.requestAnimationFrame(() => {
+      const navRect = nav.getBoundingClientRect()
+      const activeRect = active.getBoundingClientRect()
+      const padding = 8
+      let left = nav.scrollLeft
+      if (activeRect.left < navRect.left + padding) {
+        left += activeRect.left - navRect.left - padding
+      } else if (activeRect.right > navRect.right - padding) {
+        left += activeRect.right - navRect.right + padding
+      } else {
+        return
+      }
+      nav.scrollTo({
+        left: Math.max(0, left),
+        behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches
+          ? 'auto'
+          : 'smooth',
+      })
+    })
+    return () => window.cancelAnimationFrame(frame)
+  }, [view])
   async function selectUnit(id: string) {
     try {
       await setPreference('activeUnit', id)
@@ -281,7 +308,7 @@ function App() {
             <small>本地日语学习</small>
           </span>
         </div>
-        <nav className="side-nav" aria-label="主导航">
+        <nav className="side-nav" aria-label="主导航" ref={navRef}>
           {navigation.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
@@ -328,10 +355,12 @@ function App() {
                 month: 'long',
                 day: 'numeric',
                 weekday: 'long',
-              }).format(new Date(now))}
+              })
+                .format(new Date(now))
+                .replace(/(星期[一二三四五六日])$/, '，$1')}
             </span>
-            <button className="offline-badge" onClick={() => setView('settings')}>
-              备份
+            <button className="topbar-action" aria-label="打开设置与备份" onClick={() => setView('settings')}>
+              设置
             </button>
           </div>
         </header>
@@ -527,7 +556,7 @@ function TodayPage({
     },
     {
       id: 'reading',
-      title: `阅读 · ${reading.title}`,
+      title: `阅读：${reading.title}`,
       detail: `${reading.questions.length} 道理解题，提交后查看译文与解析`,
       minutes: reading.minutes,
       done: readingDone,
@@ -536,8 +565,8 @@ function TodayPage({
     },
     {
       id: 'listening',
-      title: `听音 · ${unit.title}`,
-      detail: `${listening.questions.length} 道理解题 · 合成语音基础练习`,
+      title: `听力：${unit.title}`,
+      detail: `${listening.questions.length} 道理解题，合成语音基础练习`,
       minutes: listening.minutes ?? 5,
       done: listeningDone,
       action: () => openMaterial('listening', listening.id),
@@ -567,9 +596,12 @@ function TodayPage({
       <section className="today-overview" aria-label="学习工作台概览">
         <div className="today-overview-heading">
           <div>
-            <span className="today-date">{today.replaceAll('-', ' / ')}</span>
-            <h1>{unit.title}</h1>
-            <p lang="ja">{['はじめまして','一日の時間','場所と交通','買い物','一緒に行きませんか','天気と予定','一週間のふり返り'][unit.order - 1]}</p>
+            <span className="today-date">{today.replaceAll('-', '.')}</span>
+            <h1>今日学习</h1>
+            <p className="today-current">
+              <span>当前单元：{unit.title}</span>
+              <span lang="ja">{['はじめまして','一日の時間','場所と交通','買い物','一緒に行きませんか','天気と予定','一週間のふり返り'][unit.order - 1]}</span>
+            </p>
           </div>
           <div className="today-overview-actions">
             {!baseline && <button className="text-button" onClick={() => setView('baseline')}>起点小测</button>}
@@ -578,7 +610,7 @@ function TodayPage({
         </div>
         <div className="today-metrics" aria-label="当前学习数据">
           <div><strong>{doneCount}</strong><span>已完成</span></div>
-          <div><strong>{plannedMinutes}<small> min</small></strong><span>剩余估时</span></div>
+          <div><strong>{plannedMinutes}<small> 分钟</small></strong><span>剩余估时</span></div>
           <div><strong>{due.length}</strong><span>到期卡</span></div>
           <div><strong>{newCardLimit}</strong><span>可引入新卡</span></div>
         </div>
@@ -623,8 +655,8 @@ function TodayPage({
                   ? next.id === 'review'
                     ? '下一步：复习与新卡'
                     : next.id === 'reading'
-                      ? '下一步：短文阅读'
-                      : '下一步：听音理解'
+                      ? '下一步：阅读材料'
+                      : '下一步：听力理解'
                   : doneCount === tasks.length
                     ? '当前单元的今日任务已完成'
                     : '今日任务已暂停'}
@@ -635,7 +667,7 @@ function TodayPage({
                     ? due.length
                       ? `${due.length} 张到期卡优先`
                       : `本单元新卡最多 ${newCardLimit} 张`
-                    : `约 ${next.minutes} 分钟 · ${next.detail}`
+                    : `约 ${next.minutes} 分钟，${next.detail}`
                   : '可以重练，也可以继续下一单元。'}
               </span>
             </div>
@@ -648,7 +680,7 @@ function TodayPage({
                   ? '开始复习'
                   : next.id === 'reading'
                     ? '开始阅读'
-                    : '开始听音'
+                    : '开始听力'
                 : '选择单元'}
               <ArrowRight size={18} />
             </button>
@@ -717,7 +749,7 @@ function TodayPage({
           {plannedMinutes > minutes && (
             <p className="budget-warning" role="status">
               剩余任务预计超出可用时间 {plannedMinutes - minutes}{' '}
-              分钟。可以先复习，再将阅读或听音延期。
+              分钟。可以先复习，再将阅读或听力延期。
             </p>
           )}
         </section>
@@ -920,9 +952,9 @@ function CoursePage({
       <PageIntro title="课程" description="" />
       <div className="course-summary">
         <span>
-          <strong>{completed} / 7</strong> 单元已练阅读与听音
+          <strong>{completed} / 7</strong> 单元已练阅读与听力
         </span>
-        <span>每单元 6 张卡 · 1 篇短文 · 1 段听音</span>
+        <span>每单元 6 张卡，1 篇阅读材料，1 段听力音频</span>
       </div>
       <ol className="course-list">
         {courseUnits.map((item) => {
@@ -947,7 +979,7 @@ function CoursePage({
                     {item.id === unit.id
                       ? '正在学习'
                       : practiced
-                        ? '已练阅读与听音'
+                        ? '已练阅读与听力'
                         : '未开始'}
                   </span>
                 </div>
@@ -961,8 +993,8 @@ function CoursePage({
                   </span>
                   <span>
                     {attempts.some((x) => x.materialId === item.listeningId)
-                      ? '听音已练'
-                      : '听音未练'}
+                      ? '听力已练'
+                      : '听力未练'}
                   </span>
                   <span>
                     {item.order === 1
@@ -990,7 +1022,7 @@ function CoursePage({
                     className="text-button"
                     onClick={() => openMaterial('listening', item.listeningId)}
                   >
-                    听音
+                    听力
                   </button>
                 </div>
                 <UnitGuide unit={item} onNotify={onNotify} />
@@ -1103,7 +1135,7 @@ function ReviewPage({
       <PageIntro title="复习" description="" />
       <div className="review-meta">
         <span>
-          本轮最多 {roundIds.length} 张 · 当前待练 {queue.length} 张
+          本轮最多 {roundIds.length} 张，当前待练 {queue.length} 张
         </span>
         <span>本轮反馈 {count} 次</span>
       </div>
@@ -1113,7 +1145,7 @@ function ReviewPage({
       </div>
       {current && (
         <p className="shortcut-hint">
-          空格查看答案 · 1 再来一次 · 2 有点困难 · 3 记得 · 4 很熟悉
+          空格查看答案。1 再来一次；2 有点困难；3 记得；4 很熟悉
         </p>
       )}
       {current ? (
@@ -1173,7 +1205,7 @@ function ReviewPage({
                   >
                     {x.text}
                     <span>
-                      {x.rating} · {x.hint}
+                      {x.rating}，{x.hint}
                     </span>
                   </button>
                 ))}
@@ -1189,7 +1221,7 @@ function ReviewPage({
             本轮已反馈 {count} 张。
             {queue.length
               ? `还有 ${queue.length} 张待练，可以休息一下，再开始下一轮。`
-              : '到期卡和今日额度内的新卡已处理，可以继续短文练习。'}
+              : '到期卡和今日额度内的新卡已处理，可以继续阅读练习。'}
           </p>
           {queue.length > 0 && (
             <button className="primary-button" onClick={nextRound}>
@@ -1233,9 +1265,9 @@ function MaterialPicker({
   return (
     <section className="material-picker" aria-label="选择练习材料">
       <div className="library-summary">
-        <strong>{kind === 'reading' ? '短文材料' : '听音材料'}</strong>
+        <strong>{kind === 'reading' ? '阅读材料' : '听力材料'}</strong>
         <span>
-          {items.length} 份材料 · 已练{' '}
+          {items.length} 份材料，已练{' '}
           {
             items.filter((x) => attempts.some((a) => a.materialId === x.id))
               .length
@@ -1281,10 +1313,10 @@ function MaterialPicker({
             {filtered.map((x) => (
               <option key={x.id} value={x.id}>
                 {x.unitId
-                  ? `单元 ${courseUnits.find((u) => u.id === x.unitId)?.order} · `
-                  : '旧版样本 · '}
+                  ? `单元 ${courseUnits.find((u) => u.id === x.unitId)?.order}：`
+                  : '旧版样本：'}
                 {x.title}
-                {attempts.some((a) => a.materialId === x.id) ? ' · 已练' : ''}
+                {attempts.some((a) => a.materialId === x.id) ? '，已练' : ''}
               </option>
             ))}
           </select>
@@ -1425,7 +1457,7 @@ function ReadingExercise({
           <div>
             <h2>{reading.title}</h2>
             <p>
-              {reading.level} · 约 {reading.minutes} 分钟
+              {reading.level}，约 {reading.minutes} 分钟
             </p>
           </div>
           <div className="reading-tools">
@@ -1527,7 +1559,7 @@ function ListeningPage({
   return (
     <div className="page-stack">
       <PageIntro
-        title="听音练习"
+        title="听力练习"
         description="先抓住关键信息，再回答。完整播放后可提交，重听和查看文本会保留为辅助记录。"
       />
       <MaterialPicker
@@ -1822,8 +1854,8 @@ function ListeningExercise({
           </div>
         )}
         <p className="listening-evidence">
-          启动 {shownMeta.playCount} 次 ·{' '}
-          {shownMeta.completedPlayback ? '已完整播放' : '尚未完整播放'} ·{' '}
+          启动 {shownMeta.playCount} 次；{' '}
+          {shownMeta.completedPlayback ? '已完整播放' : '尚未完整播放'}；{' '}
           {independently
             ? previousAttempts.length > (practice.result ? 1 : 0)
               ? '独立重练'
@@ -1858,7 +1890,7 @@ function ListeningExercise({
           <p>{listening.credit}</p>
         </div>
       </article>
-      <aside className="question-card" aria-label="听音理解题">
+      <aside className="question-card" aria-label="听力理解题">
         <h2>听后理解</h2>
         <SaveStatus
           ready={practice.ready && metaReady}
@@ -2223,7 +2255,7 @@ function ProgressPage({
             {courseUnits.filter((x) => unitPracticed(x.id, attempts)).length}
             <small> / 7</small>
           </strong>
-          <span>单元已练阅读与听音</span>
+          <span>单元已练阅读与听力</span>
         </div>
         <div>
           <strong>
@@ -2237,14 +2269,14 @@ function ProgressPage({
             {new Set(readingAttempts.map((x) => x.materialId)).size}
             <small> / {readings.length}</small>
           </strong>
-          <span>短文已练 · 共作答 {readingAttempts.length} 次</span>
+          <span>阅读已练，共作答 {readingAttempts.length} 次</span>
         </div>
         <div>
           <strong>
             {new Set(listeningAttempts.map((x) => x.materialId)).size}
             <small> / {listenings.length}</small>
           </strong>
-          <span>听音已练 · 共作答 {listeningAttempts.length} 次</span>
+          <span>听力已练，共作答 {listeningAttempts.length} 次</span>
         </div>
       </div>
       <section className="week-panel">
@@ -2300,7 +2332,7 @@ function ProgressPage({
           >
             <option value="all">全部练习</option>
             <option value="reading">阅读</option>
-            <option value="listening">听音</option>
+            <option value="listening">听力</option>
             <option value="baseline">起点小测</option>
           </select>
         </div>
@@ -2317,7 +2349,7 @@ function ProgressPage({
                         timeStyle: 'short',
                       }).format(new Date(item.completedAt))}
                       {item.kind !== 'baseline'
-                        ? ` · ${practiceEvidence(item, attempts)}`
+                        ? `，${practiceEvidence(item, attempts)}`
                         : ''}
                     </small>
                   </div>
@@ -2353,7 +2385,7 @@ function ProgressPage({
           </>
         ) : (
           <div className="quiet-empty">
-            <p>还没有这类练习记录。完成阅读、听音或小测后会显示在这里。</p>
+            <p>还没有这类练习记录。完成阅读、听力或小测后会显示在这里。</p>
             <button className="outline-button" onClick={onStart}>
               回到今日学习
             </button>
@@ -2378,9 +2410,9 @@ function SkipHistory() {
       {reasons.map((x) => (
         <li key={x.key}>
           <span>
-            {x.key.split(':')[1]} ·{' '}
+            {x.key.split(':')[1]}：{' '}
             {
-              { review: '复习', reading: '阅读', listening: '听音' }[
+              { review: '复习', reading: '阅读', listening: '听力' }[
                 x.key.split(':')[2]
               ]
             }
@@ -2526,7 +2558,7 @@ function SettingsPage({
       <section className="settings-section">
         <div>
           <h2>默认每日学习时间</h2>
-          <p>用于没有单独调整的新一天；今日页面的时间调整仅影响当天。</p>
+          <p>用于没有单独调整的新一天；工作台的时间调整仅影响当天。</p>
         </div>
         <select
           disabled={busy}
@@ -2811,8 +2843,8 @@ function SettingsPage({
       <section className="source-panel">
         <h2>内容与版本</h2>
         <p>
-          v{appVersion} · {cards.length} 张卡 · {readings.length} 篇短文 ·{' '}
-          {listenings.length} 段音频 · 7 个基础单元。
+          v{appVersion}，{cards.length} 张卡，{readings.length} 篇阅读材料，{' '}
+          {listenings.length} 段音频，7 个基础单元。
         </p>
         <p>
           原创文本尚未经过专业教师审校。新增七段为 macOS

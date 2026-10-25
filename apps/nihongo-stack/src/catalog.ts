@@ -76,10 +76,20 @@ function applyReadingOverrides(reading: Reading): Reading {
   return { ...reading, segments: reading.segments.map((segment, index) => ({ ...segment, reading: segment.reading ?? overrides[index] })) }
 }
 
+const displayCopy = (value: string) =>
+  value.replace(/\s*·\s*/g, '，').replaceAll('听音', '听力')
+
 export const readings = [
   ...starter.readings,
   ...foundation.readings,
-].map((reading) => applyReadingOverrides(reading as Reading))
+].map((reading) => {
+  const normalized = applyReadingOverrides(reading as Reading)
+  return {
+    ...normalized,
+    title: displayCopy(normalized.title),
+    level: displayCopy(normalized.level),
+  }
+})
 
 const listeningTranscriptSegments: Record<string, Segment[]> = {
   'listening-01': [{ text: '明日', reading: 'あした' }, { text: 'は', reading: 'は' }, { text: '何か', reading: 'なにか' }, { text: '予定', reading: 'よてい' }, { text: 'ある？', reading: 'ある？' }],
@@ -103,4 +113,9 @@ export const contentManifest = [
 export const listeningSources = [
   ...starter.listenings,
   ...foundation.listenings,
-].map((clip) => ({ ...clip, transcriptSegments: listeningTranscriptSegments[clip.id] }))
+].map((clip) => ({
+  ...clip,
+  title: displayCopy(clip.title),
+  level: displayCopy(clip.level),
+  transcriptSegments: listeningTranscriptSegments[clip.id],
+}))

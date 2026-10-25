@@ -346,7 +346,7 @@ export async function lookupJapaneseAsync(text: string): Promise<LexiconEntry | 
         ...curated,
         gloss,
         explanation: '已从离线词典识别出部分词汇；完整句子的语气和句法仍需结合上下文。',
-        source: 'Tomoshi open data · CC BY-SA 4.0',
+        source: 'Tomoshi open data（CC BY-SA 4.0）',
       }
     }
     return curated
@@ -359,7 +359,7 @@ export async function lookupJapaneseAsync(text: string): Promise<LexiconEntry | 
     kind: isKatakana(normalized) ? 'katakana' : /^[\u3040-\u309fー・\s]+$/u.test(normalized) ? 'hiragana' : 'kanji',
     explanation: '来自 N' + entry.level.slice(1) + ' 词汇辅助索引；等级为社区估计，不是官方考纲。',
     jlptLevel: entry.level,
-    source: 'Tomoshi open data · CC BY-SA 4.0',
+    source: 'Tomoshi open data（CC BY-SA 4.0）',
   }
 }
 

@@ -3,15 +3,15 @@ import type { Attempt } from './db'
 import { independentPlayback } from './learning'
 
 export function practiceEvidence(attempt: Attempt, attempts: Attempt[]): string {
-  if (attempt.kind === 'reading') return attempt.readingHelp === undefined ? '阅读 · 辅助状态未记录' : attempt.readingHelp ? '阅读 · 使用过振假名' : '阅读 · 未使用振假名'
+  if (attempt.kind === 'reading') return attempt.readingHelp === undefined ? '阅读，辅助状态未记录' : attempt.readingHelp ? '阅读，使用过振假名' : '阅读，未使用振假名'
   const clip = listeningSources.find(x => x.id === attempt.materialId)
   const source = attempt.listening?.sourceKind ?? (clip ? ('audioKind' in clip ? clip.audioKind : 'human') : undefined)
-  if (source === undefined) return '听音 · 来源类型未记录'
-  if (source === 'synthetic') return '听音 · 合成语音练习'
-  if (!attempt.listening) return '听音 · 真人录音，辅助状态未记录'
-  if (!independentPlayback(attempt.listening)) return '听音 · 真人录音，辅助练习'
+  if (source === undefined) return '听力，来源类型未记录'
+  if (source === 'synthetic') return '听力，合成语音练习'
+  if (!attempt.listening) return '听力，真人录音，辅助状态未记录'
+  if (!independentPlayback(attempt.listening)) return '听力，真人录音，辅助练习'
   const first = [...attempts].filter(x => x.kind === 'listening' && x.materialId === attempt.materialId).sort(compareAttempts)[0]
-  return first?.id === attempt.id ? '听音 · 真人独立首遍' : '听音 · 真人独立重练'
+  return first?.id === attempt.id ? '听力，真人独立首遍' : '听力，真人独立重练'
 }
 function compareAttempts(a: Attempt, b: Attempt) {
   return a.completedAt.localeCompare(b.completedAt) || a.id.localeCompare(b.id)

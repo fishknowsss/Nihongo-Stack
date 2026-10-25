@@ -156,7 +156,7 @@ export default function CardLibrary({
                       {card.front}
                     </span>
                     <span className="library-card-meta">
-                      {kinds[card.kind]} ·{' '}
+                      {kinds[card.kind]}，{' '}
                       {courseUnits.find((item) => item.id === card.unitId)
                         ?.title ?? '起步材料'}
                       <span>
@@ -165,7 +165,7 @@ export default function CardLibrary({
                           : due(card.id)
                             ? '到期复习'
                             : `下次 ${new Intl.DateTimeFormat('zh-CN', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(state.dueAt))}`}
-                        {difficult.has(card.id) ? ' · 最近困难' : ''}
+                        {difficult.has(card.id) ? '，最近困难' : ''}
                       </span>
                     </span>
                     <span className="library-card-expand">查看释义</span>

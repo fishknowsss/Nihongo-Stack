@@ -35,7 +35,7 @@ export default function AnnotationControl({ value, onChange, material = false, l
     <select id={id} value={value} disabled={disabled || loading} onChange={event => void change(event.target.value as Annotation)}>
       <option value="off">关闭注音</option>
       {material && <option value="material">材料注音</option>}
-      <option value="font">字体注音 · FuriFont</option>
+      <option value="font">字体注音（FuriFont）</option>
     </select>
     {loading && <span className="field-hint" role="status">正在读取本机字体…</span>}
     {error && <span className="inline-error" role="alert">字体未载入，请重新选择字体注音。</span>}

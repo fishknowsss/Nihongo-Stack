@@ -16,12 +16,15 @@ export default function LayeredJapanese({ segments, layer, className = '', as = 
           ? <ruby>{part.text}<rt>{entry?.reading ?? part.reading}</rt></ruby>
           : part.text
         const hasRomaji = showRomaji && Boolean(part.reading || entry?.romaji)
-        const hasGloss = showGloss && Boolean(entry?.gloss)
+        const gloss = entry?.gloss?.startsWith('平假名表达') || entry?.gloss?.startsWith('汉字词暂未收录')
+          ? undefined
+          : entry?.gloss
+        const hasGloss = showGloss && Boolean(gloss)
         if (!hasRomaji && !hasGloss) return <span key={`${part.text}-${partIndex}`}>{content}</span>
         return <span className="layer-token" key={`${part.text}-${partIndex}`}>
-          {hasRomaji && <small className="layer-romaji">{part.reading ? kanaToRomaji(part.reading) : entry?.romaji}</small>}
+          {showRomaji && <small className="layer-romaji" aria-hidden={!hasRomaji}>{hasRomaji ? (part.reading ? kanaToRomaji(part.reading) : entry?.romaji) : '\u00a0'}</small>}
           {content}
-          {hasGloss && <small className="layer-gloss">{entry?.gloss}</small>}
+          {showGloss && <small className="layer-gloss" aria-hidden={!hasGloss}>{hasGloss ? gloss : '\u00a0'}</small>}
         </span>
       })}</span>
     })}

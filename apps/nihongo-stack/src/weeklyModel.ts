@@ -5,7 +5,7 @@ import { localDate } from './learning'
 export const studyKinds = [
   { view: 'review', label: '卡片复习' },
   { view: 'reading', label: '阅读' },
-  { view: 'listening', label: '听音' },
+  { view: 'listening', label: '听力' },
   { view: 'baseline', label: '起点小测' },
 ] as const
 

@@ -14,6 +14,6 @@ export function materialTitle(id: string): string {
   return (
     readings.find((x) => x.id === id)?.title ??
     listenings.find((x) => x.id === id)?.title ??
-    (id === 'baseline-01' ? '起点小测' : `历史材料 · ${id}`)
+    (id === 'baseline-01' ? '起点小测' : `历史材料：${id}`)
   )
 }

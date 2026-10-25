@@ -13,7 +13,7 @@ Nihongo Stack/
 
 ## 当前版本
 
-应用名为 `Nihongo Stack`，桌面包为 `Nihongo Stack.app`，bundle identifier 为 `com.nihongostack.desktop`。本机学习记录仍使用旧的 IndexedDB 名 `nihongo-stack-codex`，用于保留已经积累的学习进度；这不影响软件名、项目目录或构建产物的统一命名。
+应用名为 `Nihongo Stack`，桌面包为 `Nihongo Stack.app`，bundle identifier 为 `com.nihongostack.desktop`。当前桌面壳为 MyGo，本机学习记录仍使用旧的 IndexedDB 名 `nihongo-stack-codex`，用于保留数据结构与备份兼容；MyGo 使用 `mygo://localhost/` 页面来源，已有 Tauri 页面来源中的记录首次使用时应通过 JSON 备份导入。
 
 见 [Nihongo Stack 使用说明](apps/nihongo-stack/README.md)。首版面向私人本机试用；网站尚未发布，Mac 与 iPhone 的自动同步尚未实现。
 

@@ -1,6 +1,6 @@
-# Nihongo Stack v0.7.0
+# Nihongo Stack v0.7.0 · MyGo
 
-本机优先的 Mac 日语学习应用，可双击 `Nihongo Stack.app` 使用，无需终端或本地服务器。暖白 Solid Glass 分层与统一控件、朱红主动作、清晰的中文操作层级与明朝体日文阅读排版；应用图标为米白朱红叠放书页。
+本机优先的 Mac 日语学习应用，可双击 `Nihongo Stack.app` 使用，无需终端或本地服务器。桌面壳使用 MyGo，浏览器前端仍可独立构建。暖白 Solid Glass 分层与统一控件、朱红主动作、清晰的中文操作层级与明朝体日文阅读排版；应用图标为米白朱红叠放书页。
 
 ## 开始学习
 
@@ -77,13 +77,14 @@ npm run test:content
 npm run test:language
 npm run test:jlpt
 npm run build
-npm run tauri:build
-codesign --verify --deep --strict 'Nihongo Stack.app'
+npm run mygo:vet
+npm run mygo:build
+codesign --verify --deep --strict 'build/mygo/darwin-arm64/Nihongo Stack.app'
 ```
 
 `test:content` 核对 v1 内容指纹、ID、引用、题目及十段音频的解码；它不是教师审校或听感审听。`test:learning` 检查播放覆盖、跳播缺口、暂停恢复、辅助证据与复习队列。`test:db` 使用内存 IndexedDB，不改真实记录。
 
-原生恢复的写入验收使用 `qa` Rust feature 与独立 WKWebView data store，不使用正式学习数据。QA 构建配置与当轮证据见 `../../output/product-improvement/2026-10-07/`。v0.3.0 的独立 QA 配置、导出文件与验收见 `../../output/product-improvement/2026-10-08/`。正常使用只启动本目录的 Nihongo Stack 应用，不启动 QA 应用。
+MyGo 版的原生验收使用独立构建产物，不使用正式学习数据。MyGo 应用页面来源为 `mygo://localhost/`；浏览器前端使用 `http://127.0.0.1:5173`。当前仓库保留的旧 Tauri 验收目录和 v0.6 记录仅用于历史追溯。
 
 窗口框架固定，只有正文滚动；短窗口侧栏可单独滚动。v0.4.0 独立 QA 与滚动证据见 `../../output/product-improvement/2026-10-08-v04/`。
 

@@ -1,11 +1,11 @@
 # Nihongo Stack v0.3 图标
 
-内置 `image_gen` 生成，2026-10-08。米白圆角底板、朱红叠放书页、抽象「日」和书签。原稿为透明 PNG；接入时使用 `sips` 生成网页尺寸，Tauri CLI 生成桌面 ICNS、ICO 及各尺寸 PNG。
+内置 `image_gen` 生成，2026-10-08。米白圆角底板、朱红叠放书页、抽象「日」和书签。原稿为透明 PNG；网页尺寸沿用 `public/` 资源，MyGo 从 `assets/app-icon-v0.3.png` 生成 macOS 应用图标。
 
 - 原稿：`app-icon-v0.3.png`
 - 侧栏：`../public/app-icon-128.png`
 - favicon：`../public/favicon-32.png`
-- 桌面：`../src-tauri/icons/icon.icns`，在 `tauri.conf.json` 显式声明。
+- 桌面：`app-icon-v0.3.png`，由 `mygo.config.ts` 作为 MyGo 应用图标使用。
 - 旧 v0.2 图标随旧程序保存在项目 `output/product-improvement/2026-10-08/before/`。
 
 生成提示词：

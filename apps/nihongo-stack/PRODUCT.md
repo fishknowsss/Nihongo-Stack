@@ -5,7 +5,7 @@
 ## Platform
 web
 
-React/TypeScript 界面封装在 Tauri macOS 应用中；桌面优先，本机私人学习，保留浏览器前端。
+React/TypeScript 界面封装在 MyGo macOS 应用中；桌面优先，本机私人学习，保留浏览器前端。
 
 ## Users
 用户本人，在 Mac 上完成日语基础复习、阅读、听音与复盘。

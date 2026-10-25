@@ -10,9 +10,9 @@
 - 原生检查：`npm run mygo:vet`
 - macOS 打包：`npm run mygo:build`
 - 浏览器包：`npm run mygo:build:web`
-- 产物：`apps/nihongo-stack/build/mygo/darwin-arm64/`
+- 产物：`apps/nihongo-stack/build/mygo/darwin-arm64/`，并同步到 `apps/nihongo-stack/Nihongo Stack.app`
 
-MyGo 原生入口只负责创建窗口、保存窗口状态，并把窗口的 focus/blur 转为 `nihongo-native-focus` 事件。学习计时继续由前端 `activity.ts` 维护，避免把业务逻辑放进桌面壳。
+MyGo 原生入口只负责创建窗口、保存窗口状态、把隐藏标题栏的交通灯放进软件顶部工作栏，并把窗口的 focus/blur 转为 `nihongo-native-focus` 事件。学习计时继续由前端 `activity.ts` 维护，避免把业务逻辑放进桌面壳。
 
 ## 数据兼容
 

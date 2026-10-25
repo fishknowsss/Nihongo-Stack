@@ -19,15 +19,18 @@ func setNativeFocus(window *mygo.Window, focused bool) {
 func main() {
 	mygo.App.WhenReady(func() {
 		window := mygo.NewWindow(mygo.WindowOptions{
-			Title:           "Nihongo Stack",
-			Width:           1380,
-			Height:          900,
-			MinWidth:        900,
-			MinHeight:       680,
-			BackgroundColor: "light-dark(#f7f6f2, #1e1a25)",
-			StateKey:        "main",
-			URL:             "/",
-			Hidden:          true,
+			Title:                "Nihongo Stack",
+			Width:                1380,
+			Height:               900,
+			MinWidth:             900,
+			MinHeight:            680,
+			BackgroundColor:      "light-dark(#f7f6f2, #1e1a25)",
+			TitleBarStyle:        mygo.TitleBarHiddenInset,
+			TitleBarHeight:       56,
+			TrafficLightPosition: &mygo.Point{X: 224, Y: 18},
+			StateKey:             "main",
+			URL:                  "/",
+			Hidden:               true,
 		})
 
 		window.OnReadyToShow(func() {

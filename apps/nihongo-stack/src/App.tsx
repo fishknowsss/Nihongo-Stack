@@ -236,11 +236,15 @@ function App() {
   const studyTime = useStudyTime(view, ready, onNotify)
   useEffect(() => () => window.clearTimeout(toastTimer.current), [])
   useEffect(() => {
+    if (!ready) return
     if (mounted.current) {
       mainRef.current?.scrollTo(0, 0)
       mainRef.current?.focus({ preventScroll: true })
-    } else mounted.current = true
-  }, [view])
+    } else {
+      mounted.current = true
+      mainRef.current?.focus({ preventScroll: true })
+    }
+  }, [ready, view])
   async function selectUnit(id: string) {
     try {
       await setPreference('activeUnit', id)

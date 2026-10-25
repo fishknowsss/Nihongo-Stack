@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "mygo:dev": "mygo dev",
-    "mygo:build": "mygo build --platform darwin/arm64",
+    "mygo:build": "mygo build --platform darwin/arm64 && node scripts/stage-mygo-app.mjs",
     "mygo:build:web": "mygo build --platform web",
     "mygo:generate": "mygo generate",
     "mygo:vet": "mygo vet",

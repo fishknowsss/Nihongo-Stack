@@ -1,6 +1,6 @@
 # Nihongo Stack v0.3 图标
 
-内置 `image_gen` 生成，2026-10-08。米白圆角底板、朱红叠放书页、抽象「日」和书签。原稿为透明 PNG；网页尺寸沿用 `public/` 资源，MyGo 从 `assets/app-icon-v0.3.png` 生成 macOS 应用图标。
+内置 `image_gen` 生成，2026-10-08。米白圆角底板、朱红叠放书页、抽象「日」和书签。桌面图标使用原先的完整图形版本，不额外增加四周画布；网页尺寸沿用 `public/` 资源，MyGo 从 `assets/app-icon-v0.3.png` 生成 macOS 应用图标。
 
 - 原稿：`app-icon-v0.3.png`
 - 侧栏：`../public/app-icon-128.png`

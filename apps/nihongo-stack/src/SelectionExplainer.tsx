@@ -52,11 +52,18 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
         setFavorite(favoriteRow?.value === true)
       })
     }
-    const handleSelectionEvent = () => readSelection()
-    document.addEventListener('mouseup', handleSelectionEvent)
-    document.addEventListener('keyup', handleSelectionEvent)
-    document.addEventListener('selectionchange', handleSelectionEvent)
+    function handleContextMenu(event: MouseEvent) {
+      const target = event.target
+      if (target instanceof Element && target.closest('.selection-explainer')) return
+      const current = window.getSelection()
+      if (!current?.toString().trim()) return
+      event.preventDefault()
+      readSelection(true)
+    }
     function closeOutside(event: MouseEvent) {
+      // The browser dispatches right-button mousedown before contextmenu.
+      // Keep the selection alive so the contextmenu handler can inspect it.
+      if (event.button === 2) return
       const target = event.target
       if (target instanceof Element && target.closest('.selection-explainer')) return
       lastText.current = ''
@@ -69,27 +76,20 @@ export default function SelectionExplainer({ onNotify }: { onNotify: (message: s
       window.getSelection()?.removeAllRanges()
       setSelection(null)
     }
+    document.addEventListener('contextmenu', handleContextMenu)
     document.addEventListener('mousedown', closeOutside)
     document.addEventListener('keydown', closeWithEscape)
     const handleViewportChange = () => readSelection(true)
     window.addEventListener('resize', handleViewportChange)
     window.addEventListener('scroll', handleViewportChange, true)
-    const poll = window.setInterval(readSelection, 350)
     return () => {
-      document.removeEventListener('mouseup', handleSelectionEvent)
-      document.removeEventListener('keyup', handleSelectionEvent)
-      document.removeEventListener('selectionchange', handleSelectionEvent)
+      document.removeEventListener('contextmenu', handleContextMenu)
       document.removeEventListener('mousedown', closeOutside)
       document.removeEventListener('keydown', closeWithEscape)
       window.removeEventListener('resize', handleViewportChange)
       window.removeEventListener('scroll', handleViewportChange, true)
-      window.clearInterval(poll)
     }
   }, [])
-
-  useEffect(() => {
-    if (selection) closeButton.current?.focus()
-  }, [selection])
 
   useEffect(() => () => window.speechSynthesis?.cancel(), [])
 

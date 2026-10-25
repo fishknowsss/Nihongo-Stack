@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Rating, type Grade } from 'ts-fsrs'
 import {
@@ -15,6 +15,10 @@ import {
   Headphones,
   Info,
   SpeakerHigh,
+  Play,
+  Pause,
+  Rewind,
+  FastForward,
   UploadSimple,
   MagnifyingGlass,
   GraduationCap,
@@ -67,11 +71,10 @@ import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
-import StudyPlanPanel from './StudyPlanPanel'
 import { jlptFullExamSlotCount, jlptSets } from './jlpt'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
-import { buildStudyPlan, DEFAULT_JLPT_EXAM_DATE } from './studyPlan'
+import { DEFAULT_JLPT_EXAM_DATE } from './studyPlan'
 import { version as appVersion } from '../package.json'
 
 type View =
@@ -87,7 +90,7 @@ type View =
   | 'baseline'
 type Notify = (text: string, kind?: 'success' | 'error') => void
 const navigation = [
-  { id: 'today' as const, label: '今日', icon: CalendarBlank },
+  { id: 'today' as const, label: '工作台', icon: CalendarBlank },
   { id: 'course' as const, label: '课程', icon: BookOpen },
   { id: 'review' as const, label: '复习', icon: Cards },
   { id: 'cards' as const, label: '卡片库', icon: Stack },
@@ -208,15 +211,6 @@ function App() {
     }))
     .sort((a, b) => b.misses - a.misses)
   const focus = weakGroups[0]?.misses ? weakGroups[0] : null
-  const jlptCompletedCount = preferences.filter((row) => row.key.startsWith('jlptCompleted:') && row.value === true).length
-  const studyPlan = useMemo(() => buildStudyPlan({
-    today,
-    availableMinutes: minutes,
-    preferences,
-    baseline,
-    dueCards: due,
-    jlptCompletedCount,
-  }), [baseline, due, events, jlptCompletedCount, minutes, preferences, today])
   const queue = reviewQueue(
     progress,
     events,
@@ -250,7 +244,6 @@ function App() {
   async function selectUnit(id: string) {
     try {
       await setPreference('activeUnit', id)
-      setView('today')
     } catch {
       onNotify('单元选择保存失败，请重试。', 'error')
     }
@@ -305,11 +298,6 @@ function App() {
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <div className="sidebar-note">
-            记录保存在这台设备
-            <br />
-            备份后，随时接着学。
-          </div>
           <button
             className={`nav-item ${view === 'settings' ? 'active' : ''}`}
             aria-current={view === 'settings' ? 'page' : undefined}
@@ -338,11 +326,8 @@ function App() {
                 weekday: 'long',
               }).format(new Date(now))}
             </span>
-            <button
-              className="offline-badge"
-              onClick={() => setView('settings')}
-            >
-              本机记录 · 备份
+            <button className="offline-badge" onClick={() => setView('settings')}>
+              备份
             </button>
           </div>
         </header>
@@ -384,7 +369,6 @@ function App() {
                     todayAttempts,
                     preferences,
                     baseline,
-                    studyPlan,
                     focusLabel: focus?.label ?? null,
                     onNotify,
                     setView,
@@ -495,7 +479,6 @@ type TodayProps = {
   todayAttempts: Attempt[]
   preferences: Preference[]
   baseline?: Attempt
-  studyPlan: ReturnType<typeof buildStudyPlan>
   focusLabel: string | null
   onNotify: Notify
   setView: (v: View) => void
@@ -513,7 +496,6 @@ function TodayPage({
   todayAttempts,
   preferences,
   baseline,
-  studyPlan,
   focusLabel,
   onNotify,
   setView,
@@ -578,19 +560,28 @@ function TodayPage({
   }
   return (
     <div className="page-stack">
-      <PageIntro
-        title="今日学习"
-        description="先完成当前单元，再把学过的内容带进复习。"
-      />
-      <StudyPlanPanel
-        plan={studyPlan}
-        onFoundation={() => setView(baseline ? 'review' : 'baseline')}
-        onJlpt={() => {
-          void setPreference('jlptActiveSet', 'jlpt-2025-n2')
-            .catch(() => onNotify('N2 目标入口未保存，本次仍可打开 JLPT 工作台。', 'error'))
-          setView('jlpt')
-        }}
-      />
+      <section className="today-overview" aria-label="学习工作台概览">
+        <div className="today-overview-heading">
+          <div>
+            <span className="today-date">{today.replaceAll('-', ' / ')}</span>
+            <h1>{unit.title}</h1>
+            <p lang="ja">{['はじめまして','一日の時間','場所と交通','買い物','一緒に行きませんか','天気と予定','一週間のふり返り'][unit.order - 1]}</p>
+          </div>
+          <div className="today-overview-actions">
+            {!baseline && <button className="text-button" onClick={() => setView('baseline')}>起点小测</button>}
+            <button className="outline-button" onClick={() => setView('jlpt')}>JLPT</button>
+          </div>
+        </div>
+        <div className="today-metrics" aria-label="当前学习数据">
+          <div><strong>{doneCount}</strong><span>已完成</span></div>
+          <div><strong>{plannedMinutes}<small> min</small></strong><span>剩余估时</span></div>
+          <div><strong>{due.length}</strong><span>到期卡</span></div>
+          <div><strong>{newCardLimit}</strong><span>可引入新卡</span></div>
+        </div>
+        <div className="today-overview-bar" role="progressbar" aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={doneCount} aria-label="今日任务进度">
+          <span style={{ width: `${(doneCount / tasks.length) * 100}%` }} />
+        </div>
+      </section>
       <div className="today-layout">
         <section className="unit-focus" aria-label="当前学习单元">
           <div className="unit-focus-top">
@@ -749,7 +740,7 @@ function TodayPage({
         </p>
       )}
       <div className="section-heading">
-        <h2>今日任务</h2>
+        <h2>下一步</h2>
         <button className="text-button" onClick={() => setView('course')}>
           换个单元
           <ArrowRight size={15} />
@@ -771,9 +762,7 @@ function TodayPage({
           预计任务超出可用时间，可先保留复习，再选择阅读或听力；跳过不会算作完成。
         </p>
       )}
-      <p className="content-note">
-        试用材料 · 未经专业教师审校 · 新增听音为合成语音，不用于判断 JLPT 水平。
-      </p>
+      <p className="content-note">材料状态和来源见各练习页。</p>
     </div>
   )
 }
@@ -924,19 +913,13 @@ function CoursePage({
   ).length
   return (
     <div className="page-stack">
-      <PageIntro
-        title="基础课程"
-        description="七个单元，从介绍自己到复述日常经历。选择一个单元，开始今天的学习。"
-      />
+      <PageIntro title="课程" description="" />
       <div className="course-summary">
         <span>
           <strong>{completed} / 7</strong> 单元已练阅读与听音
         </span>
-        <span>每单元 6 张卡 · 1 篇短文 · 1 段听音 · 约 25～35 分钟</span>
+        <span>每单元 6 张卡 · 1 篇短文 · 1 段听音</span>
       </div>
-      <p className="content-note">
-        “已练”表示提交过作答，不代表掌握。原创试用内容未经教师审校；听音采用合成语音。
-      </p>
       <ol className="course-list">
         {courseUnits.map((item) => {
           const practiced = unitPracticed(item.id, attempts)
@@ -990,7 +973,7 @@ function CoursePage({
                     }
                     onClick={() => onSelect(item.id)}
                   >
-                    {item.id === unit.id ? '继续本单元' : '选为今日单元'}
+                    {item.id === unit.id ? '继续本单元' : '设为当前单元'}
                     <ArrowRight size={16} />
                   </button>
                   <button
@@ -1113,15 +1096,16 @@ function ReviewPage({
   }
   return (
     <div className="page-stack focus-page">
-      <PageIntro
-        title="复习与新卡"
-        description="先回想读音和含义，再查看答案。按实际回忆情况反馈，下次复习会自动安排。"
-      />
+      <PageIntro title="复习" description="" />
       <div className="review-meta">
         <span>
           本轮最多 {roundIds.length} 张 · 当前待练 {queue.length} 张
         </span>
         <span>本轮反馈 {count} 次</span>
+      </div>
+      <div className="review-progress-panel" aria-label="复习进度">
+        <div className="review-progress-track"><span style={{ width: `${roundIds.length ? Math.min(100, (count / roundIds.length) * 100) : 100}%` }} /></div>
+        <div className="review-progress-stats"><span><strong>{count}</strong> / {roundIds.length} 本轮</span><span>{queue.length} 张仍待练</span><span>{progress.length} 张已进入排程</span></div>
       </div>
       {current && (
         <p className="shortcut-hint">
@@ -1593,6 +1577,9 @@ function ListeningExercise({
   const [studyLayer, setStudyLayer] = useState<StudyLayer>('off')
   const [busy, setBusy] = useState(false)
   const [audioError, setAudioError] = useState(false)
+  const [audioPlaying, setAudioPlaying] = useState(false)
+  const [audioTime, setAudioTime] = useState(0)
+  const [audioDuration, setAudioDuration] = useState(0)
   const audioRef = useRef<HTMLAudioElement>(null)
   const lock = useRef(false)
   const lastPosition = useRef<number | null>(null)
@@ -1736,6 +1723,8 @@ function ListeningExercise({
     setMeta(next)
     setTranscript(false)
     lastPosition.current = null
+    setAudioPlaying(false)
+    setAudioTime(0)
     void persistDraft(metaKey, JSON.stringify(next)).catch(() =>
       onNotify('新练习播放状态未保存，请重试。', 'error'),
     )
@@ -1759,15 +1748,23 @@ function ListeningExercise({
           </p>
         )}
         <div className="audio-stage">
-          <Headphones size={32} />
-          <p>先听声音，再看文本。</p>
+          <div className="audio-player-heading"><Headphones size={22} /><span>听力播放器</span><small>{audioDuration ? `${Math.floor(audioDuration / 60)}:${String(Math.floor(audioDuration % 60)).padStart(2, '0')}` : '准备中'}</small></div>
+          <div className="audio-player-controls">
+            <button className="audio-skip" aria-label="后退 5 秒" onClick={() => { if (audioRef.current) audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 5) }}><Rewind size={18} /></button>
+            <button className="audio-play" aria-label={audioPlaying ? '暂停' : '播放'} onClick={() => { const audio = audioRef.current; if (!audio) return; if (audio.paused) void audio.play(); else audio.pause() }}>{audioPlaying ? <Pause size={20} weight="fill" /> : <Play size={20} weight="fill" />}</button>
+            <button className="audio-skip" aria-label="前进 5 秒" onClick={() => { if (audioRef.current) audioRef.current.currentTime = Math.min(audioDuration || audioRef.current.duration || 0, audioRef.current.currentTime + 5) }}><FastForward size={18} /></button>
+          </div>
+          <input className="audio-seek" type="range" min="0" max={audioDuration || 0} step="0.01" value={Math.min(audioTime, audioDuration || 0)} aria-label="音频进度" onChange={(event) => { const next = Number(event.target.value); setAudioTime(next); if (audioRef.current) audioRef.current.currentTime = next }} />
+          <div className="audio-time"><span>{Math.floor(audioTime / 60)}:{String(Math.floor(audioTime % 60)).padStart(2, '0')}</span><span>{audioDuration ? `${Math.floor(audioDuration / 60)}:${String(Math.floor(audioDuration % 60)).padStart(2, '0')}` : '—:—'}</span></div>
           <audio
             ref={audioRef}
-            controls
+            controls={false}
+            className="hidden-audio"
             preload="metadata"
             src={listening.audio}
             aria-label={`${listening.title}音频`}
             onError={() => setAudioError(true)}
+            onLoadedMetadata={(e) => setAudioDuration(e.currentTarget.duration)}
             onPlay={(e) => {
               if (practice.result) return
               const audio = e.currentTarget
@@ -1778,11 +1775,13 @@ function ListeningExercise({
               if (audio.currentTime < 0.35 || metaRef.current.playCount === 0)
                 update({ playCount: metaRef.current.playCount + 1 })
               lastPosition.current = audio.currentTime
+              setAudioPlaying(true)
             }}
-            onTimeUpdate={(e) => capture(e.currentTarget)}
+            onTimeUpdate={(e) => { setAudioTime(e.currentTarget.currentTime); capture(e.currentTarget) }}
             onPause={(e) => {
               capture(e.currentTarget)
               lastPosition.current = null
+              setAudioPlaying(false)
             }}
             onRateChange={() => update({ rateChangedBeforeSubmit: true })}
             onSeeking={() => {
@@ -1790,12 +1789,17 @@ function ListeningExercise({
               update({ seekedBeforeSubmit: true })
             }}
             onSeeked={(e) => {
-              if (!e.currentTarget.paused)
-                lastPosition.current = e.currentTarget.currentTime
+              const audio = e.currentTarget
+              if (audio.duration && audio.currentTime >= audio.duration - 0.25) {
+                update({ duration: audio.duration, completedPlayback: true, playedRanges: mergeRanges([...(metaRef.current.playedRanges ?? []), [0, audio.duration]]) })
+              }
+              if (!audio.paused) lastPosition.current = audio.currentTime
             }}
             onEnded={(e) => {
               capture(e.currentTarget)
               lastPosition.current = null
+              setAudioPlaying(false)
+              update({ duration: e.currentTarget.duration, completedPlayback: true, playedRanges: mergeRanges([...(metaRef.current.playedRanges ?? []), [0, e.currentTarget.duration]]) })
             }}
           />
         </div>
@@ -1880,7 +1884,7 @@ function ListeningExercise({
         />
         {!practice.result && !meta.completedPlayback && (
           <p className="field-hint">
-            完整播放后可提交；拖到末尾不会算作完整播放。
+            播放到末尾或拖到末尾后可提交。
           </p>
         )}
       </aside>
@@ -2257,6 +2261,7 @@ function ProgressPage({
               <div
                 key={d.date}
                 className={reviews || exercises ? 'active-day' : ''}
+                style={{ '--day-level': Math.min(72, (reviews + exercises) * 12 + 4) } as React.CSSProperties}
               >
                 <span>{d.label}</span>
                 <strong>{reviews + exercises}</strong>
@@ -2818,7 +2823,7 @@ function SettingsPage({
 }
 function PageIntro({
   title,
-  description,
+  description: _description,
 }: {
   title: string
   description: string
@@ -2826,7 +2831,6 @@ function PageIntro({
   return (
     <header className="page-intro">
       <h1>{title}</h1>
-      <p>{description}</p>
     </header>
   )
 }

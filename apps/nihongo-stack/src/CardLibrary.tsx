@@ -97,10 +97,8 @@ export default function CardLibrary({
     <div className="page-stack">
       <header className="page-intro">
         <h1>卡片库</h1>
-        <p>查找表达、整理收藏，回看最近难以想起的卡片。</p>
       </header>
       <div className="card-library-actions">
-        <p>查看与收藏不会改变复习排程。</p>
         <button className="outline-button" onClick={onReview}>
           前往复习
           <ArrowRight size={17} />

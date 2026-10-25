@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { ArrowRight, CheckCircle, GraduationCap, Info, ListChecks, SpeakerHigh, TrashSimple } from '@phosphor-icons/react'
-import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevelGuides, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptResourceRoutes, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
+import { jlptExamBlueprint, jlptExamSessionsByYear, jlptFullExamSlotCount, jlptLevels, jlptOfficialPracticeLinks, jlptQuestions, jlptSets, jlptSources, jlptYears, type JLPTLevel, type JLPTQuestion, type JLPTSection } from './jlpt'
 import { db, setPreference } from './db'
 import { downloadCompleteImportTemplate, downloadImportTemplate, downloadJLPTCoverageManifest, downloadJLPTLevelFieldTemplate, parseImportedJLPTPack, type ImportedJLPTPack } from './jlpt-import'
 import { kanaToRomaji } from './language'
@@ -220,14 +220,12 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   return (
     <div className="page-stack jlpt-page">
       <header className="page-intro">
-        <h1>JLPT 题型训练</h1>
-        <p>按 N5–N2、年份和题型建立近七年的学习路线。内置内容是逐题教学包；有授权的完整历年试卷可导入本机，按场次、科目和音频原样练习。</p>
+        <h1>JLPT 工作台</h1>
       </header>
       <section className="jlpt-intro-panel">
         <div className="jlpt-intro-icon"><GraduationCap size={24} /></div>
         <div>
-          <h2>从基础开始，逐层读懂</h2>
-          <p>初学者先看原句和释义，再隐藏辅助重复作答；N3/N2 题目增加结构拆解，避免只背答案。</p>
+          <h2>题库与解析</h2>
         </div>
         <span className="jlpt-progress-label"><strong>{builtInCompletedCount}</strong> / 28 教学包已练 · <strong>{fullPaperImportedCount}</strong> 套整卷资料 · <strong>{completeImportedCount}</strong> / {jlptFullExamSlotCount} 场近七年完整真题</span>
         <button className="outline-button compact" disabled={importing} onClick={() => fileRef.current?.click()}>{importing ? '正在读取…' : '导入本机题库/原卷资料 JSON（可多选）'}</button>
@@ -251,9 +249,9 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
         </label>
       </section>
       <p className="jlpt-blueprint"><strong>{level} 完整卷结构：</strong>{jlptExamBlueprint[level].sections.join(' · ')}；建议考试计时 {jlptExamBlueprint[level].minutes.join(' + ')} 分钟。近七年实际场次按年份为 {jlptYears.map((item) => `${item}（${jlptExamSessionsByYear[item].join('、')}）`).join('、')}；导入题库时应覆盖对应科目。</p>
-      <section className="jlpt-level-guide" aria-label={`${level} 分级学习指南`}>
-        <div><span className="jlpt-guide-kicker">{level} 学习指南</span><h2>{jlptLevelGuides[level].title}</h2><p><strong>日语重点：</strong>{jlptLevelGuides[level].japaneseFocus}</p><p><strong>中文策略：</strong>{jlptLevelGuides[level].chineseStrategy}</p></div>
-        <ol>{jlptLevelGuides[level].steps.map((step) => <li key={step}>{step}</li>)}</ol>
+      <section className="jlpt-type-map" aria-label={`${level} 题目结构`}>
+        <div className="section-heading"><h2>{level} 题目结构</h2><span className="field-hint">按题型进入练习与解析</span></div>
+        <div className="jlpt-type-grid">{jlptExamBlueprint[level].sections.map((section) => { const count = questions.filter((question) => question.section === section).length; return <div key={section}><strong>{section}</strong><span>{count || '—'} 题</span></div> })}</div>
       </section>
       <section className="jlpt-year-grid" aria-label="近七年练习包">
         {jlptSets.filter((set) => set.level === level).map((set) => (
@@ -281,17 +279,6 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           </div>
         </section>
       )}
-      <section className="jlpt-resource-route" aria-labelledby="jlpt-resource-route-title">
-        <div className="section-heading"><div><h2 id="jlpt-resource-route-title">公开资料学习路线</h2><p className="field-hint">先用真实场景建立理解，再回到当前等级做题。</p></div><span className="field-hint">当前 {level}</span></div>
-        <ol className="jlpt-resource-list">
-          {jlptResourceRoutes.map((resource, index) => <li key={resource.url}>
-            <div className="jlpt-resource-meta"><span>{index + 1}</span><a href={resource.url} target="_blank" rel="noreferrer">{resource.label} <ArrowRight size={14} /></a><small>{resource.level}</small></div>
-            <p className="jlpt-resource-goal" lang="ja">{resource.japaneseGoal}</p>
-            <p>{resource.chineseMethod}</p>
-            <ol className="jlpt-resource-steps">{resource.studySteps.map((step) => <li key={step}>{step}</li>)}</ol>
-          </li>)}
-        </ol>
-      </section>
       <div className="jlpt-workbench">
         <article className="jlpt-practice-panel">
           <div className="section-heading">
@@ -332,13 +319,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
           ))}
         </article>
         <aside className="jlpt-side-note">
-          <h2><Info size={18} /> 资料边界与使用方式</h2>
-          <p>安装包内是原创仿真题和逐题中文教学。完整历年试卷与公开原卷语料只接受本机 JSON 导入，并只保存在本机备份中；导入时保留来源和使用依据，避免把个人资料包带入公开仓库。</p>
-          <ul>
-            <li>先看日文原句，尝试自己读。</li>
-            <li>再打开读音、释义和罗马音辅助。</li>
-            <li>错题记录到“收藏/笔记”，第二天先重做。</li>
-          </ul>
+          <h2><Info size={18} /> 来源与导入</h2>
           <details className="jlpt-format-details">
             <summary>完整真题 JSON 需要哪些字段？</summary>
             <p>将 <code>complete</code> 设为 true 时，必须填写真实来源、<code>rightsBasis</code>（授权或个人使用依据）、<code>session</code>、<code>questionCount</code>、<code>sectionQuestionCounts</code> 和每道题的正整数 <code>questionNumber</code>；每题还要有平假名、中文释义、逐题解析和至少两步学习步骤。题数必须达到该等级和年份格式的整场试卷下限，四个学习分区的数量必须与实际题目一致，每道聴解题必须有真实 <code>http(s) audioUrl</code>。2020 年只接受 12 月场。这会阻止把几道题的教学节选误标成完整真题。</p>

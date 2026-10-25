@@ -47,7 +47,7 @@ flowchart LR
   UI --> Backup[JSON 备份与恢复]
 ```
 
-业务逻辑留在前端，MyGo 负责窗口和原生生命周期。macOS 标题栏使用 AppKit 原生交通灯和统一 toolbar；页面通过 `mygo://localhost/` 加载，浏览器版本继续使用普通 Vite 页面。
+业务逻辑留在前端，MyGo 负责窗口和原生生命周期。macOS 使用 AppKit 原生交通灯；页面顶栏直接延伸到 MyGo 的隐藏标题栏安全区，浏览器版本继续使用普通 Vite 页面。
 
 ## 开始使用
 

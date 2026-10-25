@@ -51,10 +51,8 @@ button { transition: background-color 140ms ease-out, border-color 140ms ease-ou
 .skip-link { position: fixed; left: 16px; top: -80px; z-index: 50; padding: 12px 16px; background: var(--surface); border: 2px solid var(--accent); border-radius: 6px; }
 .skip-link:focus-visible { top: 12px; }
 
-/* Fixed frame. The native titlebar spans the whole window; only main and short-window navigation scroll. */
-.app-shell { height: 100dvh; min-height: 0; padding-top: var(--mygo-titlebar-height, 0px); overflow: hidden; display: grid; grid-template-columns: 208px minmax(0, 1fr); }
-.native-titlebar { position: fixed; inset: 0 0 auto; z-index: 20; height: var(--mygo-titlebar-height, 0px); display: flex; align-items: center; justify-content: center; padding: 0 16px 0 calc(var(--mygo-titlebar-inset-left, 72px) + 16px); color: var(--muted); background: var(--shell); border-bottom: 1px solid var(--line); --app-region: drag; user-select: none; }
-.native-titlebar-title { font-size: .8125rem; letter-spacing: .01em; }
+/* Fixed frame. The main topbar draws into MyGo's native hidden titlebar room. */
+.app-shell { height: 100dvh; min-height: 0; overflow: hidden; display: grid; grid-template-columns: 208px minmax(0, 1fr); }
 .sidebar { min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; padding: 24px 12px 16px; border-right: 1px solid var(--line); background: var(--shell); }
 .sidebar > * { flex-shrink: 0; }
 .brand { display: flex; align-items: center; gap: 10px; padding: 0 6px 28px; }
@@ -71,7 +69,6 @@ button { transition: background-color 140ms ease-out, border-color 140ms ease-ou
 .sidebar-bottom { margin-top: auto; padding-top: 20px; }
 .sidebar-note { border-top: 1px solid var(--line); padding: 16px 10px; color: var(--muted); font-size: .75rem; line-height: 1.8; }
 .main-column { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
-.sidebar, .main-column { height: calc(100dvh - var(--mygo-titlebar-height, 0px)); }
 .topbar { flex: none; min-height: 60px; padding: 8px 28px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; gap: 12px; background: var(--shell); }
 .breadcrumb { font-size: .875rem; color: var(--muted); }
 .breadcrumb > span { margin: 0 8px; color: var(--subtle); }
@@ -592,6 +589,16 @@ audio { display: block; width: 100%; min-height: 44px; }
 
 /* v0.7.1 workbench pass: information density, pane scrolling and solid-glass controls. */
 .topbar { margin: 10px 14px 0; min-height: 56px; padding-inline: 18px; border: 1px solid var(--line); border-radius: 12px; background: rgb(255 254 250 / 82%); box-shadow: var(--surface-shadow); }
+.sidebar { padding-top: max(24px, calc(var(--mygo-titlebar-height, 0px) + 12px)); }
+.topbar {
+  --app-region: drag;
+  margin: 0;
+  min-height: var(--mygo-titlebar-height, 56px);
+  height: var(--mygo-titlebar-height, 56px);
+  padding: 0 18px;
+  border-radius: 0 0 12px 12px;
+}
+.topbar-right, .topbar button, .topbar a, .topbar input, .topbar select { --app-region: no-drag; }
 .main-column { gap: 0; }
 .main-content { padding-top: 18px; }
 .today-overview { display: grid; gap: 16px; padding: 20px 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--surface-shadow); }
@@ -714,7 +721,7 @@ audio { display: block; width: 100%; min-height: 44px; }
   .nav-item { flex-direction: column; justify-content: center; gap: 3px; padding: 6px 0; min-height: 60px; font-size: .75rem; border-radius: 6px; }
   .nav-item svg { width: 19px; height: 19px; }
   .nav-count { display: none; }
-  .topbar { padding: 4px 16px; min-height: 54px; gap: 8px; }
+  .topbar { padding: 0 16px; min-height: var(--mygo-titlebar-height, 54px); height: var(--mygo-titlebar-height, 54px); gap: 8px; }
   .breadcrumb { font-size: .75rem; }
   .breadcrumb > span { margin-inline: 4px; }
   .topbar-right { gap: 0; }

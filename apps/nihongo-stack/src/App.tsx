@@ -264,9 +264,6 @@ function App() {
   }
   return (
     <div className="app-shell">
-      <header className="native-titlebar" aria-hidden="true">
-        <span className="native-titlebar-title">Nihongo Stack</span>
-      </header>
       <a className="skip-link" href="#main-content">
         跳到学习内容
       </a>

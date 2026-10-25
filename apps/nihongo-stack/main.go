@@ -22,17 +22,16 @@ func main() {
 			Title:                "Nihongo Stack",
 			Width:                1380,
 			Height:               900,
+			UseContentSize:       true,
 			MinWidth:             900,
 			MinHeight:            680,
 			BackgroundColor:      "light-dark(#f7f6f2, #1e1a25)",
-			TitleBarStyle:        mygo.TitleBarHiddenInset,
+			TitleBarStyle:        mygo.TitleBarHidden,
 			TrafficLightPosition: &mygo.Point{X: 24, Y: 19},
 			StateKey:             "main",
 			URL:                  "/",
 			Hidden:               true,
 		})
-		configureMainChrome(window)
-
 		window.OnReadyToShow(func() {
 			setNativeFocus(window, true)
 			window.Show()

@@ -1,27 +1,43 @@
 # Nihongo Stack
 
-Nihongo Stack 是一个本机优先的日语学习应用。它把课程、间隔复习、阅读、听力、选中解释、JLPT 学习索引和本机备份放在同一个工作台里，面向 Mac 私人学习使用。
+本机优先的日语学习工作台。打开应用先看到今天该学什么，再把课程、FSRS 复习、阅读、听力和 JLPT 练习连成一条可中断、可恢复的学习路径。
 
 ![Nihongo Stack 工作台](docs/assets/workbench-desktop.png)
 
-当前桌面版本使用 MyGo 0.6.4，前端仍是 React 19 + Vite + TypeScript。应用保留浏览器构建，桌面包使用 `com.nihongostack.desktop`，学习记录使用本机 IndexedDB。
+桌面版使用 MyGo 0.6.4 和 AppKit 原生窗口按钮，前端为 React 19、Vite 与 TypeScript。界面目前固定为浅色，原生窗口外观也固定为浅色，避免系统深色模式只改变标题栏控件。学习记录保存在本机 IndexedDB，不需要账户，也不会上传学习文本。
 
-## 能做什么
+## 现在能做什么
 
-| 模块 | 内容 |
-| --- | --- |
-| 工作台 | 查看今日单元、到期卡、任务估时和下一步动作 |
-| 课程 | 7 个基础单元，从自我介绍到天气与安排 |
-| 复习 | FSRS 排程、分轮复习、键盘反馈和错题回顾 |
-| 卡片库 | 按日文、读音、中文、单元、到期和收藏检索 |
-| 阅读 | 原文、材料注音、FuriFont 注音、理解题和解析 |
-| 听力 | 本地音频、播放覆盖记录、辅助证据和听后理解 |
-| JLPT | N5–N2 学习索引、原创教学题和本机授权题库导入 |
-| 备份 | JSON 导出、恢复预览、导入前副本和回退保护 |
+| 入口 | 主要用途 | 当前能力 |
+| --- | --- | --- |
+| 工作台 | 决定下一步 | 今日任务、到期卡、新卡额度、时间预算、起点小测 |
+| 课程 | 按单元学习 | 7 个连续基础单元，含词句、例句、阅读和听音入口 |
+| 复习 | 巩固记忆 | FSRS 排程、单轮队列、键盘反馈、错题回看 |
+| 卡片库 | 查找与整理 | 按日文、读音、中文、单元、到期状态和收藏筛选 |
+| 阅读 | 读完整材料 | 学习层切换、FuriFont 注音、理解题、解析和选词说明 |
+| 听力 | 做听音理解 | 本地音频、完整播放覆盖、辅助记录和听后作答 |
+| JLPT | 组织备考 | N5–N2 学习索引、原创教学题、官方资料入口、授权题库导入 |
+| 进度与备份 | 看见并保存变化 | 前台学习时间、一周回顾、JSON 导出和恢复预览 |
 
-![阅读练习](docs/assets/reading-desktop.png)
+<p align="center">
+  <img src="docs/assets/reading-desktop.png" width="49%" alt="阅读练习">
+  <img src="docs/assets/listening-desktop.png" width="49%" alt="听音练习">
+</p>
 
-![听力练习](docs/assets/listening-desktop.png)
+<p align="center">
+  <img src="docs/assets/jlpt-desktop.png" width="70%" alt="JLPT 工作台">
+  <img src="docs/assets/workbench-mobile.png" width="24%" alt="移动端工作台">
+</p>
+
+## 学习方式
+
+Nihongo Stack 不把“练过”当作“掌握”，也不把页面浏览当作学习结果。
+
+- 工作台按当前单元和真实到期状态安排任务，时间有限时可以跳过或延期。
+- 卡片反馈进入 FSRS 排程；学习页记录前台活跃时间，后台、失焦和闲置不计入。
+- 阅读与听音保留实际作答、播放覆盖和辅助方式，提交后才显示解析。
+- JLPT 页明确区分原创教学题、官方公开资料和本机授权导入的完整题库。
+- 阅读、听力、卡片例句和课程要点共用学习层，可切换原文、假名、释义和罗马音。
 
 ## 当前内容
 
@@ -29,29 +45,27 @@ Nihongo Stack 是一个本机优先的日语学习应用。它把课程、间隔
 - 9 篇阅读材料
 - 10 段本地音频
 - 7 个连续基础单元
-- 28 个年份/等级 JLPT 学习索引
-- 64 道原创分级教学题，每级 16 题
-- 本地 FuriFont Serif 字体注音
+- 28 个年份与等级 JLPT 学习索引
+- 64 道原创 JLPT 分级教学题，每级 16 道
 
-原创材料和合成语音用于私人试用。它们不是教师审校教材，也不用于正式 JLPT 成绩判断。完整考试题库只通过本机授权导入，不把来源不明的试卷、音频或扫描件提交到仓库。
+原创材料与合成语音用于私人试用，不是经过专业日语教师审校的正式教材。完整历年试卷只通过本机授权导入，仓库不附带来源不明的试卷、音频或扫描件。
 
-## 架构
+## 技术结构
 
-```mermaid
-flowchart LR
-  UI[React + TypeScript] --> Logic[学习与排程模块]
-  Logic --> DB[Dexie / IndexedDB]
-  UI --> Content[shared/content 与本地资源]
-  MyGo[MyGo Go 桌面壳] --> UI
-  MyGo --> Native[窗口状态 / 原生焦点 / macOS toolbar]
-  UI --> Backup[JSON 备份与恢复]
-```
+| 层 | 实现 |
+| --- | --- |
+| 桌面壳 | MyGo 0.6.4，Go 1.27.3，macOS AppKit 原生标题栏 |
+| 前端 | React 19、TypeScript、Vite 8 |
+| 数据 | Dexie 与 IndexedDB |
+| 复习排程 | ts-fsrs |
+| 内容 | `shared/content/` 和应用内的 JLPT 索引、题库与生成脚本 |
+| 构建 | MyGo 生成 macOS 应用；Vite 同时保留浏览器构建 |
 
-业务逻辑留在前端，MyGo 负责窗口和原生生命周期。macOS 使用 AppKit 原生交通灯；页面顶栏直接延伸到 MyGo 的隐藏标题栏安全区，浏览器版本继续使用普通 Vite 页面。
+业务状态留在前端，MyGo 负责窗口、原生焦点和应用生命周期。macOS 页面通过 `mygo://localhost/` 加载，浏览器版本继续使用普通 Vite 页面。
 
-## 开始使用
+## 本地运行
 
-需要 macOS、Go 1.27.3、Node.js 和 MyGo CLI 依赖。
+需要 macOS、Go 1.27.3、Node.js 和 npm。
 
 ```sh
 cd apps/nihongo-stack
@@ -63,15 +77,11 @@ npm run dev
 # MyGo 原生开发窗口
 npm run mygo:dev
 
-# 构建正式 macOS 应用并同步到 Nihongo Stack.app
+# 构建并同步 macOS 应用
 npm run mygo:build
 ```
 
-正式入口是：
-
-`apps/nihongo-stack/Nihongo Stack.app`
-
-构建脚本会在同步后删除临时 `.app`，避免 Spotlight 出现多个同名入口。旧 Tauri 和 QA 包已移入本机废纸篓归档。
+正式入口是 `apps/nihongo-stack/Nihongo Stack.app`。
 
 ## 验证
 
@@ -82,34 +92,28 @@ npm run test:learning
 npm run test:content
 npm run test:language
 npm run test:jlpt
+npm run test:study-plan
 npm run build
 npm run mygo:vet
 npm run mygo:build
 codesign --verify --deep --strict 'Nihongo Stack.app'
 ```
 
-浏览器包可以单独构建：
+## 数据与交付
 
-```sh
-npm run mygo:build:web
-```
-
-![移动端工作台](docs/assets/workbench-mobile.png)
-
-## 数据兼容
-
-数据库名称仍为 `nihongo-stack-codex`，备份 JSON schema 保持兼容。MyGo 使用 `mygo://localhost/`，旧 Tauri 使用不同页面来源，因此已有 Tauri 记录不会自动共享 IndexedDB。第一次使用 MyGo 版时，从旧应用导出 JSON，再在设置中导入即可。
+- 数据库名称保留为 `nihongo-stack-codex`，现有备份 JSON 继续兼容。
+- 旧 Tauri 版和 MyGo 版使用不同的页面来源，不会自动共享 IndexedDB；迁移时先从旧应用导出 JSON，再在新版导入。
+- 恢复前会显示双方记录数量，并保留导入前副本。
+- 桌面应用目前使用本机临时签名，未做 Apple 公证。
+- 桌面应用和浏览器构建使用各自的页面来源与 IndexedDB，没有自动同步。
 
 ## 文档
 
 - [文档导航](docs/README.md)
+- [应用说明与开发](apps/nihongo-stack/README.md)
+- [MyGo 迁移与原生窗口验收](docs/mygo-migration.md)
 - [当前产品决策](DECISIONS.md)
-- [MyGo 迁移记录](docs/mygo-migration.md)
-- [应用使用说明](apps/nihongo-stack/README.md)
-- [产品说明](apps/nihongo-stack/PRODUCT.md)
-- [内容许可](shared/content/README.md)
+- [产品定位与边界](apps/nihongo-stack/PRODUCT.md)
+- [界面设计记录](apps/nihongo-stack/DESIGN.md)
+- [内容来源与许可](shared/content/README.md)
 - [私有 JLPT 资源说明](docs/content/PRIVATE_JLPT_RESOURCES.md)
-
-## 内容与许可
-
-代码和应用结构按仓库许可发布。外部内容、词典、字体、音频和教材各自遵守来源许可；应用随包保存来源、署名和许可说明。公开分发前仍需重新核对内容许可、真人录音许可、Apple 公证和跨设备同步方案。

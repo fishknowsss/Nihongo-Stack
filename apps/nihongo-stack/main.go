@@ -17,6 +17,10 @@ func setNativeFocus(window *mygo.Window, focused bool) {
 }
 
 func main() {
+	// The product currently has one light interface. Keep AppKit chrome on the
+	// same appearance instead of letting system Dark Mode restyle it alone.
+	mygo.Theme.SetSource(mygo.ThemeLight)
+
 	mygo.App.WhenReady(func() {
 		window := mygo.NewWindow(mygo.WindowOptions{
 			Title:                "Nihongo Stack",
@@ -25,7 +29,7 @@ func main() {
 			UseContentSize:       true,
 			MinWidth:             900,
 			MinHeight:            680,
-			BackgroundColor:      "light-dark(#f7f6f2, #1e1a25)",
+			BackgroundColor:      "#f4f2ed",
 			TitleBarStyle:        mygo.TitleBarHidden,
 			TrafficLightPosition: &mygo.Point{X: 24, Y: 19},
 			StateKey:             "main",

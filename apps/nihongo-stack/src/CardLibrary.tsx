@@ -1,9 +1,7 @@
 import { useEffect, useState } from 'react'
-import {
-  ArrowRight,
-  MagnifyingGlass,
-  BookmarkSimple,
-} from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+import { BookmarkSimple } from '@phosphor-icons/react/dist/csr/BookmarkSimple'
 import { cards, courseUnits } from './catalog'
 import {
   db,

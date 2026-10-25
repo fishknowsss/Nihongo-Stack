@@ -1,4 +1,6 @@
-import { ArrowRight, BookOpen, GraduationCap } from '@phosphor-icons/react'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { BookOpen } from '@phosphor-icons/react/dist/csr/BookOpen'
+import { GraduationCap } from '@phosphor-icons/react/dist/csr/GraduationCap'
 import type { StudyPlan } from './studyPlan'
 
 export default function StudyPlanPanel({ plan, onFoundation, onJlpt }: {

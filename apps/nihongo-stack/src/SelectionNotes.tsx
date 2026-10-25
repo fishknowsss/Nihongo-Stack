@@ -1,5 +1,7 @@
 import { useMemo, useState } from 'react'
-import { BookmarkSimple, PencilSimple, TrashSimple } from '@phosphor-icons/react'
+import { BookmarkSimple } from '@phosphor-icons/react/dist/csr/BookmarkSimple'
+import { PencilSimple } from '@phosphor-icons/react/dist/csr/PencilSimple'
+import { TrashSimple } from '@phosphor-icons/react/dist/csr/TrashSimple'
 import LayeredJapanese from './LayeredJapanese'
 import { db, setPreference, type Preference } from './db'
 

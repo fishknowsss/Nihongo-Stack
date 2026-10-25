@@ -1,28 +1,26 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLiveQuery } from 'dexie-react-hooks'
 import { Rating, type Grade } from 'ts-fsrs'
-import {
-  ArrowLeft,
-  ArrowRight,
-  BookOpen,
-  CalendarBlank,
-  Cards,
-  Stack,
-  ChartBar,
-  CheckCircle,
-  DownloadSimple,
-  Gear,
-  Headphones,
-  Info,
-  SpeakerHigh,
-  Play,
-  Pause,
-  Rewind,
-  FastForward,
-  UploadSimple,
-  MagnifyingGlass,
-  GraduationCap,
-} from '@phosphor-icons/react'
+import { ArrowLeft } from '@phosphor-icons/react/dist/csr/ArrowLeft'
+import { ArrowRight } from '@phosphor-icons/react/dist/csr/ArrowRight'
+import { BookOpen } from '@phosphor-icons/react/dist/csr/BookOpen'
+import { CalendarBlank } from '@phosphor-icons/react/dist/csr/CalendarBlank'
+import { Cards } from '@phosphor-icons/react/dist/csr/Cards'
+import { Stack } from '@phosphor-icons/react/dist/csr/Stack'
+import { ChartBar } from '@phosphor-icons/react/dist/csr/ChartBar'
+import { CheckCircle } from '@phosphor-icons/react/dist/csr/CheckCircle'
+import { DownloadSimple } from '@phosphor-icons/react/dist/csr/DownloadSimple'
+import { Gear } from '@phosphor-icons/react/dist/csr/Gear'
+import { Headphones } from '@phosphor-icons/react/dist/csr/Headphones'
+import { Info } from '@phosphor-icons/react/dist/csr/Info'
+import { SpeakerHigh } from '@phosphor-icons/react/dist/csr/SpeakerHigh'
+import { Play } from '@phosphor-icons/react/dist/csr/Play'
+import { Pause } from '@phosphor-icons/react/dist/csr/Pause'
+import { Rewind } from '@phosphor-icons/react/dist/csr/Rewind'
+import { FastForward } from '@phosphor-icons/react/dist/csr/FastForward'
+import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
+import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
+import { GraduationCap } from '@phosphor-icons/react/dist/csr/GraduationCap'
 import {
   baselineQuestions,
   cards,
@@ -71,7 +69,7 @@ import { isStudyLayer, type StudyLayer } from './language'
 import SelectionExplainer from './SelectionExplainer'
 import SelectionNotes from './SelectionNotes'
 import JLPTPage from './JLPTPage'
-import { jlptFullExamSlotCount, jlptSets } from './jlpt'
+import { jlptFullExamSlotCount, jlptPracticeSetCount } from './jlpt-index'
 import { practiceEvidence } from './mistakes'
 import { formatStudyTime, useStudyTime } from './activity'
 import { DEFAULT_JLPT_EXAM_DATE } from './studyPlan'
@@ -2313,8 +2311,8 @@ function ProgressPage({
         {events.length} 次。
       </p>
       <section className="progress-jlpt" aria-labelledby="progress-jlpt-title">
-        <div className="section-heading"><div><h2 id="progress-jlpt-title">JLPT 学习进度</h2><p className="field-hint">原创教学包与本机授权题库分开统计。</p></div><span className="field-hint">{jlptSets.length} 个年份/等级索引</span></div>
-        <div className="progress-jlpt-stats"><span><strong>{jlptCompletedCount}</strong> / {jlptSets.length} 教学包已练</span><span><strong>{jlptImportedCompleteCount}</strong> / {jlptFullExamSlotCount} 场完整题库</span><span><strong>{jlptMistakeCount}</strong> 道错题待复盘</span></div>
+        <div className="section-heading"><div><h2 id="progress-jlpt-title">JLPT 学习进度</h2><p className="field-hint">原创教学包与本机授权题库分开统计。</p></div><span className="field-hint">{jlptPracticeSetCount} 个年份/等级索引</span></div>
+        <div className="progress-jlpt-stats"><span><strong>{jlptCompletedCount}</strong> / {jlptPracticeSetCount} 教学包已练</span><span><strong>{jlptImportedCompleteCount}</strong> / {jlptFullExamSlotCount} 场完整题库</span><span><strong>{jlptMistakeCount}</strong> 道错题待复盘</span></div>
       </section>
       <WeeklyReport {...{ preferences, attempts, events, now }} />
       <SelectionNotes preferences={preferences} onNotify={onNotify} />

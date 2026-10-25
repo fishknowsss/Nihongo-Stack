@@ -1,5 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
-import { BookmarkSimple, FloppyDisk, SpeakerHigh, X } from '@phosphor-icons/react'
+import { BookmarkSimple } from '@phosphor-icons/react/dist/csr/BookmarkSimple'
+import { FloppyDisk } from '@phosphor-icons/react/dist/csr/FloppyDisk'
+import { SpeakerHigh } from '@phosphor-icons/react/dist/csr/SpeakerHigh'
+import { X } from '@phosphor-icons/react/dist/csr/X'
 import { db, setPreference } from './db'
 import { kanaToRomaji, lookupJapanese, lookupJapaneseAsync, type LexiconEntry } from './language'
 

@@ -225,10 +225,7 @@ export default function JLPTPage({ onNotify }: { onNotify: Notify }) {
   }), [answers, questions])
   return (
     <div className="page-stack jlpt-page">
-      <header className="page-intro">
-        <h1>JLPT 工作台</h1>
-      </header>
-      <section className="jlpt-intro-panel">
+      <section className="jlpt-intro-panel" aria-label="JLPT 练习与题库">
         <div className="jlpt-intro-summary">
           <div className="jlpt-intro-icon"><GraduationCap size={24} /></div>
           <div className="jlpt-intro-copy">

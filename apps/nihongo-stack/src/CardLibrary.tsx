@@ -93,9 +93,6 @@ export default function CardLibrary({
   }
   return (
     <div className="page-stack">
-      <header className="page-intro">
-        <h1>卡片库</h1>
-      </header>
       <div className="card-library-actions">
         <button className="outline-button" onClick={onReview}>
           前往复习

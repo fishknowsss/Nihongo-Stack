@@ -21,6 +21,7 @@ import { FastForward } from '@phosphor-icons/react/dist/csr/FastForward'
 import { UploadSimple } from '@phosphor-icons/react/dist/csr/UploadSimple'
 import { MagnifyingGlass } from '@phosphor-icons/react/dist/csr/MagnifyingGlass'
 import { GraduationCap } from '@phosphor-icons/react/dist/csr/GraduationCap'
+import { CaretDown } from '@phosphor-icons/react/dist/csr/CaretDown'
 import {
   baselineQuestions,
   cards,
@@ -79,23 +80,25 @@ type View =
   | 'today'
   | 'course'
   | 'review'
-  | 'cards'
-  | 'reading'
-  | 'listening'
+  | 'materials'
   | 'jlpt'
   | 'progress'
   | 'settings'
   | 'baseline'
+type MaterialMode = 'cards' | 'reading' | 'listening'
 type Notify = (text: string, kind?: 'success' | 'error') => void
 const navigation = [
-  { id: 'today' as const, label: '工作台', icon: CalendarBlank },
+  { id: 'today' as const, label: '首页', icon: CalendarBlank },
   { id: 'course' as const, label: '课程', icon: BookOpen },
   { id: 'review' as const, label: '复习', icon: Cards },
-  { id: 'cards' as const, label: '卡片库', icon: Stack },
-  { id: 'reading' as const, label: '阅读', icon: BookOpen },
-  { id: 'listening' as const, label: '听力', icon: Headphones },
+  { id: 'materials' as const, label: '资料', icon: Stack },
   { id: 'jlpt' as const, label: 'JLPT', icon: GraduationCap },
   { id: 'progress' as const, label: '进度', icon: ChartBar },
+]
+const navigationGroups = [
+  { label: '学习', items: navigation.slice(0, 3) },
+  { label: '资料', items: navigation.slice(3, 4) },
+  { label: '记录', items: navigation.slice(4) },
 ]
 function score(questions: ChoiceQuestion[], answers: number[]) {
   return questions.reduce(
@@ -133,6 +136,7 @@ function useClock() {
 }
 function App() {
   const [view, setView] = useState<View>('today')
+  const [materialMode, setMaterialMode] = useState<MaterialMode>('reading')
   const [readingTarget, setReadingTarget] = useState<string | null>(null)
   const [listeningTarget, setListeningTarget] = useState<string | null>(null)
   const [toast, setToast] = useState<{
@@ -232,7 +236,8 @@ function App() {
       kind === 'error' ? 8000 : 4500,
     )
   }
-  const studyTime = useStudyTime(view, ready, onNotify)
+  const studyView = view === 'materials' ? materialMode : view
+  const studyTime = useStudyTime(studyView, ready, onNotify)
   useEffect(() => () => window.clearTimeout(toastTimer.current), [])
   useEffect(() => {
     if (!ready) return
@@ -280,11 +285,12 @@ function App() {
   function openMaterial(kind: 'reading' | 'listening', id: string) {
     if (kind === 'reading') setReadingTarget(id)
     else setListeningTarget(id)
+    setMaterialMode(kind)
     void setPreference(
       kind === 'reading' ? 'activeReading' : 'activeListening',
       id,
     ).catch(() => onNotify('材料位置未保存，请重试。', 'error'))
-    setView(kind)
+    setView('materials')
     mainRef.current?.scrollTo(0, 0)
   }
   return (
@@ -307,26 +313,39 @@ function App() {
           </span>
         </div>
         <nav className="side-nav" aria-label="主导航" ref={navRef}>
-          {navigation.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              className={`nav-item ${view === id ? 'active' : ''}`}
-              aria-current={view === id ? 'page' : undefined}
-              onClick={() => {
-                setReadingTarget(null)
-                setListeningTarget(null)
-                setView(id)
-              }}
-            >
-              <Icon size={20} weight={view === id ? 'fill' : 'regular'} />
-              <span>{label}</span>
-              {id === 'review' && due.length > 0 && (
-                <small className="nav-count">{due.length}</small>
-              )}
-            </button>
+          {navigationGroups.map((group) => (
+            <div className="nav-group" key={group.label}>
+              <span className="nav-group-label">{group.label}</span>
+              {group.items.map(({ id, label, icon: Icon }) => (
+                <button
+                  key={id}
+                  className={`nav-item ${view === id ? 'active' : ''}`}
+                  aria-current={view === id ? 'page' : undefined}
+                  onClick={() => {
+                    setReadingTarget(null)
+                    setListeningTarget(null)
+                    setView(id)
+                  }}
+                >
+                  <Icon size={20} weight={view === id ? 'fill' : 'regular'} />
+                  <span>{label}</span>
+                  {id === 'review' && due.length > 0 && (
+                    <small className="nav-count">{due.length}</small>
+                  )}
+                </button>
+              ))}
+            </div>
           ))}
         </nav>
         <div className="sidebar-bottom">
+          {studyTime.session && (
+            <StudyTimerDock
+              session={studyTime.session}
+              onPause={studyTime.pause}
+              onResume={studyTime.resume}
+              onFinish={studyTime.finish}
+            />
+          )}
           <button
             className={`nav-item ${view === 'settings' ? 'active' : ''}`}
             aria-current={view === 'settings' ? 'page' : undefined}
@@ -362,17 +381,6 @@ function App() {
             </button>
           </div>
         </header>
-        {studyTime.session && (
-          <section className="study-strip" aria-label="本次学习计时">
-            <span className="study-time"><strong>{formatStudyTime(studyTime.session.activeMs)}</strong> 前台活跃
-              <small>{studyTime.session.status === 'paused' ? '已暂停' : studyTime.session.status === 'ended' ? '本次计时已结束' : studyTime.session.status === 'background' ? '后台不计时' : studyTime.session.status === 'idle' ? '已闲置，操作后继续' : '60 秒无操作后自动暂停'}</small>
-            </span>
-            <div className="button-row">
-              <button className="text-button" onClick={studyTime.session.status === 'paused' || studyTime.session.status === 'ended' ? studyTime.resume : studyTime.pause}>{studyTime.session.status === 'paused' || studyTime.session.status === 'ended' ? '继续计时' : '暂停计时'}</button>
-              <button className="text-button" disabled={studyTime.session.status === 'ended'} onClick={studyTime.finish}>结束计时</button>
-            </div>
-          </section>
-        )}
         <main
           className="main-content"
           id="main-content"
@@ -432,30 +440,19 @@ function App() {
                   )}
                 />
               )}
-              {view === 'cards' && (
-                <CardLibrary
-                  {...{ progress, events, preferences, now, onNotify }}
+              {view === 'materials' && (
+                <MaterialsPage
+                  mode={materialMode}
+                  onModeChange={setMaterialMode}
+                  progress={progress}
+                  events={events}
+                  preferences={preferences}
+                  now={now}
+                  attempts={attempts}
+                  readingId={readingTarget ?? String(pref(preferences, 'activeReading', reading.id))}
+                  listeningId={listeningTarget ?? String(pref(preferences, 'activeListening', listening.id))}
+                  onNotify={onNotify}
                   onReview={() => setView('review')}
-                />
-              )}
-              {view === 'reading' && (
-                <ReadingPage
-                  attempts={attempts}
-                  initialId={
-                    readingTarget ??
-                    String(pref(preferences, 'activeReading', reading.id))
-                  }
-                  onNotify={onNotify}
-                />
-              )}
-              {view === 'listening' && (
-                <ListeningPage
-                  attempts={attempts}
-                  initialId={
-                    listeningTarget ??
-                    String(pref(preferences, 'activeListening', listening.id))
-                  }
-                  onNotify={onNotify}
                 />
               )}
               {view === 'jlpt' && <JLPTPage onNotify={onNotify} />}
@@ -497,6 +494,121 @@ function App() {
   )
 }
 
+function StudyTimerDock({
+  session,
+  onPause,
+  onResume,
+  onFinish,
+}: {
+  session: ReturnType<typeof useStudyTime>['session']
+  onPause: () => void
+  onResume: () => void
+  onFinish: () => void
+}) {
+  const [expanded, setExpanded] = useState(false)
+  if (!session) return null
+  const canResume = session.status === 'paused' || session.status === 'ended'
+  const status = session.status === 'paused'
+    ? '已暂停'
+    : session.status === 'ended'
+      ? '本次计时已结束'
+      : session.status === 'background'
+        ? '后台不计时'
+        : session.status === 'idle'
+          ? '已闲置，操作后继续'
+          : '60 秒无操作后自动暂停'
+  return (
+    <div className={`study-timer-dock ${expanded ? 'expanded' : ''}`}>
+      <button
+        className="study-timer-toggle"
+        aria-expanded={expanded}
+        aria-controls="study-timer-controls"
+        onClick={() => setExpanded((value) => !value)}
+      >
+        <span className="study-timer-pulse" aria-hidden="true" />
+        <span className="study-timer-summary">
+          <strong>{formatStudyTime(session.activeMs)}</strong>
+          <small>本次学习</small>
+        </span>
+        <CaretDown size={16} weight="bold" />
+      </button>
+      {expanded && (
+        <div className="study-timer-controls" id="study-timer-controls">
+          <span>{status}</span>
+          <div className="button-row">
+            <button className="text-button" onClick={canResume ? onResume : onPause}>
+              {canResume ? '继续计时' : '暂停计时'}
+            </button>
+            <button className="text-button" disabled={session.status === 'ended'} onClick={onFinish}>
+              结束计时
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MaterialsPage({
+  mode,
+  onModeChange,
+  progress,
+  events,
+  preferences,
+  now,
+  attempts,
+  readingId,
+  listeningId,
+  onNotify,
+  onReview,
+}: {
+  mode: MaterialMode
+  onModeChange: (mode: MaterialMode) => void
+  progress: CardProgress[]
+  events: ReviewEvent[]
+  preferences: Preference[]
+  now: number
+  attempts: Attempt[]
+  readingId: string
+  listeningId: string
+  onNotify: Notify
+  onReview: () => void
+}) {
+  return (
+    <div className="materials-page">
+      <div className="materials-switcher" role="tablist" aria-label="学习资料类型">
+        {([
+          ['cards', '卡片'],
+          ['reading', '阅读'],
+          ['listening', '听力'],
+        ] as const).map(([id, label]) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={mode === id}
+            className={mode === id ? 'active' : ''}
+            onClick={() => onModeChange(id)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+      {mode === 'cards' && (
+        <CardLibrary
+          {...{ progress, events, preferences, now, onNotify }}
+          onReview={onReview}
+        />
+      )}
+      {mode === 'reading' && (
+        <ReadingPage initialId={readingId} attempts={attempts} onNotify={onNotify} />
+      )}
+      {mode === 'listening' && (
+        <ListeningPage initialId={listeningId} attempts={attempts} onNotify={onNotify} />
+      )}
+    </div>
+  )
+}
+
 type TodayProps = {
   unit: CourseUnit
   reading: Reading
@@ -534,7 +646,10 @@ function TodayPage({
 }: TodayProps) {
   const [draftMinutes, setDraftMinutes] = useState(minutes)
   const [busy, setBusy] = useState(false)
+  const [quickIndex, setQuickIndex] = useState(() => Math.floor(Math.random() * cards.length))
+  const [quickRevealed, setQuickRevealed] = useState(false)
   useEffect(() => setDraftMinutes(minutes), [minutes])
+  const quickCard = cards[quickIndex % cards.length]
   const reviewDone = queue.length === 0
   const readingDone = todayAttempts.some((x) => x.materialId === reading.id)
   const listeningDone = todayAttempts.some((x) => x.materialId === listening.id)
@@ -591,7 +706,7 @@ function TodayPage({
   }
   return (
     <div className="page-stack">
-      <section className="today-overview" aria-label="学习工作台概览">
+      <section className="today-overview" aria-label="今日学习概览">
         <div className="today-overview-heading">
           <div>
             <span className="today-date">{today.replaceAll('-', '.')}</span>
@@ -773,6 +888,40 @@ function TodayPage({
           小测提示：{focusLabel}值得先巩固。结论只来自少量基础题。
         </p>
       )}
+      <section className="quick-learn" aria-labelledby="quick-learn-title">
+        <div className="quick-learn-heading">
+          <div>
+            <h2 id="quick-learn-title">随手学一题</h2>
+            <p>用一张卡复习词汇、语法或假名，想换内容就换一条。</p>
+          </div>
+          <button
+            className="outline-button"
+            onClick={() => {
+              setQuickIndex((value) => (value + 1) % cards.length)
+              setQuickRevealed(false)
+            }}
+          >
+            换一条
+            <ArrowRight size={16} />
+          </button>
+        </div>
+        <button
+          className={`quick-learn-card ${quickRevealed ? 'revealed' : ''}`}
+          onClick={() => setQuickRevealed((value) => !value)}
+          aria-label={quickRevealed ? '收起随手学习答案' : '查看随手学习答案'}
+        >
+          <span className="quick-learn-kind">{sectionLabel(quickCard.kind)}</span>
+          <span className="quick-learn-front" lang="ja">{quickCard.front}</span>
+          {quickRevealed ? (
+            <span className="quick-learn-answer">
+              <strong>{quickCard.back}</strong>
+              <span lang="ja">{quickCard.example}</span>
+            </span>
+          ) : (
+            <span className="quick-learn-hint">点击查看读音、释义和例句</span>
+          )}
+        </button>
+      </section>
       <div className="section-heading">
         <h2>下一步</h2>
         <button className="text-button" onClick={() => setView('course')}>
@@ -947,7 +1096,6 @@ function CoursePage({
   ).length
   return (
     <div className="page-stack">
-      <PageIntro title="课程" description="" />
       <div className="course-summary">
         <span>
           <strong>{completed} / 7</strong> 单元已练阅读与听力
@@ -1130,7 +1278,6 @@ function ReviewPage({
   }
   return (
     <div className="page-stack focus-page">
-      <PageIntro title="复习" description="" />
       <div className="review-meta">
         <span>
           本轮最多 {roundIds.length} 张，当前待练 {queue.length} 张
@@ -1341,10 +1488,6 @@ function ReadingPage({
   const reading = readings.find((x) => x.id === activeId) ?? readings[0]
   return (
     <div className="page-stack">
-      <PageIntro
-        title="阅读练习"
-        description="读懂人物、时间、地点和动作。先作答，再核对译文与解析。"
-      />
       <MaterialPicker
         kind="reading"
         activeId={reading.id}
@@ -1556,10 +1699,6 @@ function ListeningPage({
   const listening = listenings.find((x) => x.id === activeId) ?? listenings[0]
   return (
     <div className="page-stack">
-      <PageIntro
-        title="听力练习"
-        description="先抓住关键信息，再回答。完整播放后可提交，重听和查看文本会保留为辅助记录。"
-      />
       <MaterialPicker
         kind="listening"
         activeId={listening.id}
@@ -2243,10 +2382,6 @@ function ProgressPage({
   }, 0)
   return (
     <div className="page-stack">
-      <PageIntro
-        title="学习进度"
-        description="看看练过哪些内容、哪些日子留下了记录。这里展示实际作答，不换算考试分数。"
-      />
       <div className="progress-summary">
         <div>
           <strong>
@@ -2556,7 +2691,7 @@ function SettingsPage({
       <section className="settings-section">
         <div>
           <h2>默认每日学习时间</h2>
-          <p>用于没有单独调整的新一天；工作台的时间调整仅影响当天。</p>
+          <p>用于没有单独调整的新一天：首页的时间调整仅影响当天。</p>
         </div>
         <select
           disabled={busy}

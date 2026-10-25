@@ -31,7 +31,7 @@ export default function StudyPlanPanel({ plan, onFoundation, onJlpt }: {
         <article className="study-plan-track jlpt">
           <div className="study-plan-track-title"><GraduationCap size={18} /><strong>N2 冲刺</strong><span>{plan.jlptMinutes} 分钟</span></div>
           <p>{plan.jlptTarget}</p>
-          <button className="text-button" onClick={onJlpt}>进入 JLPT 工作台 <ArrowRight size={15} /></button>
+          <button className="text-button" onClick={onJlpt}>进入 JLPT 练习 <ArrowRight size={15} /></button>
         </article>
       </div>
       <p className="study-plan-footnote">今日建议：基础 {plan.foundationCount} 个小步，JLPT {plan.jlptQuestionCount} 题；完成后优先复盘错题。</p>

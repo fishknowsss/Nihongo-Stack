@@ -12,7 +12,7 @@
 - 浏览器包：`npm run mygo:build:web`
 - 产物：`apps/nihongo-stack/Nihongo Stack.app`；构建目录中的临时 `.app` 会在同步后删除，避免 Spotlight 出现重复入口
 
-MyGo 原生入口只负责创建隐藏系统标题栏的窗口、保存窗口状态，并把 macOS 原生交通灯放在整个窗口左上角。软件顶部工作栏延伸到标题栏区域，但不绘制或接管系统控件。窗口的 focus/blur 继续转为 `nihongo-native-focus` 事件，学习计时继续由前端 `activity.ts` 维护。
+MyGo 原生入口使用 `TitleBarHiddenInset` 和 `NSWindowToolbarStyleUnified` 创建融入页面的 macOS 原生标题栏；交通灯由 AppKit 绘制并定位在左上角。软件顶部工作栏延伸到标题栏区域，但不绘制或接管系统控件。窗口的 focus/blur 继续转为 `nihongo-native-focus` 事件，学习计时继续由前端 `activity.ts` 维护。
 
 ## 数据兼容
 

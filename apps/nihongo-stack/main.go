@@ -25,13 +25,13 @@ func main() {
 			MinWidth:             900,
 			MinHeight:            680,
 			BackgroundColor:      "light-dark(#f7f6f2, #1e1a25)",
-			TitleBarStyle:        mygo.TitleBarHidden,
-			TitleBarHeight:       56,
-			TrafficLightPosition: &mygo.Point{X: 18, Y: 18},
+			TitleBarStyle:        mygo.TitleBarHiddenInset,
+			TrafficLightPosition: &mygo.Point{X: 24, Y: 19},
 			StateKey:             "main",
 			URL:                  "/",
 			Hidden:               true,
 		})
+		configureMainChrome(window)
 
 		window.OnReadyToShow(func() {
 			setNativeFocus(window, true)

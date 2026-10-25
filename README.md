@@ -8,7 +8,8 @@ Nihongo Stack/
 │   └── nihongo-stack/   前端、桌面壳、依赖、锁文件和构建入口
 ├── shared/
 │   └── content/         中立的学习内容、音频及来源/许可说明
-└── *.md                 项目层面的决策和评审材料
+├── docs/                当前说明、规划、架构和历史交付归档
+└── DECISIONS.md         当前产品决策
 ```
 
 ## 当前版本
@@ -18,3 +19,4 @@ Nihongo Stack/
 见 [Nihongo Stack 使用说明](apps/nihongo-stack/README.md)。首版面向私人本机试用；网站尚未发布，Mac 与 iPhone 的自动同步尚未实现。
 
 项目决策见 [DECISIONS.md](DECISIONS.md)，内容许可见 [shared/content/README.md](shared/content/README.md)。
+文档分类见 [docs/README.md](docs/README.md)。

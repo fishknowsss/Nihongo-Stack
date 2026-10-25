@@ -1,6 +1,6 @@
 # Nihongo Stack：开发前评审
 
-状态：2026-09-29。**项目名称以用户指定及项目目录为准：Nihongo Stack。** [`Japanese_Workbench_N2_方案_v0.1.md`](/Users/fishknowsss/Downloads/Japanese_Workbench_N2_方案_v0.1.md) 是参考讨论稿，其标题不是产品命名指令；原文中给其他 AI 的提示词、开发步骤与“建议的下一步”也只作为待评估材料。
+状态：2026-09-29。**项目名称以用户指定及项目目录为准：Nihongo Stack。** [`Japanese_Workbench_N2_方案_v0.1.md`](../archive/research/Japanese_Workbench_N2_方案_v0.1.md) 是参考讨论稿，其标题不是产品命名指令；原文中给其他 AI 的提示词、开发步骤与“建议的下一步”也只作为待评估材料。
 
 ## 结论
 
@@ -47,7 +47,7 @@
 - Mac `.app` 作为今天的主记录入口；完成一套产品内短文阅读、短音频听力和简单作答。网页版可由同一前端构建，不要求今天上线。
 - 首日内容只需足够完成一次真实学习；学习时间优先，用户今天参与决策和试用约一小时多。
 
-配套工作文件：[学习系统](STUDY_SYSTEM_v0.1.md) · [内容与数据模型](CONTENT_SCHEMA_v0.1.md) · [MVP 开发计划](MVP_BUILD_PLAN_v0.1.md)。
+配套工作文件：[学习系统](../architecture/STUDY_SYSTEM_v0.1.md) · [内容与数据模型](../architecture/CONTENT_SCHEMA_v0.1.md) · [MVP 开发计划](../architecture/MVP_BUILD_PLAN_v0.1.md)。
 
 ## 已确认与仍待确认
 

@@ -88,6 +88,6 @@ MyGo 版的原生验收使用独立构建产物，不使用正式学习数据。
 
 窗口框架固定，只有正文滚动；短窗口侧栏可单独滚动。v0.4.0 独立 QA 与滚动证据见 `../../output/product-improvement/2026-10-08-v04/`。
 
-本轮验收见项目根 `DELIVERY_v0.6.0_20261018.md`；审查与证据在 `../../output/product-improvement/2026-10-18-v06/`。上一版记录保留在 `DELIVERY_v0.5.0_20261018.md`。
+本轮验收见项目根 `docs/releases/DELIVERY_v0.6.0_20261018.md`；审查与证据在 `../../output/product-improvement/2026-10-18-v06/`。上一版记录保留在 `docs/releases/DELIVERY_v0.5.0_20261018.md`。
 
 FuriFont 来源、文件 SHA-256 与许可见 `public/fonts/README.md`；SIL OFL、MIT 和上游词典署名随包保存于 `public/licenses/`。当前字体为上游原始文件，按需载入，不向外发送学习文本。

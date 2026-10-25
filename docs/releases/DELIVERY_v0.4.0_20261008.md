@@ -23,14 +23,14 @@
 - 生产浏览器旧 v0.2 流程 24 项、v0.3 流程 24 项、新流程 20 项，共 68 项通过，无未捕获异常。新增输入法组合事件专项确认空格不揭晓、数字不评分，正常空格仍有效；这是合成组合事件，不是真人输入法验证。
 - 八页 × 1440/900/390/320 共 32 个窗口状态：正文实际滚动后，侧栏与顶部位置不变，文档 scrollTop 为 0，文档高度等于窗口，无正文横向溢出。900×400 短窗口可滚到设置入口；根字号 200% 的阅读状态无横向溢出，此项不等于所有文字完整浏览器缩放认证。
 - 第一轮发现 320px 文档高度残留，已修复；无障碍扫描发现新计时条缺少 landmark，已补成命名 section。最终 16 个受影响状态的 axe 复核为 0 违规，其余页面原扫描无违规。自动扫描存在 contrast 等 incomplete，不能据此声称完整无障碍认证。
-- 原生实际阅读提交、关闭重开、错题展开、计时暂停/结束/最小化和导出完成。详见 `output/product-improvement/2026-10-08-v04/native-acceptance.md`，真实导出为 `native-qa-export.json`。
+- 原生实际阅读提交、关闭重开、错题展开、计时暂停/结束/最小化和导出完成。详见 `../../output/product-improvement/2026-10-08-v04/native-acceptance.md`，真实导出为 `native-qa-export.json`。
 - 正式应用升级前后可见数据均为 8 张卡、15 次反馈、0 次阅读、1 次听音、小测 3/6；正式新增计时为 0，未加入 QA 测试结果。
 - TypeScript/Vite、最终 Tauri 构建与 `codesign --verify --deep --strict` 通过。版本/identifier/二进制 SHA-256 见 `package-verification.json`。
 
-所有本轮证据在 `output/product-improvement/2026-10-08-v04/`；截图在 `output/playwright/v04-*.png`。原前端源代码、配置及 0.3.0 Mac 应用在本轮 `before/` 中保留。
+所有本轮证据在 `../../output/product-improvement/2026-10-08-v04/`；截图在 `../../output/playwright/v04-*.png`。原前端源代码、配置及 0.3.0 Mac 应用在本轮 `before/` 中保留。
 
 ## Skill 与未完成边界
 
 使用 `impeccable`、`redesign-existing-projects`、`emil-design-eng` 和 `playwright`，保留已有 Operate 界面、事实与视觉，不添加营销装饰。detector 仍报告既有五处页脊/圆角样式；本轮没有新增同类警告。历史 `.impeccable/build/pending.json` 是 2026-10-06 的 direction 状态，`build-phase status` 无 build state；本轮做已有应用修复，不虚构新设计 comp，也不把该提示当成编译失败或完整设计验收。
 
-连续一周真实学习与估时校准、真人 VoiceOver/输入法、长时运行/系统休眠/真实午夜、专业教师审校、匹配真人录音与许可仍需继续。Apple 公证、公开网站和跨设备同步未实施。后续见 `NEXT_VERSION_v0.5.md`。
+连续一周真实学习与估时校准、真人 VoiceOver/输入法、长时运行/系统休眠/真实午夜、专业教师审校、匹配真人录音与许可仍需继续。Apple 公证、公开网站和跨设备同步未实施。后续见 `../planning/NEXT_VERSION_v0.5.md`。

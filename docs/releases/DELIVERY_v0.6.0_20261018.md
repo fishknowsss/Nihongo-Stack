@@ -23,10 +23,10 @@
 - `test:db`、`test:learning`、`test:content`、TypeScript/Vite、Tauri 和严格 codesign 验证通过。
 - 原生 QA 实际显示 FuriFont 和材料注音，完成 3/3 阅读提交并保存辅助状态，关闭重开恢复结果。正式应用升级前后均为 8 张卡、15 次反馈、0 次阅读、1 次听音、小测 3/6，已有活跃时间均为 0:03。
 
-完整审查和逐项依据见 `output/product-improvement/2026-10-18-v06/审查与修复.md`。该目录保留 JSON 结果、脚本、原生截图/AX、构建日志、包哈希、字体校验及旧应用/源码 `before/`。
+完整审查和逐项依据见 `../../output/product-improvement/2026-10-18-v06/审查与修复.md`。该目录保留 JSON 结果、脚本、原生截图/AX、构建日志、包哈希、字体校验及旧应用/源码 `before/`。
 
 FuriFont 文件与官方 SHA-256 一致；字体、代码和词典来源的许可随包保存，记录见 `apps/nihongo-stack/public/fonts/README.md`。自动读音需要结合上下文核对；本轮未替代专业教师审校。
 
 ## 接着使用
 
-可先在「阅读 → 阅读注音 → 字体注音 · FuriFont」体验，再查看课程要点和卡片例句。继续安排见 `NEXT_VERSION_v0.7.md`。真人 VoiceOver、长期使用、休眠/真实跨日和内容专业审校按原计划推进；应用继续使用本机临时签名，Apple 公证及公开分发另行安排。
+可先在「阅读 → 阅读注音 → 字体注音 · FuriFont」体验，再查看课程要点和卡片例句。继续安排见 `../planning/NEXT_VERSION_v0.7.md`。真人 VoiceOver、长期使用、休眠/真实跨日和内容专业审校按原计划推进；应用继续使用本机临时签名，Apple 公证及公开分发另行安排。

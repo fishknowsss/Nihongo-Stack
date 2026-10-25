@@ -25,8 +25,8 @@ Solid Glass 来源：[deeplethe/solid-glass](https://github.com/deeplethe/solid-
 - 原生独立 QA 完成学习要点、固定框架键盘翻页、阅读 3/3 提交与解析、关闭重开恢复、回顾表展开和今日时间分离。详见 `native-acceptance.md`。
 - 正式应用升级前后可见数据一致：8 张卡、15 次反馈、0 次阅读、1 次听音、小测 3/6；活跃时间仍为 0:00。正式记录中未加入测试作答或七天模拟样本。
 
-证据目录：`output/product-improvement/2026-10-18-v05/`。其中 `flows-result.json`、`regression-result.json`、`ui-result.json`、构建日志、包版本/签名与原生 AX/截图均可核对。`output/playwright/v05-weekly-report-*.png` 使用隔离浏览器中的七天模拟样本展示；正式首页为证据目录下 `production-v05.png`。旧应用和本轮前源码保存在该目录的 `before/`。
+证据目录：`../../output/product-improvement/2026-10-18-v05/`。其中 `flows-result.json`、`regression-result.json`、`ui-result.json`、构建日志、包版本/签名与原生 AX/截图均可核对。`../../output/playwright/v05-weekly-report-*.png` 使用隔离浏览器中的七天模拟样本展示；正式首页为证据目录下 `production-v05.png`。旧应用和本轮前源码保存在该目录的 `before/`。
 
 ## 后续
 
-下一步见 `NEXT_VERSION_v0.6.md`：七天真实使用、计时与材料关联后再做估时建议、内容专业审校/真人录音许可，以及真人辅助技术和长时使用验收。当前应用采用本机临时签名，尚未 Apple 公证；公开网站与跨设备同步另行推进。
+下一步见 `../planning/NEXT_VERSION_v0.6.md`：七天真实使用、计时与材料关联后再做估时建议、内容专业审校/真人录音许可，以及真人辅助技术和长时使用验收。当前应用采用本机临时签名，尚未 Apple 公证；公开网站与跨设备同步另行推进。

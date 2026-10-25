@@ -37,7 +37,7 @@
 | 数据库 | `npm run test:db` 通过：导入恢复、恢复后排程、并发复习、听音证据、坏备份、导入前副本和 v2 作答 |
 | 学习规则 | `npm run test:learning` 通过：跳播缺口、暂停恢复、辅助记录、新卡首次引入、跨单元到期卡、课程练习覆盖和文件名 |
 | 内容 | `npm run test:content` 通过：旧包指纹、ID 唯一性、卡片/材料/题目引用、正确项与解析、十段音频实际解码。不是教师审校或逐段人工听感审听 |
-| 生产浏览器流程 | 源文件整理后的最终构建完成 24 项流程检查，0 个未捕获异常：`output/product-improvement/2026-10-07/flows-final.json` |
+| 生产浏览器流程 | 源文件整理后的最终构建完成 24 项流程检查，0 个未捕获异常：`../../output/product-improvement/2026-10-07/flows-final.json` |
 | 恢复专项 | 5 项检查通过：默认禁用、勾选启用、390px 预览无溢出、恢复后副本入口、导入数量准确：`restore-flow.json` |
 | 响应式与自动扫描 | 七页 × 1440/900/390，21 个状态，无文档横向溢出、无 axe 违规：`final-ui.json`。分钟数字的 contrast incomplete 由独立审查按最终颜色补算，不当作完整无障碍认证 |
 | 独立视觉终审 | 用户再次调整方向后，以最终截图和代码独立复核。修复了失效的恢复390截图，最终 verdict 为 ship：`independent-final-review.md` |
@@ -47,7 +47,7 @@
 
 检查使用现有 Impeccable 与 Playwright skill，临时使用 axe-core 自动扫描和 Prettier 整理修改过的源码；没有新增全局 skill 或改变其他产品实现。
 
-截图在 `output/playwright/final-*.png`。开发前代码及原应用保存在 `output/product-improvement/2026-10-07/before/`；该目录的旧应用仅作回退证据，日常启动最终应用。
+截图在 `../../output/playwright/final-*.png`。开发前代码及原应用保存在 `../../output/product-improvement/2026-10-07/before/`；该目录的旧应用仅作回退证据，日常启动最终应用。
 
 ## 仍未完成
 

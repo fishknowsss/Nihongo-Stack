@@ -29,12 +29,12 @@
 - 正式应用现场更新前后均为 8 张复习卡、15 次反馈、0 次阅读、1 次听音、小测 3/6。只读检查，未导入测试记录；该现场值优先于上一版交付时的旧快照。
 - 最终 TypeScript/Vite、Tauri 构建和 `codesign --verify --deep --strict` 通过；包内 `icon.icns` 与源文件 SHA-256 相同，版本 0.3.0。
 
-证据在 `output/product-improvement/2026-10-08/`；截图在 `output/playwright/v03-*.png`。旧源代码、配置、图标和旧 `.app` 留存在 `output/product-improvement/2026-10-08/before/`，不作为日常启动入口。该源码目录没有 Git，本轮以保存的源码副本核对差异。
+证据在 `../../output/product-improvement/2026-10-08/`；截图在 `../../output/playwright/v03-*.png`。旧源代码、配置、图标和旧 `.app` 留存在 `../../output/product-improvement/2026-10-08/before/`，不作为日常启动入口。该源码目录没有 Git，本轮以保存的源码副本核对差异。
 
 `impeccable` detector 的五条粗边框/圆角警告均来自既有样式，按用户已确认的纸面页脊样式保留；没有新增同类警告。历史 comp-round 提示未发现 build state，本轮沿用既有视觉体系做功能扩展，没有重开视觉设计方案。
 
 ## 后续与边界
 
-下一版优先错题复盘、真实活跃耗时与计划校准、长时间和 VoiceOver 使用测试，安排见 `NEXT_VERSION_v0.4.md`。
+下一版优先错题复盘、真实活跃耗时与计划校准、长时间和 VoiceOver 使用测试，安排见 `../planning/NEXT_VERSION_v0.4.md`。
 
 教师/母语者专业审校、匹配真人录音与许可、一周真实学习校准、Apple 公证、公开网站及跨设备同步仍未完成。当前原创材料与合成语音保持试用标记，不作为正式 N2 课程或成绩预测。

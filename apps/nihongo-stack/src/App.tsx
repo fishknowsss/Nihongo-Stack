@@ -697,7 +697,6 @@ function TodayPage({
           </div>
           <div className="today-overview-actions">
             {!baseline && <button className="text-button" onClick={() => setView('baseline')}>起点小测</button>}
-            <button className="outline-button" onClick={() => setView('jlpt')}>JLPT</button>
           </div>
         </div>
         <div className="jlpt-countdown" aria-label="JLPT N2 倒计时">
@@ -715,14 +714,35 @@ function TodayPage({
           <span style={{ width: `${(doneCount / tasks.length) * 100}%` }} />
         </div>
       </section>
+      <nav className="today-entry-rail" aria-label="快速学习入口">
+        <button onClick={() => setView('course')}>
+          <BookOpen size={18} />
+          <span><strong>课程</strong><small>选择单元</small></span>
+          <ArrowRight size={15} />
+        </button>
+        <button onClick={() => setView('review')}>
+          <Cards size={18} />
+          <span><strong>复习</strong><small>{due.length ? `${due.length} 张到期` : '继续记忆'}</small></span>
+          <ArrowRight size={15} />
+        </button>
+        <button onClick={() => openMaterial('reading', reading.id)}>
+          <BookOpen size={18} />
+          <span><strong>阅读</strong><small>{reading.title}</small></span>
+          <ArrowRight size={15} />
+        </button>
+        <button onClick={() => openMaterial('listening', listening.id)}>
+          <Headphones size={18} />
+          <span><strong>听力</strong><small>{unit.title}</small></span>
+          <ArrowRight size={15} />
+        </button>
+        <button onClick={() => setView('jlpt')}>
+          <GraduationCap size={18} />
+          <span><strong>JLPT</strong><small>{countdown.days} 天</small></span>
+          <ArrowRight size={15} />
+        </button>
+      </nav>
       <div className="today-single-grid">
         <section className="unit-focus" aria-label="当前学习单元">
-          <div className="unit-focus-top">
-            <button className="text-button" onClick={() => setView('course')}>
-              课程目录
-              <ArrowRight size={16} />
-            </button>
-          </div>
           <div className="unit-focus-title">
             <span className="unit-focus-number">
               {String(unit.order).padStart(2, '0')}
@@ -783,18 +803,6 @@ function TodayPage({
             </button>
           </div>
           <UnitGuide unit={unit} onNotify={onNotify} />
-          <div className="today-action-list" aria-label="学习入口">
-            {tasks.map((task) => {
-              const Icon = task.icon
-              return (
-                <button key={task.id} className="today-action" onClick={task.action}>
-                  <Icon size={19} />
-                  <span><strong>{task.title}</strong><small>{task.done ? '今天已完成，可继续重练' : task.detail}</small></span>
-                  <ArrowRight size={16} />
-                </button>
-              )
-            })}
-          </div>
         </section>
         <div className="today-learning-grid">
         <section className="quick-learn" aria-labelledby="quick-learn-title">

@@ -120,18 +120,18 @@ const overdue: CardProgress = {
   dueAt: previous,
   updatedAt: previous,
 }
-const queue = reviewQueue([overdue], [], 6, now, courseUnits[0].id, null)
+const queue = reviewQueue([overdue], now, courseUnits[0].id, null)
 assert.equal(
   queue[0].id,
   overdue.id,
   'due cards from another unit must still be reviewed',
 )
-assert.ok(queue.slice(1).every((c) => c.unitId === courseUnits[0].id))
-assert.equal(queue.length, 7)
+assert.ok(queue.slice(1).some((c) => c.unitId !== courseUnits[0].id))
+assert.equal(queue.length, cards.length)
 assert.equal(
-  reviewQueue([overdue], [], 0, now, courseUnits[0].id, null).length,
-  1,
-  'zero new-card budget must keep due reviews',
+  reviewQueue([overdue], now, courseUnits[0].id, null).length,
+  cards.length,
+  'learning queue exposes all available cards without a daily quota',
 )
 const a = (materialId: string): Attempt => ({
   id: materialId,
@@ -186,7 +186,7 @@ assert.equal(
   'a review round must not repeat the same card',
 )
 assert.equal(reviewRound([], 10).length, 0)
-assert.equal(reviewRound(cards, NaN).length, 10)
+assert.equal(reviewRound(cards, NaN).length, 20)
 console.log(
   'v0.3 checks passed: bounded preferences, latest difficult feedback, recovery, distinct finite review rounds',
 )

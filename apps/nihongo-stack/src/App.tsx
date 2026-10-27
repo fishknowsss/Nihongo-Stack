@@ -87,6 +87,7 @@ type View =
   | 'baseline'
 type MaterialMode = 'cards' | 'reading' | 'listening'
 type Notify = (text: string, kind?: 'success' | 'error') => void
+type JLPTCountdown = { days: number; hours: number; totalHours: number }
 const navigation = [
   { id: 'today' as const, label: '首页', icon: CalendarBlank },
   { id: 'course' as const, label: '课程', icon: BookOpen },
@@ -120,6 +121,16 @@ function importedCompleteJLPTCount(preferences: Preference[]): number {
   return preferences.filter((row) => row.key.startsWith('jlptImportedPack:') && typeof row.value === 'string').reduce((count, row) => {
     try { return count + (JSON.parse(row.value as string).complete === true ? 1 : 0) } catch { return count }
   }, 0)
+}
+function jlptCountdown(now: number, date: string): JLPTCountdown {
+  const target = Date.parse(`${date}T00:00:00`)
+  const remaining = Number.isFinite(target) ? Math.max(0, target - now) : 0
+  const totalHours = Math.floor(remaining / 3_600_000)
+  return {
+    days: Math.floor(totalHours / 24),
+    hours: totalHours % 24,
+    totalHours,
+  }
 }
 function useClock() {
   const [now, setNow] = useState(Date.now())
@@ -177,27 +188,11 @@ function App() {
     (x) =>
       cards.some((c) => c.id === x.id) && new Date(x.dueAt).getTime() <= now,
   )
-  const maxNewCards = boundedNumber(
-    pref(preferences, 'maxNewCards', 6),
-    6,
-    0,
-    20,
-  )
   const reading = readings.find((x) => x.id === unit.readingId)!
   const listening = listenings.find((x) => x.id === unit.listeningId)!
-  const newCardLimit = Math.min(
-    maxNewCards,
-    Math.max(
-      0,
-      Math.floor(
-        (minutes -
-          reading.minutes -
-          (listening.minutes ?? 5) -
-          Math.ceil(due.length * 0.75)) /
-          2,
-      ),
-    ),
-  )
+  const newCardsAvailable = cards.filter((card) => !progress.some((row) => row.id === card.id)).length
+  const jlptExamDate = String(pref(preferences, 'jlptExamDate', DEFAULT_JLPT_EXAM_DATE))
+  const countdown = jlptCountdown(now, jlptExamDate)
   const baseline = [...attempts]
     .filter((x) => x.kind === 'baseline')
     .sort((a, b) => b.completedAt.localeCompare(a.completedAt))[0]
@@ -214,14 +209,7 @@ function App() {
     }))
     .sort((a, b) => b.misses - a.misses)
   const focus = weakGroups[0]?.misses ? weakGroups[0] : null
-  const queue = reviewQueue(
-    progress,
-    events,
-    newCardLimit,
-    now,
-    unit.id,
-    focus?.kind ?? null,
-  )
+  const queue = reviewQueue(progress, now, unit.id, focus?.kind ?? null)
   const todayEvents = events.filter(
     (x) => localDate(new Date(x.reviewedAt)) === today,
   )
@@ -382,7 +370,7 @@ function App() {
           </div>
         </header>
         <main
-          className="main-content"
+          className={`main-content ${view === 'today' ? 'main-content-today' : ''}`}
           id="main-content"
           ref={mainRef}
           tabIndex={-1}
@@ -402,7 +390,9 @@ function App() {
                     minutes,
                     due,
                     queue,
-                    newCardLimit,
+                    newCardsAvailable,
+                    jlptExamDate,
+                    countdown,
                     today,
                     todayEvents,
                     todayAttempts,
@@ -433,10 +423,10 @@ function App() {
                   onNotify={onNotify}
                   onNext={() => openMaterial('reading', reading.id)}
                   roundSize={boundedNumber(
-                    pref(preferences, 'reviewRoundSize', 10),
-                    10,
-                    1,
-                    30,
+                    pref(preferences, 'reviewRoundSize', 20),
+                    20,
+                    0,
+                    100,
                   )}
                 />
               )}
@@ -616,7 +606,9 @@ type TodayProps = {
   minutes: number
   due: CardProgress[]
   queue: ReturnType<typeof reviewQueue>
-  newCardLimit: number
+  newCardsAvailable: number
+  jlptExamDate: string
+  countdown: JLPTCountdown
   today: string
   todayEvents: ReviewEvent[]
   todayAttempts: Attempt[]
@@ -634,7 +626,9 @@ function TodayPage({
   minutes,
   due,
   queue,
-  newCardLimit,
+  newCardsAvailable,
+  jlptExamDate,
+  countdown,
   today,
   todayAttempts,
   preferences,
@@ -644,11 +638,8 @@ function TodayPage({
   setView,
   openMaterial,
 }: TodayProps) {
-  const [draftMinutes, setDraftMinutes] = useState(minutes)
-  const [busy, setBusy] = useState(false)
   const [quickIndex, setQuickIndex] = useState(() => Math.floor(Math.random() * cards.length))
   const [quickRevealed, setQuickRevealed] = useState(false)
-  useEffect(() => setDraftMinutes(minutes), [minutes])
   const quickCard = cards[quickIndex % cards.length]
   const reviewDone = queue.length === 0
   const readingDone = todayAttempts.some((x) => x.materialId === reading.id)
@@ -689,24 +680,12 @@ function TodayPage({
     ...x,
     state: String(pref(preferences, `task:${today}:${x.id}`, 'active')),
   }))
-  const active = tasks.filter((x) => !x.done && x.state === 'active')
+  const active = tasks.filter((x) => !x.done)
   const doneCount = tasks.filter((x) => x.done).length
-  const plannedMinutes = active.reduce((sum, x) => sum + x.minutes, 0)
   const next = active[0]
-  async function saveMinutes() {
-    setBusy(true)
-    try {
-      await setPreference(`todayMinutes:${today}`, draftMinutes)
-      onNotify('今日时间已更新，待练新卡随预算调整。')
-    } catch {
-      onNotify('时间未保存，请重试。', 'error')
-    } finally {
-      setBusy(false)
-    }
-  }
   return (
-    <div className="page-stack">
-      <section className="today-overview" aria-label="今日学习概览">
+    <div className="today-page">
+      <section className="today-overview today-single-overview" aria-label="今日学习概览">
         <div className="today-overview-heading">
           <div>
             <span className="today-date">{today.replaceAll('-', '.')}</span>
@@ -721,17 +700,22 @@ function TodayPage({
             <button className="outline-button" onClick={() => setView('jlpt')}>JLPT</button>
           </div>
         </div>
-        <div className="today-metrics" aria-label="当前学习数据">
-          <div><strong>{doneCount}</strong><span>已完成</span></div>
-          <div><strong>{plannedMinutes}<small> 分钟</small></strong><span>剩余估时</span></div>
-          <div><strong>{due.length}</strong><span>到期卡</span></div>
-          <div><strong>{newCardLimit}</strong><span>可引入新卡</span></div>
+        <div className="jlpt-countdown" aria-label="JLPT N2 倒计时">
+          <span>N2 目标倒计时</span>
+          <strong>{countdown.days}<small>天</small> {countdown.hours}<small>小时</small></strong>
+          <span>目标 {jlptExamDate.replaceAll('-', '.')}</span>
         </div>
-        <div className="today-overview-bar" role="progressbar" aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={doneCount} aria-label="今日任务进度">
+        <div className="today-metrics" aria-label="当前学习数据">
+          <div><strong>{doneCount}</strong><span>今日完成</span></div>
+          <div><strong>{minutes}<small> 分钟</small></strong><span>建议时长</span></div>
+          <div><strong>{due.length}</strong><span>到期卡</span></div>
+          <div><strong>{newCardsAvailable}</strong><span>待学新卡</span></div>
+        </div>
+        <div className="today-overview-bar" role="progressbar" aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={doneCount} aria-label="今日完成进度">
           <span style={{ width: `${(doneCount / tasks.length) * 100}%` }} />
         </div>
       </section>
-      <div className="today-layout">
+      <div className="today-single-grid">
         <section className="unit-focus" aria-label="当前学习单元">
           <div className="unit-focus-top">
             <button className="text-button" onClick={() => setView('course')}>
@@ -779,9 +763,9 @@ function TodayPage({
                   ? next.id === 'review'
                     ? due.length
                       ? `${due.length} 张到期卡优先`
-                      : `本单元新卡最多 ${newCardLimit} 张`
+                      : `当前还有 ${newCardsAvailable} 张新卡可学`
                     : `约 ${next.minutes} 分钟，${next.detail}`
-                  : '可以重练，也可以继续下一单元。'}
+                  : '今天已完成，也可以继续学习其他材料。'}
               </span>
             </div>
             <button
@@ -799,96 +783,21 @@ function TodayPage({
             </button>
           </div>
           <UnitGuide unit={unit} onNotify={onNotify} />
-        </section>
-        <section className="day-plan" aria-label="今日时间与完成情况">
-          <h2>今天的安排</h2>
-          <dl>
-            <div>
-              <dt>剩余任务预计</dt>
-              <dd>
-                {plannedMinutes}
-                <small> 分钟</small>
-              </dd>
-            </div>
-            <div>
-              <dt>当前已完成</dt>
-              <dd>
-                {doneCount}
-                <small> / {tasks.length} 项</small>
-              </dd>
-            </div>
-          </dl>
-          <div
-            className="day-progress"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={tasks.length}
-            aria-valuenow={doneCount}
-            aria-valuetext={`${doneCount} / ${tasks.length} 项`}
-            aria-label="今日任务完成情况"
-          >
-            <span style={{ width: `${(doneCount / tasks.length) * 100}%` }} />
+          <div className="today-action-list" aria-label="学习入口">
+            {tasks.map((task) => {
+              const Icon = task.icon
+              return (
+                <button key={task.id} className="today-action" onClick={task.action}>
+                  <Icon size={19} />
+                  <span><strong>{task.title}</strong><small>{task.done ? '今天已完成，可继续重练' : task.detail}</small></span>
+                  <ArrowRight size={16} />
+                </button>
+              )
+            })}
           </div>
-          <span className="time-budget-label">今日可用时间</span>
-          <div className="minute-control">
-            <button
-              aria-label="减少 5 分钟"
-              disabled={draftMinutes <= 10 || busy}
-              onClick={() => setDraftMinutes(Math.max(10, draftMinutes - 5))}
-            >
-              −
-            </button>
-            <output aria-label="可用分钟">
-              {draftMinutes} <small>分钟</small>
-            </output>
-            <button
-              aria-label="增加 5 分钟"
-              disabled={draftMinutes >= 300 || busy}
-              onClick={() => setDraftMinutes(Math.min(300, draftMinutes + 5))}
-            >
-              ＋
-            </button>
-          </div>
-          <button
-            className="outline-button time-save"
-            disabled={busy || draftMinutes === minutes}
-            onClick={() => void saveMinutes()}
-          >
-            更新计划
-          </button>
-          <p>
-            已安排新卡上限 {newCardLimit} 张。估时是参考，按自己的速度完成。
-          </p>
-          {plannedMinutes > minutes && (
-            <p className="budget-warning" role="status">
-              剩余任务预计超出可用时间 {plannedMinutes - minutes}{' '}
-              分钟。可以先复习，再将阅读或听力延期。
-            </p>
-          )}
         </section>
-      </div>
-      {!baseline && (
-        <section className="baseline-prompt">
-          <div>
-            <h2>还没做过起点小测？</h2>
-            <p>六道基础题，约 10 分钟；可以选“不知道”，随时接着做。</p>
-          </div>
-          <button
-            className="outline-button"
-            onClick={() => setView('baseline')}
-          >
-            做起点小测
-            <ArrowRight size={16} />
-          </button>
-        </section>
-      )}
-      {focusLabel && (
-        <p className="focus-note">
-          <Info size={18} />
-          小测提示：{focusLabel}值得先巩固。结论只来自少量基础题。
-        </p>
-      )}
-      <section className="quick-learn" aria-labelledby="quick-learn-title">
+        <div className="today-learning-grid">
+        <section className="quick-learn" aria-labelledby="quick-learn-title">
         <div className="quick-learn-heading">
           <div>
             <h2 id="quick-learn-title">随手学一题</h2>
@@ -921,156 +830,25 @@ function TodayPage({
             <span className="quick-learn-hint">点击查看读音、释义和例句</span>
           )}
         </button>
-      </section>
-      <div className="section-heading">
-        <h2>下一步</h2>
-        <button className="text-button" onClick={() => setView('course')}>
-          换个单元
-          <ArrowRight size={15} />
-        </button>
-      </div>
-      <div className="task-list">
-        {tasks.map((task, index) => (
-          <Task
-            key={task.id}
-            task={task}
-            index={index}
-            today={today}
-            onNotify={onNotify}
-          />
-        ))}
-      </div>
-      {plannedMinutes > minutes && (
-        <p className="field-hint">
-          预计任务超出可用时间，可先保留复习，再选择阅读或听力；跳过不会算作完成。
-        </p>
-      )}
-      <p className="content-note">材料状态和来源见各练习页。</p>
-    </div>
-  )
-}
-function Task({
-  task,
-  index,
-  today,
-  onNotify,
-}: {
-  task: {
-    id: string
-    title: string
-    detail: string
-    minutes: number
-    done: boolean
-    state: string
-    action: () => void
-    icon: typeof Cards
-  }
-  index: number
-  today: string
-  onNotify: Notify
-}) {
-  const [reasonOpen, setReasonOpen] = useState(false)
-  const [busy, setBusy] = useState(false)
-  const paused = !task.done && task.state !== 'active'
-  async function change(state: string, reason = '') {
-    setBusy(true)
-    try {
-      await db.transaction('rw', db.preferences, async () => {
-        await setPreference(`task:${today}:${task.id}`, state)
-        await setPreference(`taskReason:${today}:${task.id}`, reason)
-      })
-      setReasonOpen(false)
-      onNotify(
-        state === 'active'
-          ? '已恢复今日任务。'
-          : state === 'deferred'
-            ? '明天重新安排；今天保留延期记录。'
-            : '已记录跳过原因。',
-      )
-    } catch {
-      onNotify('任务状态未保存，请重试。', 'error')
-    } finally {
-      setBusy(false)
-    }
-  }
-  const Icon = task.icon
-  return (
-    <div className={`task-row ${paused ? 'task-muted' : ''}`}>
-      <div className="task-top">
-        <button className="task-main" onClick={task.action}>
-          <span className="task-number">{index + 1}</span>
-          <Icon size={21} />
-          <span className="task-copy">
-            <strong>{task.title}</strong>
-            <span>{task.detail}</span>
-          </span>
-          <span className="task-status">
-            {task.done ? (
-              <>
-                <CheckCircle size={18} />
-                已完成
-              </>
-            ) : paused ? (
-              task.state === 'deferred' ? (
-                '已延期'
-              ) : (
-                '已跳过'
-              )
-            ) : (
-              <>
-                {task.minutes} 分钟
-                <ArrowRight size={17} />
-              </>
-            )}
-          </span>
-        </button>
-        {!task.done && (
-          <div className="task-actions">
-            {paused ? (
-              <button disabled={busy} onClick={() => void change('active')}>
-                恢复今日
-              </button>
-            ) : (
-              <>
-                <button
-                  disabled={busy}
-                  onClick={() => setReasonOpen(!reasonOpen)}
-                >
-                  跳过
-                </button>
-                <button
-                  disabled={busy}
-                  onClick={() => void change('deferred', '明天再做')}
-                >
-                  明天再做
-                </button>
-              </>
-            )}
+        </section>
+        <section className="today-explanation" aria-labelledby="today-explanation-title">
+          <div className="quick-learn-heading">
+            <div>
+              <h2 id="today-explanation-title">今日详解</h2>
+              <p>{reading.title}，直接阅读译文和理解重点。</p>
+            </div>
+            <button className="text-button" onClick={() => openMaterial('reading', reading.id)}>进入阅读 <ArrowRight size={15} /></button>
           </div>
-        )}
-      </div>
-      {reasonOpen && (
-        <div
-          className="skip-reasons"
-          role="group"
-          aria-label={`跳过${task.title}的原因`}
-        >
-          <span>本次跳过的原因</span>
-          {['时间不够', '内容太难', '已经练过', '暂时不想做'].map((reason) => (
-            <button
-              className="outline-button"
-              disabled={busy}
-              key={reason}
-              onClick={() => void change('skipped', reason)}
-            >
-              {reason}
-            </button>
-          ))}
-          <button className="text-button" onClick={() => setReasonOpen(false)}>
-            取消
-          </button>
+          <p className="today-explanation-japanese" lang="ja">{reading.segments.map((segment) => segment.text).join('')}</p>
+          <p className="today-explanation-translation">{reading.translation}</p>
+          <div className="today-explanation-focus">
+            {reading.focus.slice(0, 3).map((item) => <span key={item}>{item}</span>)}
+          </div>
+          {focusLabel && <p className="field-hint"><Info size={15} /> 起点小测建议先巩固：{focusLabel}</p>}
+        </section>
         </div>
-      )}
+      </div>
+      <p className="today-single-footnote">今日建议时长只用于安排节奏；复习、阅读、听力和 JLPT 都可以继续学习，没有每日学习上限。</p>
     </div>
   )
 }
@@ -2690,12 +2468,12 @@ function SettingsPage({
       />
       <section className="settings-section">
         <div>
-          <h2>默认每日学习时间</h2>
-          <p>用于没有单独调整的新一天：首页的时间调整仅影响当天。</p>
+          <h2>首页建议学习时长</h2>
+          <p>只用于首页的节奏提示，不限制复习、阅读、听力或 JLPT 的学习量。</p>
         </div>
         <select
           disabled={busy}
-          aria-label="默认每日学习时间"
+          aria-label="首页建议学习时长"
           value={boundedNumber(
             pref(preferences, 'todayMinutes', 30),
             30,
@@ -2706,7 +2484,7 @@ function SettingsPage({
             void saveSetting(
               'todayMinutes',
               Number(event.target.value),
-              '默认时间已保存。',
+              '首页建议时长已保存。',
             )
           }
         >
@@ -2749,87 +2527,43 @@ function SettingsPage({
         <div>
           <h2>每轮复习卡片量</h2>
           <p>
-            每轮只练一次同一张卡，结束后可以休息或再开一轮；排程仍按实际反馈保存。
+            这是显示批次，不是每日上限；选择“全部”可以连续练完当前待复习内容。
           </p>
         </div>
         <select
           disabled={busy}
           aria-label="每轮复习卡片量"
           value={boundedNumber(
-            pref(preferences, 'reviewRoundSize', 10),
-            10,
-            1,
-            30,
+            pref(preferences, 'reviewRoundSize', 20),
+            20,
+            0,
+            100,
           )}
           onChange={(event) =>
             void saveSetting(
               'reviewRoundSize',
               Number(event.target.value),
-              '轮次设置已保存，下次开始复习时生效。',
+              '复习批次设置已保存，下次开始复习时生效。',
             )
           }
         >
           {[
             ...new Set([
-              5,
+              0,
               10,
               20,
-              30,
-              boundedNumber(
-                pref(preferences, 'reviewRoundSize', 10),
-                10,
-                1,
-                30,
-              ),
+              40,
+              60,
+              boundedNumber(pref(preferences, 'reviewRoundSize', 20), 20, 0, 100),
             ]),
           ]
             .sort((a, b) => a - b)
             .map((value) => (
               <option key={value} value={value}>
-                {value} 张
+                {value === 0 ? '全部' : `${value} 张`}
               </option>
             ))}
         </select>
-      </section>
-      <section className="settings-section">
-        <div>
-          <h2>每日新卡上限</h2>
-          <p>到期复习优先；时间不足时会进一步减少新卡。</p>
-        </div>
-        <label>
-          <span className="sr-only">每日新卡上限</span>
-          <select
-            disabled={busy}
-            aria-label="每日新卡上限"
-            value={boundedNumber(pref(preferences, 'maxNewCards', 6), 6, 0, 20)}
-            onChange={(e) =>
-              void saveSetting(
-                'maxNewCards',
-                Number(e.target.value),
-                '新卡上限已保存。',
-              )
-            }
-          >
-            {[
-              ...new Set([
-                0,
-                2,
-                4,
-                6,
-                10,
-                15,
-                20,
-                boundedNumber(pref(preferences, 'maxNewCards', 6), 6, 0, 20),
-              ]),
-            ]
-              .sort((a, b) => a - b)
-              .map((x) => (
-                <option key={x} value={x}>
-                  {x} 张
-                </option>
-              ))}
-          </select>
-        </label>
       </section>
       <div className="settings-grid">
         <section className="settings-card">

@@ -27,10 +27,10 @@ export function difficultCardIds(events: ReviewEvent[]): Set<string> {
   )
 }
 export function reviewRound(queue: StudyCard[], limit: number): string[] {
-  return [...new Set(queue.map((card) => card.id))].slice(
-    0,
-    boundedNumber(limit, 10, 1, 30),
-  )
+  const unique = [...new Set(queue.map((card) => card.id))]
+  if (limit <= 0) return unique
+  if (!Number.isFinite(limit)) return unique.slice(0, 20)
+  return unique.slice(0, Math.max(1, Math.floor(limit)))
 }
 export function introducedOn(events: ReviewEvent[], day: string): Set<string> {
   const first = new Map<string, string>()
@@ -56,14 +56,11 @@ export function unitPracticed(id: string, attempts: Attempt[]): boolean {
 }
 export function reviewQueue(
   progress: CardProgress[],
-  events: ReviewEvent[],
-  limit: number,
   now: number,
   unitId: string,
   focus: StudyCard['kind'] | null,
 ): StudyCard[] {
   const states = new Map(progress.map((x) => [x.id, x]))
-  const introduced = introducedOn(events, localDate(new Date(now)))
   const due = cards
     .filter(
       (x) =>
@@ -72,7 +69,7 @@ export function reviewQueue(
     .sort((a, b) =>
       states.get(a.id)!.dueAt.localeCompare(states.get(b.id)!.dueAt),
     )
-  // Keep v1 kana available, then focus on the selected unit rather than flooding all 62 cards.
+  // Keep the selected unit first, then expose every unintroduced card. Learning has no daily quota.
   const fresh = cards
     .filter((x) => !states.has(x.id) && (!x.unitId || x.unitId === unitId))
     .sort(
@@ -80,8 +77,13 @@ export function reviewQueue(
         Number(b.unitId === unitId) - Number(a.unitId === unitId) ||
         Number(b.kind === focus) - Number(a.kind === focus),
     )
-    .slice(0, Math.max(0, limit - introduced.size))
-  return [...due, ...fresh]
+  const remaining = cards
+    .filter((x) => !states.has(x.id) && x.unitId && x.unitId !== unitId)
+    .sort(
+      (a, b) =>
+        Number(b.kind === focus) - Number(a.kind === focus),
+    )
+  return [...due, ...fresh, ...remaining]
 }
 export function independentPlayback(meta: Attempt['listening']): boolean {
   return (

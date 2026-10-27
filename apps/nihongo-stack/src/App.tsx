@@ -170,16 +170,6 @@ function App() {
   const ready =
     !!progressQuery && !!attemptsQuery && !!eventsQuery && !!preferencesQuery
   const today = localDate(new Date(now))
-  const minutes = boundedNumber(
-    pref(
-      preferences,
-      `todayMinutes:${today}`,
-      pref(preferences, 'todayMinutes', 30),
-    ),
-    30,
-    10,
-    300,
-  )
   const unit =
     courseUnits.find(
       (x) => x.id === pref(preferences, 'activeUnit', courseUnits[0].id),
@@ -364,9 +354,6 @@ function App() {
                 .format(new Date(now))
                 .replace(/(星期[一二三四五六日])$/, '，$1')}
             </span>
-            <button className="topbar-action" aria-label="打开设置与备份" onClick={() => setView('settings')}>
-              设置
-            </button>
           </div>
         </header>
         <main
@@ -387,7 +374,6 @@ function App() {
                     unit,
                     reading,
                     listening,
-                    minutes,
                     due,
                     queue,
                     newCardsAvailable,
@@ -399,7 +385,6 @@ function App() {
                     preferences,
                     baseline,
                     focusLabel: focus?.label ?? null,
-                    onNotify,
                     setView,
                     openMaterial,
                   }}
@@ -603,7 +588,6 @@ type TodayProps = {
   unit: CourseUnit
   reading: Reading
   listening: Listening
-  minutes: number
   due: CardProgress[]
   queue: ReturnType<typeof reviewQueue>
   newCardsAvailable: number
@@ -615,7 +599,6 @@ type TodayProps = {
   preferences: Preference[]
   baseline?: Attempt
   focusLabel: string | null
-  onNotify: Notify
   setView: (v: View) => void
   openMaterial: (kind: 'reading' | 'listening', id: string) => void
 }
@@ -623,7 +606,6 @@ function TodayPage({
   unit,
   reading,
   listening,
-  minutes,
   due,
   queue,
   newCardsAvailable,
@@ -634,7 +616,6 @@ function TodayPage({
   preferences,
   baseline,
   focusLabel,
-  onNotify,
   setView,
   openMaterial,
 }: TodayProps) {
@@ -689,7 +670,7 @@ function TodayPage({
         <div className="today-overview-heading">
           <div>
             <span className="today-date">{today.replaceAll('-', '.')}</span>
-            <h1>今日学习</h1>
+            <h1>今天学什么</h1>
             <p className="today-current">
               <span>当前单元：{unit.title}</span>
               <span lang="ja">{['はじめまして','一日の時間','場所と交通','買い物','一緒に行きませんか','天気と予定','一週間のふり返り'][unit.order - 1]}</span>
@@ -700,54 +681,21 @@ function TodayPage({
           </div>
         </div>
         <div className="jlpt-countdown" aria-label="JLPT N2 倒计时">
-          <span>N2 目标倒计时</span>
+          <span>N2 目标</span>
           <strong>{countdown.days}<small>天</small> {countdown.hours}<small>小时</small></strong>
-          <span>目标 {jlptExamDate.replaceAll('-', '.')}</span>
+          <span>考试日 {jlptExamDate.replaceAll('-', '.')}</span>
         </div>
         <div className="today-metrics" aria-label="当前学习数据">
-          <div><strong>{doneCount}</strong><span>今日完成</span></div>
-          <div><strong>{minutes}<small> 分钟</small></strong><span>建议时长</span></div>
+          <div><strong>{doneCount}</strong><span>今日已提交</span></div>
           <div><strong>{due.length}</strong><span>到期卡</span></div>
           <div><strong>{newCardsAvailable}</strong><span>待学新卡</span></div>
         </div>
-        <div className="today-overview-bar" role="progressbar" aria-valuemin={0} aria-valuemax={tasks.length} aria-valuenow={doneCount} aria-label="今日完成进度">
-          <span style={{ width: `${(doneCount / tasks.length) * 100}%` }} />
-        </div>
       </section>
-      <nav className="today-entry-rail" aria-label="快速学习入口">
-        <button onClick={() => setView('course')}>
-          <BookOpen size={18} />
-          <span><strong>课程</strong><small>选择单元</small></span>
-          <ArrowRight size={15} />
-        </button>
-        <button onClick={() => setView('review')}>
-          <Cards size={18} />
-          <span><strong>复习</strong><small>{due.length ? `${due.length} 张到期` : '继续记忆'}</small></span>
-          <ArrowRight size={15} />
-        </button>
-        <button onClick={() => openMaterial('reading', reading.id)}>
-          <BookOpen size={18} />
-          <span><strong>阅读</strong><small>{reading.title}</small></span>
-          <ArrowRight size={15} />
-        </button>
-        <button onClick={() => openMaterial('listening', listening.id)}>
-          <Headphones size={18} />
-          <span><strong>听力</strong><small>{unit.title}</small></span>
-          <ArrowRight size={15} />
-        </button>
-        <button onClick={() => setView('jlpt')}>
-          <GraduationCap size={18} />
-          <span><strong>JLPT</strong><small>{countdown.days} 天</small></span>
-          <ArrowRight size={15} />
-        </button>
-      </nav>
       <div className="today-single-grid">
         <section className="unit-focus" aria-label="当前学习单元">
           <div className="unit-focus-title">
-            <span className="unit-focus-number">
-              {String(unit.order).padStart(2, '0')}
-            </span>
             <div>
+              <span className="unit-focus-index">第 {unit.order} 单元</span>
               <h2>{unit.title}</h2>
               <p className="unit-japanese" lang="ja">
                 {
@@ -802,14 +750,16 @@ function TodayPage({
               <ArrowRight size={18} />
             </button>
           </div>
-          <UnitGuide unit={unit} onNotify={onNotify} />
+          <div className="unit-focus-materials" aria-label="当前单元学习入口">
+            <button className="text-button" onClick={() => openMaterial('reading', reading.id)}><BookOpen size={16} /> 阅读</button>
+            <button className="text-button" onClick={() => openMaterial('listening', listening.id)}><Headphones size={16} /> 听力</button>
+            <button className="text-button" onClick={() => setView('course')}>换单元 <ArrowRight size={15} /></button>
+          </div>
         </section>
-        <div className="today-learning-grid">
         <section className="quick-learn" aria-labelledby="quick-learn-title">
         <div className="quick-learn-heading">
           <div>
             <h2 id="quick-learn-title">随手学一题</h2>
-            <p>用一张卡复习词汇、语法或假名，想换内容就换一条。</p>
           </div>
           <button
             className="outline-button"
@@ -834,16 +784,13 @@ function TodayPage({
               <strong>{quickCard.back}</strong>
               <span lang="ja">{quickCard.example}</span>
             </span>
-          ) : (
-            <span className="quick-learn-hint">点击查看读音、释义和例句</span>
-          )}
+          ) : null}
         </button>
         </section>
         <section className="today-explanation" aria-labelledby="today-explanation-title">
           <div className="quick-learn-heading">
             <div>
               <h2 id="today-explanation-title">今日详解</h2>
-              <p>{reading.title}，直接阅读译文和理解重点。</p>
             </div>
             <button className="text-button" onClick={() => openMaterial('reading', reading.id)}>进入阅读 <ArrowRight size={15} /></button>
           </div>
@@ -854,9 +801,7 @@ function TodayPage({
           </div>
           {focusLabel && <p className="field-hint"><Info size={15} /> 起点小测建议先巩固：{focusLabel}</p>}
         </section>
-        </div>
       </div>
-      <p className="today-single-footnote">今日建议时长只用于安排节奏；复习、阅读、听力和 JLPT 都可以继续学习，没有每日学习上限。</p>
     </div>
   )
 }
@@ -1152,7 +1097,7 @@ function ReviewPage({
             本轮已反馈 {count} 张。
             {queue.length
               ? `还有 ${queue.length} 张待练，可以休息一下，再开始下一轮。`
-              : '到期卡和今日额度内的新卡已处理，可以继续阅读练习。'}
+              : '到期卡和当前可学的新卡已处理，可以继续阅读练习。'}
           </p>
           {queue.length > 0 && (
             <button className="primary-button" onClick={nextRound}>
@@ -2476,49 +2421,6 @@ function SettingsPage({
       />
       <section className="settings-section">
         <div>
-          <h2>首页建议学习时长</h2>
-          <p>只用于首页的节奏提示，不限制复习、阅读、听力或 JLPT 的学习量。</p>
-        </div>
-        <select
-          disabled={busy}
-          aria-label="首页建议学习时长"
-          value={boundedNumber(
-            pref(preferences, 'todayMinutes', 30),
-            30,
-            10,
-            300,
-          )}
-          onChange={(event) =>
-            void saveSetting(
-              'todayMinutes',
-              Number(event.target.value),
-              '首页建议时长已保存。',
-            )
-          }
-        >
-          {[
-            ...new Set([
-              10,
-              15,
-              20,
-              30,
-              45,
-              60,
-              90,
-              120,
-              boundedNumber(pref(preferences, 'todayMinutes', 30), 30, 10, 300),
-            ]),
-          ]
-            .sort((a, b) => a - b)
-            .map((value) => (
-              <option key={value} value={value}>
-                {value} 分钟
-              </option>
-            ))}
-        </select>
-      </section>
-      <section className="settings-section">
-        <div>
           <h2>JLPT N2 目标日期</h2>
           <p>双轨计划会按剩余天数自动调整基础理解与 N2 题型训练的时间比例。</p>
         </div>
@@ -2740,9 +2642,7 @@ function PageIntro({
   description: string
 }) {
   return (
-    <header className="page-intro">
-      <h1>{title}</h1>
-    </header>
+    <h1 className="sr-only">{title}</h1>
   )
 }
 export default App

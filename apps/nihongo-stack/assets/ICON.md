@@ -1,11 +1,11 @@
-# Nihongo Stack v0.3 图标
+# Nihongo Stack v1.0 图标
 
-内置 `image_gen` 生成，2026-10-27。米白圆角底板、朱红叠放书页、抽象「あ」和书签。桌面和侧栏保持同一图形；MyGo 使用由 `public/app-icon-128.png` 高质量放大的 `assets/app-icon-v0.9.png` 生成 macOS `AppIcon.icns`。
+内置 `image_gen` 生成，2026-10-27。米白圆角底板、朱红叠放书页、抽象「あ」和书签。桌面和侧栏保持同一图形；MyGo 使用清理外部白色包边后的 `assets/app-icon-v1.0.png` 生成 macOS `AppIcon.icns`。
 
 - 原稿：`app-icon-v0.3.png`
 - 侧栏：`../public/app-icon-128.png`
 - favicon：`../public/favicon-32.png`
-- 桌面：`app-icon-v0.9.png`，由 `mygo.config.ts` 作为 MyGo 应用图标使用；它由 `../public/app-icon-128.png` 生成。
+- 桌面：`app-icon-v1.0.png`，由 `mygo.config.ts` 作为 MyGo 应用图标使用；它保留书本、书签和「あ」，外部为透明背景。
 - 旧 v0.2 图标随旧程序保存在项目 `output/product-improvement/2026-10-08/before/`。
 
 生成提示词：
